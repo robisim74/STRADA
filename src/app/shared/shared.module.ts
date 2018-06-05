@@ -7,6 +7,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MaterialModule } from './material.module';
 
+import { FooterComponent } from './footer/footer.component';
+
 const sharedModules: any[] = [
     CommonModule,
     RouterModule,
@@ -18,10 +20,11 @@ const sharedModules: any[] = [
 ];
 
 @NgModule({
-    declarations: [],
+    declarations: [FooterComponent],
     imports: sharedModules,
     exports: [
-        sharedModules
+        sharedModules,
+        FooterComponent
     ]
 })
 export class SharedModule { }

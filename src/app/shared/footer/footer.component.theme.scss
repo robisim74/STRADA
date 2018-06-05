@@ -1,0 +1,18 @@
+// Import all the tools needed to customize the theme and extract parts of it
+@import '~@angular/material/theming';
+
+// Define a mixin that accepts a theme and outputs the color styles for the component.
+@mixin footer-component-theme($theme) {
+    // Extract whichever individual palettes you need from the theme.
+    $primary: map-get($theme, primary);
+
+    // Use mat-color to extract individual colors from a palette as necessary.
+    footer {
+        background: mat-color($primary);
+        color: mat-color($primary, default-contrast);
+
+        .footer-links a {
+            color: mat-color($primary, default-contrast);
+        }
+    }
+}

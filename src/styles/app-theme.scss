@@ -1,6 +1,7 @@
 @import '~@angular/material/theming';
 @import './variables';
 @import '../app/app.component.theme';
+@import '../app/shared/footer/footer.component.theme';
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -25,3 +26,4 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 // that you are using.
 @include angular-material-theme($app-theme);
 @include app-component-theme($app-theme);
+@include footer-component-theme($app-theme);

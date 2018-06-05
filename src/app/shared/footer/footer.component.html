@@ -1,0 +1,29 @@
+<footer fxLayout="row" fxLayoutAlign="center center" fxLayout.lt-md="column">
+    <div fxFlex="1 1 33%" fxLayout="row" fxLayoutAlign="start center" fxFlex.lt-md="1 1 auto" fxLayout.lt-md="column">
+        <div class="footer-logo">
+            <img src="" hidden>
+        </div>
+        <div class="footer-links">
+            <ul>
+                <li>
+                    <a routerLink="/privacy">
+                        Privacy
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/terms">
+                        Terms of service
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div fxFlex="1 1 auto"></div>
+
+    <div fxFlex="1 1 33%" fxLayout="row" fxLayoutAlign="end center" fxFlex.lt-md="1 1 auto" fxLayout.lt-md="column">
+        <p>
+            Copyright&nbsp;©&nbsp;{{ currentYear }} Roberto&nbsp;Simonetti
+        </p>
+    </div>
+</footer>

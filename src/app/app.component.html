@@ -1,1 +1,31 @@
-<router-outlet></router-outlet>
+<div class="app-root" fxLayout="column">
+
+    <mat-toolbar color="primary" class="mat-elevation-z6">
+        <mat-toolbar-row fxLayout="row" fxLayoutAlign="start center">
+            <img class="toolbar-logo" src="" hidden>
+            <a routerLink="/">
+                <h1>STRADA</h1>
+            </a>
+
+            <span fxFlex="1 1 auto"></span>
+
+            <button mat-icon-button [matMenuTriggerFor]="moreMenu" title="More" aria-label="More">
+                <mat-icon svgIcon="more_vert"></mat-icon>
+            </button>
+            <mat-menu xPosition="before" #moreMenu="matMenu" class="before">
+                <a mat-menu-item routerLink="/about">
+                    <mat-icon svgIcon="code"></mat-icon>About
+                </a>
+            </mat-menu>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-sidenav-container fxFlex="1 1 auto" fxLayout="column" fxFlexFill>
+
+        <div fxFlex="1 1 auto" fxFlexFill>
+            <router-outlet></router-outlet>
+        </div>
+
+    </mat-sidenav-container>
+
+</div>

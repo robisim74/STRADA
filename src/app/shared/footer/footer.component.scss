@@ -1,0 +1,36 @@
+@import '../../../styles/variables';
+
+footer {
+    padding: 16px;
+    font-size: 12px;
+    text-align: center;
+        
+    .footer-logo {
+        img {
+            height: 48px;
+            width: 48px;
+        } 
+    }
+        
+    .footer-links {
+        margin: 0 16px;
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                margin: 2px;
+            }
+            
+            a {
+                text-decoration: none;
+                color: inherit;
+            
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
