@@ -1,0 +1,11 @@
+// Import all the tools needed to customize the theme and extract parts of it.
+@import '~@angular/material/theming';
+@import '../styles/variables';
+
+// Define a mixin that accepts a theme and outputs the color styles for the component.
+@mixin app-component-theme($theme) {
+
+    .mat-checkbox-layout {
+        white-space: normal !important;
+    }
+}
