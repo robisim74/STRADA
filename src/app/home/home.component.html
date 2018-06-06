@@ -1,4 +1,20 @@
-<div class="app-home" fxLayout="column" fxFlexFill>
+<div class="app-home" fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
+    <header fxFlex="1 1 80%" fxLayout="column" fxLayoutAlign="start center">
+        <h1 class="headline">
+            <span class="headline-wrapper">
+                <span class="line line-top"></span>
+                <span class="letters">STRADA</span>
+                <span class="line line-bottom"></span>
+            </span>
+        </h1>
+        <div class="subheading">
+            <div *ngIf="show" @homeTransition>
+                <h2 class="mat-title">Simulation of TRAffic DAta</h2>
+                <h3 class="mat-subheading-2">An urban traffic web simulator that uses data in real time</h3>
+                <a mat-raised-button color="accent" routerLink="/simulation">GET STARTED</a>
+            </div>
+        </div>
+    </header>
 </div>
 
 <app-footer></app-footer>

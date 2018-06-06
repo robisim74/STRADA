@@ -1,0 +1,43 @@
+@import '../../styles/variables';
+
+.app-home {
+    background: url(../../assets/images/city-skyline.svg) no-repeat bottom left;
+    background-size: contain;
+}
+
+header {
+    text-align: center;
+}
+
+.headline {
+    font-weight: 900;
+    font-size: 5em;
+
+    .headline-wrapper {
+        position: relative;
+        display: inline-block;
+        padding-top: 0.1em;
+        padding-right: 0.05em;
+        padding-bottom: 0.15em;
+    }
+
+    .letter {
+        display: inline-block;
+    }
+
+    .line {
+        opacity: 0;
+        position: absolute;
+        left: 0;
+        height: 5px;
+        width: 100%;
+        background-color: $primary-color-text;
+        transform-origin: 0 0;
+    }
+    .line-top { top: 0; }
+    .line-bottom { bottom: 0; }
+}
+
+.subheading {
+    height: 30vh;
+}
