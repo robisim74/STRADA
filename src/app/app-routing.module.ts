@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
-import { WizardComponent } from './wizard/wizard.component';
+import { UiComponent } from './ui/ui.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'simulation', component: WizardComponent },
+    { path: 'simulation', component: UiComponent },
     { path: '**', redirectTo: 'home' }
 ];
 

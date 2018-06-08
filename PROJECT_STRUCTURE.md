@@ -2,13 +2,16 @@
 
 ```
 └── app
-    ├── wizard
-    |   ├── search-for-the-area
-    |   ├── selection-of-the-area
-    |   ├── selection-of-od-pairs
-    |   ├── change-of-demand-and-weather
-    |   ├── simulation
-    |   └── statistics
+    ├── user interface (ui)
+    |   ├── wizard
+    |   |   ├── search-for-the-area
+    |   |   ├── selection-of-the-area
+    |   |   ├── selection-of-od-pairs
+    |   |   ├── change-of-demand-and-weather
+    |   |   ├── simulation
+    |   |   └── statistics
+    |   ├── map
+    |   └── weather
     ├── location
     |   └── location
     ├── network

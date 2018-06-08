@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-simulation',
+    selector: 'wizard-simulation',
     templateUrl: './simulation.component.html',
     styleUrls: ['./simulation.component.scss']
 })

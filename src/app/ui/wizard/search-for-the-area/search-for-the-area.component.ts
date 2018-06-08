@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-search-for-the-area',
+    selector: 'wizard-search-for-the-area',
     templateUrl: './search-for-the-area.component.html',
     styleUrls: ['./search-for-the-area.component.scss']
 })

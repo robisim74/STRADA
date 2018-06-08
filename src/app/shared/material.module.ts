@@ -7,6 +7,7 @@ import {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MatStepperModule
 } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -16,7 +17,8 @@ const materialModules: any[] = [
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatStepperModule
 ];
 
 @NgModule({

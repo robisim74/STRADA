@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-selection-of-the-area',
+    selector: 'wizard-selection-of-the-area',
     templateUrl: './selection-of-the-area.component.html',
     styleUrls: ['./selection-of-the-area.component.scss']
 })
