@@ -8,6 +8,8 @@
 ### Requirements
 - [Node.js and npm](https://docs.npmjs.com/getting-started/installing-node#install-npm--manage-npm-versions)
 - [Angular CLI](https://github.com/angular/angular-cli)
+### Prerequisites
+- Add a Google Maps Platform API key in `src/index.html`
 
 ```Shell
 npm install

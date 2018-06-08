@@ -1,27 +1,29 @@
 # Project structure
 
 ```
-└── app
-    ├── user interface (ui)
-    |   ├── wizard
-    |   |   ├── search-for-the-area
-    |   |   ├── selection-of-the-area
-    |   |   ├── selection-of-od-pairs
-    |   |   ├── change-of-demand-and-weather
-    |   |   ├── simulation
-    |   |   └── statistics
-    |   ├── map
-    |   └── weather
-    ├── location
-    |   └── location
-    ├── network
-    |   ├── network
+└── app (m)
+    ├── user interface (m)
+    |   ├── wizard (c)
+    |   |   ├── search-for-the-area (c)
+    |   |   ├── selection-of-the-area (c)
+    |   |   ├── selection-of-od-pairs (c)
+    |   |   ├── change-of-demand-and-weather (c)
+    |   |   ├── simulation (c)
+    |   |   └── statistics (c)
+    |   ├── map (c)
+    |   |   ├── map (s)
+    |   |   └── google-map (c)
+    |   └── weather (c)
+    ├── location (m)
+    |   └── location (s)
+    ├── network (m)
+    |   ├── network (s)
     |   ├── graph
-    |   └── weather
-    |       └──weather
-    ├── demand
-    |   └── demand
-    └── simulation
-        ├── simulation
+    |   └── weather (m)
+    |       └──weather (s)
+    ├── demand (m)
+    |   └── demand (s)
+    └── simulation (m)
+        ├── simulation (s)
         └── clock
 ```

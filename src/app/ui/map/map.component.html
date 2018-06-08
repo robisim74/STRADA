@@ -1,3 +1,5 @@
 <mat-card>
-    map
+    <google-map [center]="center" [zoom]="zoom" [disableDefaultUI]="disableDefaultUI" [disableDoubleClickZoom]="disableDoubleClickZoom"
+        [mapTypeId]="mapTypeId" [maxZoom]="maxZoom" [minZoom]="minZoom" [gestureHandling]="gestureHandling" [styles]="styles">
+    </google-map>
 </mat-card>
