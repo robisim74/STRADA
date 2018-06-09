@@ -1,0 +1,20 @@
+<div [formGroup]="formGroup">
+    <div fxLayout="column" fxLayoutGap="8px">
+        <div class="textarea-content">
+            <mat-form-field color="accent" class="full-width">
+                <textarea matInput formControlName="address" rows="3" placeholder="Address" (keyup.enter)="search(formGroup.get('address').value)"></textarea>
+                <mat-error *ngIf="formGroup.get('address').hasError('required')">
+                    Address is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <button type="button" mat-raised-button color="accent" class="full-width" (click)="search(formGroup.get('address').value)">Search</button>
+        <button type="button" mat-raised-button class="full-width" (click)="getCurrentPosition()">Get current position</button>
+    </div>
+
+    <div class="navigation">
+        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue
+            <mat-icon>navigate_next</mat-icon>
+        </button>
+    </div>
+</div>

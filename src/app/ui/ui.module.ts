@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { UiRoutingModule } from './ui-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
+import { MessageArchivedComponent } from './message-archived.component';
 import { UiComponent } from './ui.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { SearchForTheAreaComponent } from './wizard/search-for-the-area/search-for-the-area.component';
@@ -18,11 +19,15 @@ import { WeatherComponent } from './weather/weather.component';
 import { MapService } from './map/map.service';
 
 @NgModule({
+    entryComponents: [
+        MessageArchivedComponent
+    ],
     imports: [
         UiRoutingModule,
         SharedModule
     ],
     declarations: [
+        MessageArchivedComponent,
         UiComponent,
         WizardComponent,
         SearchForTheAreaComponent,

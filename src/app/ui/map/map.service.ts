@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 
 /**
- * MapService class.
- *
- * This injectable class instances the map.
+ * Instances the map.
  */
 @Injectable() export class MapService {
 

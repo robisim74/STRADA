@@ -1,0 +1,19 @@
+.wizard-content {
+    .navigation {
+        text-align: right;
+        margin-top: 16px;
+
+        .mat-button {
+            padding-right: 8px;
+            padding-left: 0;
+        }
+        .mat-raised-button {
+            padding-left: 8px;
+            padding-right: 0;
+        }
+    }
+    
+    .full-width {
+        width: 100%;
+    }
+}
