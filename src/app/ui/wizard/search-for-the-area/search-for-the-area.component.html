@@ -3,9 +3,6 @@
         <div class="textarea-content">
             <mat-form-field color="accent" class="full-width">
                 <textarea matInput formControlName="address" rows="3" placeholder="Address" (keyup.enter)="search(formGroup.get('address').value)"></textarea>
-                <mat-error *ngIf="formGroup.get('address').hasError('required')">
-                    Address is required
-                </mat-error>
             </mat-form-field>
         </div>
         <button type="button" mat-raised-button color="accent" class="full-width" (click)="search(formGroup.get('address').value)">Search</button>

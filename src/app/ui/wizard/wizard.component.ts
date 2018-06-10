@@ -22,7 +22,8 @@ export class WizardComponent implements OnInit {
         this.wizardForm = this.formBuilder.group({
             formSteps: this.formBuilder.array([
                 this.formBuilder.group({
-                    address: ['', [Validators.required]]
+                    address: [''],
+                    center: [null, [Validators.required]]
                 }),
                 this.formBuilder.group({
 
