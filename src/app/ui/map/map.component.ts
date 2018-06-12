@@ -1,6 +1,12 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { Store, select } from '@ngrx/store';
 
 import { MapStyle } from './map.style';
+import * as fromWizard from '../models/reducers';
+import { Step } from '../models/wizard';
+import { State } from '../models/reducers/wizard.reducer';
 
 @Component({
     selector: 'ui-map',
@@ -8,7 +14,7 @@ import { MapStyle } from './map.style';
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
 
     // Center map. Required.
     center: google.maps.LatLng;
@@ -24,7 +30,11 @@ export class MapComponent implements OnInit {
     gestureHandling: string;
     styles: google.maps.MapTypeStyle[];
 
-    constructor() {
+    subscriptions: Subscription[] = [];
+
+    constructor(
+        private store: Store<fromWizard.State>
+    ) {
         // Map options.
         this.disableDefaultUI = true;
         this.disableDoubleClickZoom = false;
@@ -32,13 +42,32 @@ export class MapComponent implements OnInit {
         this.maxZoom = 18;
         this.minZoom = 4;
         this.gestureHandling = 'cooperative';
-        // Styled Maps: https://developers.google.com/maps/documentation/javascript/styling
-        this.styles = MapStyle
+        this.styles = MapStyle;
     }
 
     ngOnInit(): void {
         this.center = new google.maps.LatLng(41.910943, 12.476358);
         this.zoom = 4;
+
+        // Wizard state.
+        this.subscriptions.push(this.store.pipe(
+            select(fromWizard.wizardState)
+        ).subscribe((state: State) => {
+            switch (state.currentStep) {
+                case 0:
+                    if (state.steps[0]) {
+                        this.center = state.steps[0].data.center;
+                        this.zoom = 16;
+                    }
+                    break;
+            }
+        }));
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((subscription: Subscription) => {
+            if (subscription) { subscription.unsubscribe(); }
+        });
     }
 
 }

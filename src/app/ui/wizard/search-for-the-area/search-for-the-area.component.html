@@ -1,11 +1,11 @@
 <div [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutGap="8px">
-        <div class="textarea-content">
-            <mat-form-field color="accent" class="full-width">
-                <textarea matInput formControlName="address" rows="3" placeholder="Address" (keyup.enter)="search(formGroup.get('address').value)"></textarea>
-            </mat-form-field>
-        </div>
-        <button type="button" mat-raised-button color="accent" class="full-width" (click)="search(formGroup.get('address').value)">Search</button>
+        <mat-form-field color="accent" class="full-width">
+            <input matInput formControlName="address" placeholder="Address" (keyup.enter)="search(formGroup.get('address').value)">
+            <button mat-icon-button matSuffix (click)="search(formGroup.get('address').value)" title="Search">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
         <button type="button" mat-raised-button class="full-width" (click)="getCurrentPosition()">Get current position</button>
     </div>
 

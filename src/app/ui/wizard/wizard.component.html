@@ -4,27 +4,27 @@
             <mat-vertical-stepper formArrayName="formSteps" linear>
                 <mat-step formGroupName="0" [stepControl]="formSteps.get([0])">
                     <ng-template matStepLabel>Search for the area</ng-template>
-                    <wizard-search-for-the-area [formGroup]="formSteps.get([0])"></wizard-search-for-the-area>
+                    <wizard-search-for-the-area [formGroup]="formSteps.get([0])" [index]="0"></wizard-search-for-the-area>
                 </mat-step>
                 <mat-step formGroupName="1" [stepControl]="formSteps.get([1])">
                     <ng-template matStepLabel>Selection of the area</ng-template>
-                    <wizard-selection-of-the-area [formGroup]="formSteps.get([1])"></wizard-selection-of-the-area>
+                    <wizard-selection-of-the-area [formGroup]="formSteps.get([1])" [index]="1"></wizard-selection-of-the-area>
                 </mat-step>
                 <mat-step formGroupName="2" [stepControl]="formSteps.get([2])">
                     <ng-template matStepLabel>Selection of OD pairs</ng-template>
-                    <wizard-selection-of-od-pairs [formGroup]="formSteps.get([2])"></wizard-selection-of-od-pairs>
+                    <wizard-selection-of-od-pairs [formGroup]="formSteps.get([2])" [index]="2"></wizard-selection-of-od-pairs>
                 </mat-step>
                 <mat-step formGroupName="3" [stepControl]="formSteps.get([3])">
                     <ng-template matStepLabel>Change of demand and weather</ng-template>
-                    <wizard-change-of-demand-and-weather [formGroup]="formSteps.get([3])"></wizard-change-of-demand-and-weather>
+                    <wizard-change-of-demand-and-weather [formGroup]="formSteps.get([3])" [index]="3"></wizard-change-of-demand-and-weather>
                 </mat-step>
                 <mat-step formGroupName="4" [stepControl]="formSteps.get([4])">
                     <ng-template matStepLabel>Simulation</ng-template>
-                    <wizard-simulation [formGroup]="formSteps.get([4])"></wizard-simulation>
+                    <wizard-simulation [formGroup]="formSteps.get([4])" [index]="4"></wizard-simulation>
                 </mat-step>
                 <mat-step formGroupName="5" [stepControl]="formSteps.get([5])">
                     <ng-template matStepLabel>Statistics</ng-template>
-                    <wizard-statistics [formGroup]="formSteps.get([5])"></wizard-statistics>
+                    <wizard-statistics [formGroup]="formSteps.get([5])" [index]="5"></wizard-statistics>
                 </mat-step>
             </mat-vertical-stepper>
         </form>

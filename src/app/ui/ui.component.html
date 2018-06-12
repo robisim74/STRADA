@@ -1,4 +1,9 @@
-<div class="ui-content" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px">
+<div class="centered" *ngIf="pending">
+    <mat-progress-spinner color="accent" mode="indeterminate">
+    </mat-progress-spinner>
+</div>
+
+<div class="ui-content" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px" [class.ops]="pending">
     <div fxFlex="1 1 60%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">
         <div fxFlex="1 1 10%">
             <ui-weather></ui-weather>

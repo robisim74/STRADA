@@ -1,4 +1,12 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { Subscription } from 'rxjs';
+
+import { Store, select } from '@ngrx/store';
+
+import * as fromWizard from './models/reducers';
+
+import { MessageArchivedComponent } from '../shared/message-archived.component';
 
 @Component({
     selector: 'app-ui',
@@ -6,12 +14,46 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
     styleUrls: ['./ui.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class UiComponent implements OnInit {
+export class UiComponent implements OnInit, OnDestroy {
 
-    constructor() { }
+    pending = false;
+
+    subscriptions: Subscription[] = [];
+
+    constructor(
+        private snackBar: MatSnackBar,
+        private store: Store<fromWizard.State>
+    ) { }
 
     ngOnInit(): void {
-        //
+        // Pending state.
+        this.subscriptions.push(this.store.pipe(
+            select(fromWizard.pending)
+        ).subscribe((pending: boolean) => {
+            this.pending = pending;
+        }));
+        // Error state.
+        this.subscriptions.push(this.store.pipe(
+            select(fromWizard.error)
+        ).subscribe((error: any) => {
+            if (error) {
+                this.openSnackBar(error);
+            }
+        }));
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((subscription: Subscription) => {
+            if (subscription) { subscription.unsubscribe(); }
+        });
+    }
+
+    openSnackBar(message: string): void {
+        this.snackBar.openFromComponent(MessageArchivedComponent, {
+            data: message,
+            duration: 6000,
+            panelClass: ['error-snackbar']
+        });
     }
 
 }

@@ -1,10 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
 
+import { WizardService } from '../wizard.service';
 import { LocationService } from '../../../location/location.service';
-
-import { MessageArchivedComponent } from '../../message-archived.component';
 
 @Component({
     selector: 'wizard-search-for-the-area',
@@ -15,9 +13,11 @@ export class SearchForTheAreaComponent implements OnInit {
 
     @Input() formGroup: FormGroup;
 
+    @Input() index: number;
+
     constructor(
-        private location: LocationService,
-        private snackBar: MatSnackBar
+        private wizard: WizardService,
+        private location: LocationService
     ) { }
 
     ngOnInit(): void {
@@ -26,18 +26,27 @@ export class SearchForTheAreaComponent implements OnInit {
 
     search(address: string): void {
         if (!!address) {
+            // Updates pending state.
+            this.wizard.putOnHold();
             // Converts the address into geographic coordinates.
             this.location.codeAddress(address).forEach(
                 (results: google.maps.GeocoderResult[]) => {
-                    // TODO Update state
+                    this.formGroup.get('center').setValue(new google.maps.LatLng(
+                        results[0].geometry.location.lat(),
+                        results[0].geometry.location.lng()
+                    ));
+                    // Updates step state.
+                    this.wizard.updateStep(this.formGroup.value, this.index);
                 })
                 .then()
                 .catch((error: google.maps.GeocoderStatus) => {
                     if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                        this.openSnackBar('Zero results');
+                        // Updates error state.
+                        this.wizard.putInError('Zero results');
                     } else {
-                        // INVALID_REQUEST, OVER_QUERY_LIMIT,REQUEST_DENIED, UNKNOWN_ERROR
-                        this.openSnackBar('Invalid request');
+                        // INVALID_REQUEST, OVER_QUERY_LIMIT, REQUEST_DENIED, UNKNOWN_ERROR
+                        // Updates error state.
+                        this.wizard.putInError('Invalid request');
                     }
                 });
         }
@@ -45,37 +54,37 @@ export class SearchForTheAreaComponent implements OnInit {
 
     getCurrentPosition(): void {
         if (navigator.geolocation) {
+            // Updates pending state.
+            this.wizard.putOnHold();
             this.location.getCurrentPosition().subscribe(
                 (position: Position) => {
-                    // TODO Update state
+                    this.formGroup.get('center').setValue(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                    // Updates step state.
+                    this.wizard.updateStep(this.formGroup.value, this.index);
                 },
                 (error: PositionError) => {
                     if (error.code > 0) {
+                        let message: string;
                         switch (error.code) {
                             case error.PERMISSION_DENIED:
-                                this.openSnackBar('Permission denied');
+                                message = 'Permission denied';
                                 break;
                             case error.POSITION_UNAVAILABLE:
-                                this.openSnackBar('Position unavailable');
+                                message = 'Position unavailable';
                                 break;
                             case error.TIMEOUT:
-                                this.openSnackBar('Position timeout');
+                                message = 'Position timeout';
                                 break;
                         }
+                        // Updates error state.
+                        this.wizard.putInError(message);
                     }
                 });
 
         } else {
-            this.openSnackBar("Browser doesn't support geolocation");
+            // Updates error state.
+            this.wizard.putInError("Browser doesn't support geolocation");
         }
-    }
-
-    openSnackBar(message: string): void {
-        this.snackBar.openFromComponent(MessageArchivedComponent, {
-            data: message,
-            duration: 6000,
-            panelClass: ['error-snackbar']
-        });
     }
 
 }

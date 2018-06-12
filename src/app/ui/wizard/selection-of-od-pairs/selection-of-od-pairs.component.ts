@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'wizard-selection-of-od-pairs',
@@ -6,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./selection-of-od-pairs.component.scss']
 })
 export class SelectionOfOdPairsComponent implements OnInit {
+
+    @Input() formGroup: FormGroup;
+
+    @Input() index: number;
 
     constructor() { }
 

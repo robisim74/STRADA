@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'wizard-change-of-demand-and-weather',
@@ -6,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./change-of-demand-and-weather.component.scss']
 })
 export class ChangeOfDemandAndWeatherComponent implements OnInit {
+
+    @Input() formGroup: FormGroup;
+
+    @Input() index: number;
 
     constructor() { }
 

@@ -3,7 +3,9 @@ import { NgModule } from '@angular/core';
 import { UiRoutingModule } from './ui-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
-import { MessageArchivedComponent } from './message-archived.component';
+import { StoreModule } from "@ngrx/store";
+import { EffectsModule } from "@ngrx/effects";
+
 import { UiComponent } from './ui.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { SearchForTheAreaComponent } from './wizard/search-for-the-area/search-for-the-area.component';
@@ -16,18 +18,18 @@ import { MapComponent } from './map/map.component';
 import { GoogleMapComponent } from './map/google-map.component';
 import { WeatherComponent } from './weather/weather.component';
 
+import { WizardService } from './wizard/wizard.service';
 import { MapService } from './map/map.service';
+import { reducers } from './models/reducers';
 
 @NgModule({
-    entryComponents: [
-        MessageArchivedComponent
-    ],
     imports: [
         UiRoutingModule,
-        SharedModule
+        SharedModule,
+        StoreModule.forFeature('wizard', reducers),
+        EffectsModule.forFeature([])
     ],
     declarations: [
-        MessageArchivedComponent,
         UiComponent,
         WizardComponent,
         SearchForTheAreaComponent,
@@ -41,6 +43,7 @@ import { MapService } from './map/map.service';
         WeatherComponent
     ],
     providers: [
+        WizardService,
         MapService
     ]
 })
