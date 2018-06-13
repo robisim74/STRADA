@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppPreloadingStrategy } from './app-preloading-strategy';
 
 import { HomeComponent } from './home/home.component';
-import { UiComponent } from './ui/ui.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },

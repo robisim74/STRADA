@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { Store, select } from '@ngrx/store';
 
-import * as fromWizard from './models/reducers';
+import * as fromUi from './models/reducers';
 
 import { MessageArchivedComponent } from '../shared/message-archived.component';
 
@@ -22,19 +22,19 @@ export class UiComponent implements OnInit, OnDestroy {
 
     constructor(
         private snackBar: MatSnackBar,
-        private store: Store<fromWizard.State>
+        private store: Store<fromUi.UiState>
     ) { }
 
     ngOnInit(): void {
         // Pending state.
         this.subscriptions.push(this.store.pipe(
-            select(fromWizard.pending)
+            select(fromUi.pending)
         ).subscribe((pending: boolean) => {
             this.pending = pending;
         }));
         // Error state.
         this.subscriptions.push(this.store.pipe(
-            select(fromWizard.error)
+            select(fromUi.error)
         ).subscribe((error: any) => {
             if (error) {
                 this.openSnackBar(error);

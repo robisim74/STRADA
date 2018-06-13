@@ -46,8 +46,4 @@ export class Reset implements Action {
 
 }
 
-export type WizardActions =
-    StepChanged |
-    StepError |
-    StepPending |
-    Reset;
+export type WizardActions = StepChanged | StepError | StepPending | Reset;

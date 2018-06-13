@@ -6,7 +6,7 @@ import { WizardActions, WizardActionTypes } from '../actions/wizard.actions';
 /**
  * Wizard state management.
  */
-export interface State {
+export interface WizardState {
 
     steps: Step[];
     currentStep: number;
@@ -15,7 +15,7 @@ export interface State {
 
 }
 
-export const initialState: State = {
+export const initialWizardState: WizardState = {
     steps: STEPS,
     currentStep: 0,
     error: null,
@@ -25,7 +25,7 @@ export const initialState: State = {
 /**
  * ngrx: wizard Reducer.
  */
-export function wizardReducer(state: State = cloneDeep(initialState), action: WizardActions): State {
+export function wizardReducer(state: WizardState = cloneDeep(initialWizardState), action: WizardActions): WizardState {
     switch (action.type) {
         case WizardActionTypes.StepChanged: {
             // Updates the step at the provided index.
@@ -52,7 +52,7 @@ export function wizardReducer(state: State = cloneDeep(initialState), action: Wi
             };
         }
         case WizardActionTypes.Reset: {
-            return initialState;
+            return initialWizardState;
         }
         default: {
             return state;
@@ -60,10 +60,10 @@ export function wizardReducer(state: State = cloneDeep(initialState), action: Wi
     }
 }
 
-export const steps: (state: State) => Step[] = (state: State) => state.steps;
+export const getSteps: (state: WizardState) => Step[] = (state: WizardState) => state.steps;
 
-export const currentStep: (state: State) => number = (state: State) => state.currentStep;
+export const getCurrentStep: (state: WizardState) => number = (state: WizardState) => state.currentStep;
 
-export const error: (state: State) => string = (state: State) => state.error;
+export const getError: (state: WizardState) => string = (state: WizardState) => state.error;
 
-export const pending: (state: State) => boolean = (state: State) => state.pending;
+export const getPending: (state: WizardState) => boolean = (state: WizardState) => state.pending;

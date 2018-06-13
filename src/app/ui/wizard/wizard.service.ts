@@ -2,12 +2,12 @@ import { Injectable } from "@angular/core";
 
 import { Store } from '@ngrx/store';
 
-import * as fromWizard from '../models/reducers';
+import * as fromUi from '../models/reducers';
 import { WizardActionTypes } from '../models/actions/wizard.actions';
 
 @Injectable() export class WizardService {
 
-    constructor(private store: Store<fromWizard.State>) { }
+    constructor(private store: Store<fromUi.UiState>) { }
 
     public updateStep(data: any, index: number): void {
         this.store.dispatch({

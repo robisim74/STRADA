@@ -6,24 +6,24 @@ import { Step } from "./wizard";
 /**
  * User interface state management.
  */
-export interface State {
+export interface UiState {
 
-    wizard: fromWizard.State;
+    wizard: fromWizard.WizardState;
 
 }
 
-export const reducers: ActionReducerMap<State> = {
+export const reducers: ActionReducerMap<UiState> = {
     wizard: fromWizard.wizardReducer
 };
 
-export const featureWizardState: MemoizedSelector<object, State> = createFeatureSelector<State>('wizard');
+export const featureUiState: MemoizedSelector<object, UiState> = createFeatureSelector<UiState>('ui');
 
 /**
  * Exports the wizard state.
  */
-export const wizardState: MemoizedSelector<object, fromWizard.State> = createSelector(
-    featureWizardState,
-    (state: State) => state.wizard
+export const wizardState: MemoizedSelector<object, fromWizard.WizardState> = createSelector(
+    featureUiState,
+    (state: UiState) => state.wizard
 );
 
 /**
@@ -31,7 +31,7 @@ export const wizardState: MemoizedSelector<object, fromWizard.State> = createSel
  */
 export const steps: MemoizedSelector<object, Step[]> = createSelector(
     wizardState,
-    fromWizard.steps
+    fromWizard.getSteps
 );
 
 /**
@@ -39,7 +39,7 @@ export const steps: MemoizedSelector<object, Step[]> = createSelector(
  */
 export const currentStep: MemoizedSelector<object, number> = createSelector(
     wizardState,
-    fromWizard.currentStep
+    fromWizard.getCurrentStep
 );
 
 /**
@@ -47,7 +47,7 @@ export const currentStep: MemoizedSelector<object, number> = createSelector(
  */
 export const error: MemoizedSelector<object, string> = createSelector(
     wizardState,
-    fromWizard.error
+    fromWizard.getError
 );
 
 /**
@@ -55,5 +55,5 @@ export const error: MemoizedSelector<object, string> = createSelector(
  */
 export const pending: MemoizedSelector<object, boolean> = createSelector(
     wizardState,
-    fromWizard.pending
+    fromWizard.getPending
 );

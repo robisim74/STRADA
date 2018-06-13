@@ -4,9 +4,9 @@ import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { MapStyle } from './map.style';
-import * as fromWizard from '../models/reducers';
+import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
-import { State } from '../models/reducers/wizard.reducer';
+import { WizardState } from '../models/reducers/wizard.reducer';
 
 @Component({
     selector: 'ui-map',
@@ -33,7 +33,7 @@ export class MapComponent implements OnInit, OnDestroy {
     subscriptions: Subscription[] = [];
 
     constructor(
-        private store: Store<fromWizard.State>
+        private store: Store<fromUi.UiState>
     ) {
         // Map options.
         this.disableDefaultUI = true;
@@ -51,13 +51,13 @@ export class MapComponent implements OnInit, OnDestroy {
 
         // Wizard state.
         this.subscriptions.push(this.store.pipe(
-            select(fromWizard.wizardState)
-        ).subscribe((state: State) => {
+            select(fromUi.wizardState)
+        ).subscribe((state: WizardState) => {
             switch (state.currentStep) {
                 case 0:
                     if (state.steps[0]) {
                         this.center = state.steps[0].data.center;
-                        this.zoom = 16;
+                        this.zoom = 18;
                     }
                     break;
             }

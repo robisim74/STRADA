@@ -26,7 +26,7 @@ import { reducers } from './models/reducers';
     imports: [
         UiRoutingModule,
         SharedModule,
-        StoreModule.forFeature('wizard', reducers),
+        StoreModule.forFeature('ui', reducers),
         EffectsModule.forFeature([])
     ],
     declarations: [
