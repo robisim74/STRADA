@@ -10,7 +10,7 @@
     </div>
 
     <div class="navigation">
-        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue
+        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid" (click)="updateCurrentStep()">Continue
             <mat-icon>navigate_next</mat-icon>
         </button>
     </div>

@@ -29,3 +29,6 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 @include app-component-theme($app-theme);
 @include footer-component-theme($app-theme);
 @include ui-component-theme($app-theme);
+
+// Other styles.
+@import "~ng-pick-datetime/assets/style/picker.min.css";

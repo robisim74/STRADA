@@ -1,0 +1,11 @@
+<div [formGroup]="formGroup">
+    <div fxLayout="column" fxLayoutGap="8px">
+        <owl-date-time-inline [pickerType]="'timer'" formControlName="time" [min]="min" [max]="max"></owl-date-time-inline>
+    </div>
+
+    <div class="navigation">
+        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue
+            <mat-icon>navigate_next</mat-icon>
+        </button>
+    </div>
+</div>

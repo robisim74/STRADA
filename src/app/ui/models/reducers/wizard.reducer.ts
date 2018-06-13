@@ -37,6 +37,14 @@ export function wizardReducer(state: WizardState = cloneDeep(initialWizardState)
                 pending: false
             };
         }
+        case WizardActionTypes.CurrentStepChanged: {
+            return {
+                ...state,
+                currentStep: action.payload,
+                error: null,
+                pending: false
+            };
+        }
         case WizardActionTypes.StepError: {
             return {
                 ...state,

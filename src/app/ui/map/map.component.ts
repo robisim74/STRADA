@@ -60,6 +60,11 @@ export class MapComponent implements OnInit, OnDestroy {
                         this.zoom = 18;
                     }
                     break;
+                case 1:
+                    if (!state.steps[1]) {
+                        // TODO Show rectangle
+                    }
+                    break;
             }
         }));
     }

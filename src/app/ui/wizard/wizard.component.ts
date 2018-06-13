@@ -26,7 +26,8 @@ export class WizardComponent implements OnInit {
                     center: [null, [Validators.required]]
                 }),
                 this.formBuilder.group({
-
+                    bounds: [null, [Validators.required]],
+                    time: [null]
                 }),
                 this.formBuilder.group({
 

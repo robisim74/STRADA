@@ -21,7 +21,12 @@ export class SearchForTheAreaComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        //
+        // Updates location service data on value changes.
+        this.formGroup.valueChanges.subscribe(
+            () => {
+                this.location.setLatLng(this.formGroup.get('center').value);
+            }
+        );
     }
 
     search(address: string): void {
@@ -85,6 +90,10 @@ export class SearchForTheAreaComponent implements OnInit {
             // Updates error state.
             this.wizard.putInError("Browser doesn't support geolocation");
         }
+    }
+
+    updateCurrentStep(): void {
+        this.wizard.updateCurrentStep(this.index + 1);
     }
 
 }

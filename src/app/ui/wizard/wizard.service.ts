@@ -16,6 +16,13 @@ import { WizardActionTypes } from '../models/actions/wizard.actions';
         });
     }
 
+    public updateCurrentStep(index: number): void {
+        this.store.dispatch({
+            type: WizardActionTypes.CurrentStepChanged,
+            payload: index
+        });
+    }
+
     public putInError(error: string): void {
         this.store.dispatch({
             type: WizardActionTypes.StepError,
