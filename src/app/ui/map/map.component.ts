@@ -57,7 +57,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 case 0:
                     if (state.steps[0]) {
                         this.center = state.steps[0].data.center;
-                        this.zoom = 18;
+                        this.zoom = 17;
                     }
                     break;
                 case 1:

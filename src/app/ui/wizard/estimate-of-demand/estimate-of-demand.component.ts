@@ -2,11 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-    selector: 'wizard-change-of-demand-and-weather',
-    templateUrl: './change-of-demand-and-weather.component.html',
-    styleUrls: ['./change-of-demand-and-weather.component.scss']
+    selector: 'wizard-estimate-of-demand',
+    templateUrl: './estimate-of-demand.component.html',
+    styleUrls: ['./estimate-of-demand.component.scss']
 })
-export class ChangeOfDemandAndWeatherComponent implements OnInit {
+export class EstimateOfDemandComponent implements OnInit {
 
     @Input() formGroup: FormGroup;
 

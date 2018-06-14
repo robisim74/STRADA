@@ -11,12 +11,12 @@
                     <wizard-selection-of-the-area [formGroup]="formSteps.get([1])" [index]="1"></wizard-selection-of-the-area>
                 </mat-step>
                 <mat-step formGroupName="2" [stepControl]="formSteps.get([2])">
-                    <ng-template matStepLabel>Selection of OD pairs</ng-template>
-                    <wizard-selection-of-od-pairs [formGroup]="formSteps.get([2])" [index]="2"></wizard-selection-of-od-pairs>
+                    <ng-template matStepLabel>Estimate of demand</ng-template>
+                    <wizard-estimate-of-demand [formGroup]="formSteps.get([2])" [index]="2"></wizard-estimate-of-demand>
                 </mat-step>
                 <mat-step formGroupName="3" [stepControl]="formSteps.get([3])">
-                    <ng-template matStepLabel>Change of demand and weather</ng-template>
-                    <wizard-change-of-demand-and-weather [formGroup]="formSteps.get([3])" [index]="3"></wizard-change-of-demand-and-weather>
+                    <ng-template matStepLabel>Change of conditions</ng-template>
+                    <wizard-change-of-conditions [formGroup]="formSteps.get([3])" [index]="3"></wizard-change-of-conditions>
                 </mat-step>
                 <mat-step formGroupName="4" [stepControl]="formSteps.get([4])">
                     <ng-template matStepLabel>Simulation</ng-template>

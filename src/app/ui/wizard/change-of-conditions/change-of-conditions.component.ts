@@ -2,11 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-    selector: 'wizard-selection-of-od-pairs',
-    templateUrl: './selection-of-od-pairs.component.html',
-    styleUrls: ['./selection-of-od-pairs.component.scss']
+    selector: 'wizard-change-of-conditions',
+    templateUrl: './change-of-conditions.component.html',
+    styleUrls: ['./change-of-conditions.component.scss']
 })
-export class SelectionOfOdPairsComponent implements OnInit {
+export class ChangeOfConditionsComponent implements OnInit {
 
     @Input() formGroup: FormGroup;
 

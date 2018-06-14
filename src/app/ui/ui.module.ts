@@ -11,8 +11,8 @@ import { UiComponent } from './ui.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { SearchForTheAreaComponent } from './wizard/search-for-the-area/search-for-the-area.component';
 import { SelectionOfTheAreaComponent } from './wizard/selection-of-the-area/selection-of-the-area.component';
-import { SelectionOfOdPairsComponent } from './wizard/selection-of-od-pairs/selection-of-od-pairs.component';
-import { ChangeOfDemandAndWeatherComponent } from './wizard/change-of-demand-and-weather/change-of-demand-and-weather.component';
+import { EstimateOfDemandComponent } from './wizard/estimate-of-demand/estimate-of-demand.component';
+import { ChangeOfConditionsComponent } from './wizard/change-of-conditions/change-of-conditions.component';
 import { SimulationComponent } from './wizard/simulation/simulation.component';
 import { StatisticsComponent } from './wizard/statistics/statistics.component';
 import { MapComponent } from './map/map.component';
@@ -37,8 +37,8 @@ import { reducers } from './models/reducers';
         WizardComponent,
         SearchForTheAreaComponent,
         SelectionOfTheAreaComponent,
-        SelectionOfOdPairsComponent,
-        ChangeOfDemandAndWeatherComponent,
+        EstimateOfDemandComponent,
+        ChangeOfConditionsComponent,
         SimulationComponent,
         StatisticsComponent,
         MapComponent,
