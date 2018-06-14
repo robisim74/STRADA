@@ -36,10 +36,10 @@ export class SearchForTheAreaComponent implements OnInit {
             // Converts the address into geographic coordinates.
             this.location.codeAddress(address).forEach(
                 (results: google.maps.GeocoderResult[]) => {
-                    this.formGroup.get('center').setValue(new google.maps.LatLng(
-                        results[0].geometry.location.lat(),
-                        results[0].geometry.location.lng()
-                    ));
+                    this.formGroup.get('center').setValue({
+                        lat: results[0].geometry.location.lat(),
+                        lng: results[0].geometry.location.lng()
+                    });
                     // Updates step state.
                     this.wizard.updateStep(this.formGroup.value, this.index);
                 })
@@ -63,7 +63,7 @@ export class SearchForTheAreaComponent implements OnInit {
             this.wizard.putOnHold();
             this.location.getCurrentPosition().subscribe(
                 (position: Position) => {
-                    this.formGroup.get('center').setValue(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                    this.formGroup.get('center').setValue({ lat: position.coords.latitude, lng: position.coords.longitude });
                     // Updates step state.
                     this.wizard.updateStep(this.formGroup.value, this.index);
                 },

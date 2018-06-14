@@ -10,7 +10,8 @@ import {
     MatStepperModule,
     MatInputModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
 } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -24,7 +25,8 @@ const materialModules: any[] = [
     MatStepperModule,
     MatInputModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
 ];
 
 @NgModule({

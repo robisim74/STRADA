@@ -27,6 +27,8 @@
     "@angular/flex-layout": "6.0.0-beta.15",
     "@ngrx/store": "6.0.1",
     "@ngrx/effects": "6.0.1",
+    "@turf/area": "6.0.1",
+    "@turf/helpers": "6.1.4",
     "ng-pick-datetime": "6.0.5",
     "clone-deep": "4.0.0",
     "web-animations-js": "2.3.1",

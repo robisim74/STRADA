@@ -14,6 +14,11 @@
     </div>
     <div fxFlex="1 1 40%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">
         <ui-wizard></ui-wizard>
+        <div class="actions" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="8px">
+            <button type="button" mat-raised-button (click)="reset()" title="Reset the whole simulation" disabled>Reset
+                <mat-icon>clear_all</mat-icon>
+            </button>
+        </div>
     </div>
 </div>
 

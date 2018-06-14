@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { Store, select } from '@ngrx/store';
 
+import { WizardService } from './wizard/wizard.service';
 import * as fromUi from './models/reducers';
 
 import { MessageArchivedComponent } from '../shared/message-archived.component';
@@ -22,7 +23,8 @@ export class UiComponent implements OnInit, OnDestroy {
 
     constructor(
         private snackBar: MatSnackBar,
-        private store: Store<fromUi.UiState>
+        private store: Store<fromUi.UiState>,
+        private wizard: WizardService
     ) { }
 
     ngOnInit(): void {
@@ -46,6 +48,10 @@ export class UiComponent implements OnInit, OnDestroy {
         this.subscriptions.forEach((subscription: Subscription) => {
             if (subscription) { subscription.unsubscribe(); }
         });
+    }
+
+    reset(): void {
+        // TODO
     }
 
     openSnackBar(message: string): void {

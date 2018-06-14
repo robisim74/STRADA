@@ -3,8 +3,17 @@
 .ui-content {
     min-height: 100%;
 
-    .mat-card{
+    .mat-card {
         margin: 8px;
+    }
+
+    .actions {
+        margin: 8px;
+
+        button {
+            font-size: 12px;
+            width: 50%;
+        }
     }
 }
 
@@ -27,6 +36,14 @@
 }
 
 /* Time Picker */
-.owl-dt-container-row {
-    font-size: 10px;
+.owl-dialog-container {
+    overflow: hidden;
+
+    .owl-dt-dialog-container {
+        font-size: 14px;
+    }
+
+    .owl-dt-container-control-button {
+        color: $secondary-color;
+    }
 }

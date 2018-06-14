@@ -1,6 +1,21 @@
 <div [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutGap="8px">
-        <owl-date-time-inline [pickerType]="'timer'" formControlName="time" [min]="min" [max]="max"></owl-date-time-inline>
+        <mat-form-field color="accent" class="full-width">
+            <input matInput formControlName="time" placeholder="Time" [min]="min" [max]="max" [owlDateTime]="t1">
+            <button mat-icon-button matSuffix [owlDateTimeTrigger]="t1" title="Open time picker">
+                <mat-icon>calendar_today</mat-icon>
+            </button>
+            <mat-error>
+                <div *ngIf="formGroup.get('time').hasError('owlDateTimeMin') || formGroup.get('time').hasError('owlDateTimeMax'); then thenBlock else elseBlock"></div>
+                <ng-template #thenBlock>
+                    Please, enter a time between the current time and the next 24 hours
+                </ng-template>
+                <ng-template #elseBlock>
+                    Please, insert a valid time or select it
+                </ng-template>
+            </mat-error>
+        </mat-form-field>
+        <owl-date-time [pickerType]="'timer'" [pickerMode]="'dialog'" #t1></owl-date-time>
     </div>
 
     <div class="navigation">

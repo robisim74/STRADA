@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { Store, select } from '@ngrx/store';
 
+import { MapService } from './map.service';
 import { MapStyle } from './map.style';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
@@ -17,7 +18,7 @@ import { WizardState } from '../models/reducers/wizard.reducer';
 export class MapComponent implements OnInit, OnDestroy {
 
     // Center map. Required.
-    center: google.maps.LatLng;
+    center: google.maps.LatLngLiteral;
 
     // The initial map zoom level. Required.
     zoom: number;
@@ -33,7 +34,8 @@ export class MapComponent implements OnInit, OnDestroy {
     subscriptions: Subscription[] = [];
 
     constructor(
-        private store: Store<fromUi.UiState>
+        private store: Store<fromUi.UiState>,
+        private map: MapService
     ) {
         // Map options.
         this.disableDefaultUI = true;
@@ -46,7 +48,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.center = new google.maps.LatLng(41.910943, 12.476358);
+        this.center = { lat: 41.910943, lng: 12.476358 };
         this.zoom = 4;
 
         // Wizard state.
@@ -57,12 +59,14 @@ export class MapComponent implements OnInit, OnDestroy {
                 case 0:
                     if (state.steps[0]) {
                         this.center = state.steps[0].data.center;
-                        this.zoom = 17;
+                        this.zoom = 16;
                     }
                     break;
                 case 1:
                     if (!state.steps[1]) {
-                        // TODO Show rectangle
+                        // Builds & shows initial rectangle.
+                        const bounds: google.maps.LatLngBoundsLiteral = this.map.buildBounds(this.center);
+                        this.map.showRect(bounds);
                     }
                     break;
             }

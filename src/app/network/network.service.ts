@@ -8,14 +8,14 @@ import { Injectable } from '@angular/core';
     /**
      * Rectangle in geographical coordinates of the area.
      */
-    private bounds: google.maps.LatLngBounds;
+    private bounds: google.maps.LatLngBoundsLiteral;
 
     /**
      * Time of the simulation.
      */
     private time: Date;
 
-    public setBounds(bounds: google.maps.LatLngBounds): void {
+    public setBounds(bounds: google.maps.LatLngBoundsLiteral): void {
         this.bounds = bounds;
     }
 

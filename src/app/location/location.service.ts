@@ -10,7 +10,7 @@ import { Observable, Observer } from 'rxjs';
     /**
      * Center of the area (latitude, longitude).
      */
-    private latLng: google.maps.LatLng;
+    private latLng: google.maps.LatLngLiteral;
 
     private geocoder: google.maps.Geocoder;
 
@@ -62,11 +62,11 @@ import { Observable, Observer } from 'rxjs';
         });
     }
 
-    public getLatLng(): google.maps.LatLng {
+    public getLatLng(): google.maps.LatLngLiteral {
         return this.latLng;
     }
 
-    public setLatLng(latLng: google.maps.LatLng): void {
+    public setLatLng(latLng: google.maps.LatLngLiteral): void {
         this.latLng = latLng;
     }
 
