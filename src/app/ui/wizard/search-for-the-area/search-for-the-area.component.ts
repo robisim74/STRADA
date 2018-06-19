@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { WizardService } from '../wizard.service';
 import { LocationService } from '../../../location/location.service';
@@ -9,11 +10,13 @@ import { LocationService } from '../../../location/location.service';
     templateUrl: './search-for-the-area.component.html',
     styleUrls: ['./search-for-the-area.component.scss']
 })
-export class SearchForTheAreaComponent implements OnInit {
+export class SearchForTheAreaComponent implements OnInit, OnDestroy {
 
     @Input() formGroup: FormGroup;
 
     @Input() index: number;
+
+    subscriptions: Subscription[] = [];
 
     constructor(
         private wizard: WizardService,
@@ -22,11 +25,18 @@ export class SearchForTheAreaComponent implements OnInit {
 
     ngOnInit(): void {
         // Updates location service data on value changes.
-        this.formGroup.valueChanges.subscribe(
+        this.subscriptions.push(this.formGroup.valueChanges.subscribe(
             () => {
+                // Updates location service.
                 this.location.setLatLng(this.formGroup.get('center').value);
             }
-        );
+        ));
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((subscription: Subscription) => {
+            if (subscription) { subscription.unsubscribe(); }
+        });
     }
 
     search(address: string): void {
@@ -90,10 +100,6 @@ export class SearchForTheAreaComponent implements OnInit {
             // Updates error state.
             this.wizard.putInError("Browser doesn't support geolocation");
         }
-    }
-
-    updateCurrentStep(): void {
-        this.wizard.updateCurrentStep(this.index + 1);
     }
 
 }

@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+
+import { WizardService } from './wizard.service';
 
 @Component({
     selector: 'ui-wizard',
@@ -15,7 +18,10 @@ export class WizardComponent implements OnInit {
         return this.wizardForm.get('formSteps') as FormArray;
     }
 
-    constructor(private formBuilder: FormBuilder) { }
+    constructor(
+        private formBuilder: FormBuilder,
+        private wizard: WizardService
+    ) { }
 
     ngOnInit(): void {
         // Creates form model.
@@ -43,6 +49,20 @@ export class WizardComponent implements OnInit {
                 })
             ])
         }, { updateOn: 'blur' });
+    }
+
+    /**
+     * Updates current step and step data.
+     * @param event SelectionChange stepper event.
+     */
+    stepClick(event: StepperSelectionEvent): void {
+        const index: number = event.previouslySelectedIndex;
+        const nextIndex: number = event.selectedIndex;
+        this.wizard.goOn(
+            this.wizardForm.get('formSteps').get([index]).value,
+            index,
+            nextIndex
+        );
     }
 
     exit(): void {

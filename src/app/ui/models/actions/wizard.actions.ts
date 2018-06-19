@@ -8,9 +8,9 @@ import { Step } from '../wizard';
 export enum WizardActionTypes {
 
     StepChanged = 'Step changed',
-    CurrentStepChanged = 'Current step changed',
     StepError = 'Step error',
     StepPending = 'Step pending',
+    GoOn = 'Go on',
     Reset = 'Reset'
 
 }
@@ -20,14 +20,6 @@ export class StepChanged implements Action {
     public readonly type: string = WizardActionTypes.StepChanged;
 
     constructor(public payload: { step: Step, index: number }) { }
-
-}
-
-export class CurrentStepChanged implements Action {
-
-    public readonly type: string = WizardActionTypes.CurrentStepChanged;
-
-    constructor(public payload: number) { }
 
 }
 
@@ -47,6 +39,14 @@ export class StepPending implements Action {
 
 }
 
+export class GoOn implements Action {
+
+    public readonly type: string = WizardActionTypes.GoOn;
+
+    constructor(public payload: { step: Step, index: number, nextIndex: number }) { }
+
+}
+
 export class Reset implements Action {
 
     public readonly type: string = WizardActionTypes.Reset;
@@ -55,4 +55,4 @@ export class Reset implements Action {
 
 }
 
-export type WizardActions = StepChanged | CurrentStepChanged | StepError | StepPending | Reset;
+export type WizardActions = StepChanged | GoOn | StepError | StepPending | Reset;

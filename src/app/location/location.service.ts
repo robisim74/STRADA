@@ -21,7 +21,6 @@ import { Observable, Observer } from 'rxjs';
     /**
      * Geocoding service.
      * Wraps the Google Maps API geocoding service into an observable.
-     *
      * @param address The address to be searched
      * @return An observable of GeocoderResult
      */

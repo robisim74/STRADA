@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import area from '@turf/area';
 import { point, polygon } from '@turf/helpers';
@@ -14,9 +15,12 @@ import { point, polygon } from '@turf/helpers';
 
     private infoWindow: google.maps.InfoWindow;
 
+    private area = new BehaviorSubject<number>(0);
+
+    constructor(private zone: NgZone) { }
+
     /**
      * Creates a new map inside of the given HTML container.
-     *
      * @param el DIV element
      * @param mapOptions MapOptions object specification
      */
@@ -78,27 +82,63 @@ import { point, polygon } from '@turf/helpers';
         this.infoWindow = new google.maps.InfoWindow();
     }
 
-    private checkRect(): void {
-        const ne: google.maps.LatLng = this.rectangle.getBounds().getNorthEast();
-        const sw: google.maps.LatLng = this.rectangle.getBounds().getSouthWest();
+    public getArea(): Observable<number> {
+        return this.area.asObservable();
+    }
 
-        // Calculates the area in hectares.
+    public getBounds(): google.maps.LatLngBoundsLiteral {
+        const bounds: google.maps.LatLngBounds = this.rectangle.getBounds();
+        return {
+            north: bounds.getNorthEast().lat(),
+            south: bounds.getSouthWest().lat(),
+            east: bounds.getNorthEast().lng(),
+            west: bounds.getSouthWest().lng()
+        };
+    }
+
+    private checkRect(): void {
+        // The event of Google maps runs outside Angular zone.
+        this.zone.run(() => {
+            const ne: google.maps.LatLng = this.rectangle.getBounds().getNorthEast();
+            const sw: google.maps.LatLng = this.rectangle.getBounds().getSouthWest();
+
+            // Area.
+            const a: number = this.calcArea(ne, sw);
+
+            // Info window.
+            const content: string = '<b>Area</b><br>' +
+                a + ' ha';
+            this.setInfoWindow(content, ne);
+
+            // Sends the area to subscribers.
+            this.area.next(a);
+        });
+    }
+
+    /**
+     * Sets the info window's content and position.
+     * @param content Window's content
+     * @param position LatLng
+     */
+    private setInfoWindow(content: string, position: google.maps.LatLng): void {
+        this.infoWindow.setContent(content);
+        this.infoWindow.setPosition(position);
+
+        this.infoWindow.open(this.map);
+    }
+
+    /**
+     * Calculates the area in hectares.
+     * @param ne north-est coordinates
+     * @param sw south-west coordinates
+     */
+    private calcArea(ne: google.maps.LatLng, sw: google.maps.LatLng): number {
         const p = polygon([[
             [ne.lat(), ne.lng()], [sw.lat(), ne.lng()], [sw.lat(), sw.lng()], [ne.lat(), sw.lng()], [ne.lat(), ne.lng()]
         ]]);
         let a = area(p) / 10000;
         a = Math.round(a * 10) / 10;
-
-        // TODO Check limit
-
-        const contentString = '<b>Area</b><br>' +
-            a + ' ha';
-
-        // Sets the info window's content and position.
-        this.infoWindow.setContent(contentString);
-        this.infoWindow.setPosition(ne);
-
-        this.infoWindow.open(this.map);
+        return a;
     }
 
 }

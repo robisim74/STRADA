@@ -32,15 +32,7 @@ export function wizardReducer(state: WizardState = cloneDeep(initialWizardState)
             state.steps[action.payload.index] = action.payload.step;
             return {
                 ...state,
-                currentStep: action.payload.index,
-                error: null,
-                pending: false
-            };
-        }
-        case WizardActionTypes.CurrentStepChanged: {
-            return {
-                ...state,
-                currentStep: action.payload,
+                steps: cloneDeep(state.steps),
                 error: null,
                 pending: false
             };
@@ -59,8 +51,21 @@ export function wizardReducer(state: WizardState = cloneDeep(initialWizardState)
                 pending: true
             };
         }
+        case WizardActionTypes.GoOn: {
+            // Updates the step at the provided index.
+            state.steps[action.payload.index] = action.payload.step;
+            return {
+                ...state,
+                steps: cloneDeep(state.steps),
+                currentStep: action.payload.nextIndex,
+                error: null,
+                pending: false
+            };
+        }
         case WizardActionTypes.Reset: {
-            return initialWizardState;
+            return {
+                ...initialWizardState
+            };
         }
         default: {
             return state;

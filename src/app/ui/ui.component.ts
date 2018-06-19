@@ -29,15 +29,11 @@ export class UiComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         // Pending state.
-        this.subscriptions.push(this.store.pipe(
-            select(fromUi.pending)
-        ).subscribe((pending: boolean) => {
+        this.subscriptions.push(this.store.pipe(select(fromUi.pending)).subscribe((pending: boolean) => {
             this.pending = pending;
         }));
         // Error state.
-        this.subscriptions.push(this.store.pipe(
-            select(fromUi.error)
-        ).subscribe((error: any) => {
+        this.subscriptions.push(this.store.pipe(select(fromUi.error)).subscribe((error: string) => {
             if (error) {
                 this.openSnackBar(error);
             }
@@ -57,7 +53,7 @@ export class UiComponent implements OnInit, OnDestroy {
     openSnackBar(message: string): void {
         this.snackBar.openFromComponent(MessageArchivedComponent, {
             data: message,
-            duration: 6000,
+            duration: 4000,
             panelClass: ['error-snackbar']
         });
     }

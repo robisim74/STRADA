@@ -1,16 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
+import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
 import { uiConfig } from '../../ui-config';
+import * as fromUi from '../../models/reducers';
+import { Step } from '../../models/wizard';
 
 @Component({
     selector: 'wizard-selection-of-the-area',
     templateUrl: './selection-of-the-area.component.html',
     styleUrls: ['./selection-of-the-area.component.scss']
 })
-export class SelectionOfTheAreaComponent implements OnInit {
+export class SelectionOfTheAreaComponent implements OnInit, OnDestroy {
 
     @Input() formGroup: FormGroup;
 
@@ -36,19 +41,35 @@ export class SelectionOfTheAreaComponent implements OnInit {
         );
     }
 
+    subscriptions: Subscription[] = [];
+
     constructor(
+        private store: Store<fromUi.UiState>,
         private wizard: WizardService,
         private network: NetworkService
     ) { }
 
     ngOnInit(): void {
-        // Updates network service data on value changes.
-        this.formGroup.valueChanges.subscribe(
+        this.subscriptions.push(this.formGroup.valueChanges.subscribe(
             () => {
+                // Updates network service.
                 this.network.setBounds(this.formGroup.get('bounds').value);
                 this.network.setTime(this.formGroup.get('time').value);
             }
-        );
+        ));
+
+        // Updates bounds.
+        this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
+            if (steps[this.index]) {
+                this.formGroup.get('bounds').setValue(steps[this.index]['data']['bounds']);
+            }
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((subscription: Subscription) => {
+            if (subscription) { subscription.unsubscribe(); }
+        });
     }
 
 }
