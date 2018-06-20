@@ -48,7 +48,7 @@ export function wizardReducer(state: WizardState = cloneDeep(initialWizardState)
             return {
                 ...state,
                 error: null,
-                pending: true
+                pending: action.payload
             };
         }
         case WizardActionTypes.GoOn: {

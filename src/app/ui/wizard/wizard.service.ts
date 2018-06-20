@@ -39,6 +39,13 @@ import { WizardState } from "../models/reducers/wizard.reducer";
         });
     }
 
+    public removeFromWaiting(): void {
+        this.store.dispatch({
+            type: WizardActionTypes.StepPending,
+            payload: false
+        });
+    }
+
     public goOn(data: any, index: number, nextIndex: number): void {
         this.store.dispatch({
             type: WizardActionTypes.GoOn,

@@ -29,7 +29,7 @@ import { point, polygon } from '@turf/helpers';
 
         this.resize();
         // Adds event listener resize when the window changes size.
-        google.maps.event.addDomListener(window, "resize", () => this.resize());
+        google.maps.event.addDomListener(window, 'resize', () => this.resize());
     }
 
     public setCenter(latLng: google.maps.LatLngLiteral): void {
@@ -50,7 +50,7 @@ import { point, polygon } from '@turf/helpers';
         const latLng: google.maps.LatLng = this.map.getCenter();
         // Triggers resize event.
         setTimeout(() => {
-            google.maps.event.trigger(this.map, "resize");
+            google.maps.event.trigger(this.map, 'resize');
             // Restores the center.
             this.map.setCenter(latLng);
         });
