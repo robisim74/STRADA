@@ -7,11 +7,11 @@ import { Step } from '../wizard';
  */
 export enum WizardActionTypes {
 
-    StepChanged = 'Step changed',
-    StepError = 'Step error',
-    StepPending = 'Step pending',
-    GoOn = 'Go on',
-    Reset = 'Reset'
+    StepChanged = '[Wizard] Step Changed',
+    StepError = '[Wizard] Step Error',
+    StepPending = '[Wizard] Step Pending',
+    GoOn = '[Wizard] Go On',
+    Reset = '[Wizard] Reset'
 
 }
 

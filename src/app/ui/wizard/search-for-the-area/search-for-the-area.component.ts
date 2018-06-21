@@ -1,42 +1,50 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 import { WizardService } from '../wizard.service';
 import { LocationService } from '../../../location/location.service';
+
+import { BaseComponent } from '../../models/base.component';
 
 @Component({
     selector: 'wizard-search-for-the-area',
     templateUrl: './search-for-the-area.component.html',
     styleUrls: ['./search-for-the-area.component.scss']
 })
-export class SearchForTheAreaComponent implements OnInit, OnDestroy {
+export class SearchForTheAreaComponent extends BaseComponent implements OnInit {
 
     @Input() formGroup: FormGroup;
 
     @Input() index: number;
 
-    subscriptions: Subscription[] = [];
-
     constructor(
         private wizard: WizardService,
         private location: LocationService
-    ) { }
+    ) {
+        super();
+    }
 
     ngOnInit(): void {
+        this.valueChanges();
+        this.receiveActions();
+        this.sendActions();
+    }
+
+    valueChanges(): void {
         // Updates location service data on value changes.
         this.subscriptions.push(this.formGroup.valueChanges.subscribe(
             () => {
-                // Updates location service.
                 this.location.setLatLng(this.formGroup.get('center').value);
             }
         ));
     }
 
-    ngOnDestroy(): void {
-        this.subscriptions.forEach((subscription: Subscription) => {
-            if (subscription) { subscription.unsubscribe(); }
-        });
+    receiveActions(): void {
+        //
+    }
+
+    sendActions(): void {
+        //
     }
 
     search(address: string): void {

@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+
+import * as qs from 'qs';
 
 import { Graph } from './graph';
+import { appConfig } from '../app-config';
 
 /**
  * Creates and develops the graph of the transport network in the selected area.
@@ -23,6 +28,8 @@ import { Graph } from './graph';
      */
     private time: Date | null;
 
+    constructor(private http: HttpClient) { }
+
     public getGraph(): Graph {
         return this.graph;
     }
@@ -43,15 +50,24 @@ import { Graph } from './graph';
      * Calls the Interpreter resource by providing the query in the Overpass language.
      */
     public getNetwork(): Observable<any> {
+        const url: string = appConfig.api.overpassApi.url;
+        const headers: HttpHeaders = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        const query: string = this.buildQuery();
+        const body: string = this.buildBody(query);
 
-        return of(null);
+        return this.http.post(url, body, { headers: headers }).pipe(
+            map((response: any) => response),
+            catchError((error: any) => throwError(error))
+        );
     }
 
     /**
      * With the data obtained from the Interpreter resource instantiate the Graph class
      * and the associated classes Node, Edge and Relation that model the network graph.
      */
-    public createGraph(): Observable<any> {
+    public createGraph(data: any): Observable<any> {
+
+        console.log(data);
 
         return of(null);
     }
@@ -76,6 +92,25 @@ import { Graph } from './graph';
      */
     public getAssignmentMatrix(): number[][] {
         return null;
+    }
+
+    private buildQuery(): string {
+        let query = '[out:json];';
+        query += 'node(' +
+            this.bounds.south + ',' +
+            this.bounds.west + ',' +
+            this.bounds.north + ',' +
+            this.bounds.east + ')';
+        query += ';out;';
+        return query;
+    }
+
+    /**
+     * Builds the query string.
+     * @param query In Overpass QL
+     */
+    private buildBody(query: any): string {
+        return qs.stringify({ data: query });
     }
 
 }

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { Subscription } from 'rxjs';
 
 import { Store, select } from '@ngrx/store';
 
@@ -8,8 +7,9 @@ import { MapService } from './map.service';
 import { MapStyle } from './map.style';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
-import { WizardState } from '../models/reducers/wizard.reducer';
 import { uiConfig } from '../ui-config';
+
+import { BaseComponent } from '../models/base.component';
 
 @Component({
     selector: 'ui-map',
@@ -17,7 +17,7 @@ import { uiConfig } from '../ui-config';
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MapComponent implements OnInit, OnDestroy {
+export class MapComponent extends BaseComponent implements OnInit {
 
     // Center map. Required.
     center: google.maps.LatLngLiteral;
@@ -33,13 +33,12 @@ export class MapComponent implements OnInit, OnDestroy {
     gestureHandling: string;
     styles: google.maps.MapTypeStyle[];
 
-    subscriptions: Subscription[] = [];
-
     constructor(
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
         private map: MapService
     ) {
+        super();
         // Map options.
         this.disableDefaultUI = true;
         this.disableDoubleClickZoom = false;
@@ -54,24 +53,25 @@ export class MapComponent implements OnInit, OnDestroy {
         this.center = { lat: 41.910943, lng: 12.476358 };
         this.zoom = 4;
 
-        // Wizard state.
-        this.subscriptions.push(this.store.pipe(select(fromUi.wizardState)).subscribe((state: WizardState) => {
-            if (!state.error) {
-                switch (state.currentStep) {
-                    case 0:
-                        if (state.steps[0]) {
-                            this.center = state.steps[0].data.center;
-                            this.zoom = 16;
-                        }
-                        break;
-                    case 1:
-                        if (!state.steps[1]) {
-                            // Builds & shows initial rectangle.
-                            const bounds: google.maps.LatLngBoundsLiteral = this.map.buildBounds(this.center);
-                            this.map.showRect(bounds);
-                        }
-                        break;
-                }
+        this.valueChanges();
+        this.receiveActions();
+        this.sendActions();
+    }
+
+    valueChanges(): void {
+        //
+    }
+
+    receiveActions(): void {
+        this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
+            switch (this.wizard.state.currentStep) {
+                case 0:
+                    if (steps[0]) {
+                        // Updates center map.
+                        this.center = this.wizard.state.steps[0].data.center;
+                        this.zoom = 16;
+                    }
+                    break;
             }
         }));
 
@@ -87,10 +87,18 @@ export class MapComponent implements OnInit, OnDestroy {
         }));
     }
 
-    ngOnDestroy(): void {
-        this.subscriptions.forEach((subscription: Subscription) => {
-            if (subscription) { subscription.unsubscribe(); }
-        });
+    sendActions(): void {
+        this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
+            switch (currentStep) {
+                case 1:
+                    if (!this.wizard.state.steps[1]) {
+                        // Builds & shows initial rectangle.
+                        const bounds: google.maps.LatLngBoundsLiteral = this.map.buildBounds(this.center);
+                        this.map.showRect(bounds);
+                    }
+                    break;
+            }
+        }));
     }
 
 }
