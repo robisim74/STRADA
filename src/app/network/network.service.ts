@@ -94,14 +94,30 @@ import { appConfig } from '../app-config';
         return null;
     }
 
+    /**
+     * Builds the query in Overpass QL.
+     */
     private buildQuery(): string {
-        let query = '[out:json];';
-        query += 'node(' +
+        // Result in JSON.
+        let query = '[out:json]';
+        // Request timeout.
+        query += '[timeout:' + appConfig.api.overpassApi.timeout + ']';
+        // Bounding box.
+        query += '[bbox:' +
             this.bounds.south + ',' +
             this.bounds.west + ',' +
             this.bounds.north + ',' +
-            this.bounds.east + ')';
-        query += ';out;';
+            this.bounds.east + ']';
+        query += ';';
+        // Roads.
+        query += 'way[highway~"^(';
+        for (const highway of appConfig.api.overpassApi.highways) {
+            query += highway + '|';
+        }
+        query += ')$"];';
+        // Respective nodes.
+        query += 'foreach(out;node(w);out;);';
+        query += 'out;';
         return query;
     }
 
