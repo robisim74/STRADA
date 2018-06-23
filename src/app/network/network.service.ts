@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError, Observer } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import * as qs from 'qs';
 
-import { Graph } from './graph';
+import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
 
 /**
@@ -29,6 +29,12 @@ import { appConfig } from '../app-config';
     private time: Date | null;
 
     constructor(private http: HttpClient) { }
+
+    public reset(): void {
+        this.graph = null;
+        this.bounds = null;
+        this.time = null;
+    }
 
     public getGraph(): Graph {
         return this.graph;
@@ -63,13 +69,85 @@ import { appConfig } from '../app-config';
 
     /**
      * With the data obtained from the Interpreter resource instantiate the Graph class
-     * and the associated classes Node, Edge and Relation that model the network graph.
+     * and the associated classes Node and Edge that model the network graph.
+     * @param data Overpass API response
      */
     public createGraph(data: any): Observable<any> {
+        this.graph = new Graph();
 
-        console.log(data);
+        // Gets the list of elements.
+        const elements: any[] = data.elements;
+        // Create a degree list of nodes:
+        // a Map object that holds nodeId-degree as key-value pairs.
+        const nodesDegrees: Map<number, number> = new Map();
+        // Gets the list of ways.
+        const ways: any[] = elements.filter((element: any) => element['type'] == 'way');
+        // Gets the list of nodes.
+        const nodes: any[] = elements.filter((element: any) => element['type'] == 'node');
 
-        return of(null);
+        // Creation of the graph algorithm.
+        return Observable.create((observer: Observer<any>) => {
+            for (const way of ways) {
+                // Gets the list of nodes.
+                const wayNodes: number[] = way['nodes'];
+                for (const node of wayNodes) {
+                    const degree = nodesDegrees.get(node);
+                    nodesDegrees.set(node, degree ? degree + 1 : 1);
+                }
+            }
+            let edgeId = 1;
+            for (const way of ways) {
+                // Gets the list of nodes.
+                const wayNodes: number[] = way['nodes'];
+                // Removes the nodes that have degree equal to one.
+                const filteredWayNodes = wayNodes.filter((node: number, i: number, arr: number[]) => {
+                    return i == 0 || // first node
+                        i == arr.length - 1 || // last node
+                        nodesDegrees.get(node) > 1; // degree greater than one
+                });
+                for (let i = 0; i < filteredWayNodes.length - 1; i++) {
+                    // Gets or creates first and second node.
+                    const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
+                    const secondNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i + 1]);
+                    // Creates the first edge.
+                    const firstEdge: Edge = new Edge(edgeId++);
+                    firstEdge.origin = firstNode;
+                    firstEdge.destination = secondNode;
+                    firstEdge.tags = this.extractTags(way['tags']);
+                    // Second edge (two-way);
+                    let secondEdge: Edge;
+                    if (!way['tags']['oneway']) {
+                        secondEdge = new Edge(edgeId++);
+                        secondEdge.origin = secondNode;
+                        secondEdge.destination = firstNode;
+                        secondEdge.tags = this.extractTags(way['tags']);
+                    }
+                    // Updates nodes.
+                    const refFirstNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i]);
+                    const refSecondNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i + 1]);
+                    if (refFirstNode) {
+                        firstNode.lat = refFirstNode['lat'];
+                        firstNode.lon = refFirstNode['lon'];
+                        firstNode.tags = this.extractTags(refFirstNode['tags']);
+                        firstNode.outgoingEdges.push(firstEdge);
+                        if (secondEdge) { firstNode.incomingEdges.push(secondEdge); }
+                    }
+                    if (refSecondNode) {
+                        secondNode.lat = refSecondNode['lat'];
+                        secondNode.lon = refSecondNode['lon'];
+                        secondNode.tags = this.extractTags(refSecondNode['tags']);
+                        secondNode.incomingEdges.push(firstEdge);
+                        if (secondEdge) { secondNode.outgoingEdges.push(secondEdge); }
+                    }
+                    // Updates graph.
+                    this.graph.addOrUpdateNode(firstNode);
+                    this.graph.addOrUpdateNode(secondNode);
+                    this.graph.addEdge(firstEdge);
+                    if (secondEdge) { this.graph.addEdge(secondEdge); }
+                }
+            }
+            observer.next(null);
+        });
     }
 
     /**
@@ -109,6 +187,8 @@ import { appConfig } from '../app-config';
             this.bounds.north + ',' +
             this.bounds.east + ']';
         query += ';';
+        // Union.
+        query += '(';
         // Roads.
         query += 'way[highway~"^(';
         for (const highway of appConfig.api.overpassApi.highways) {
@@ -116,7 +196,9 @@ import { appConfig } from '../app-config';
         }
         query += ')$"];';
         // Respective nodes.
-        query += 'foreach(out;node(w);out;);';
+        query += 'node(w);';
+        query += ');';
+        // Output.
         query += 'out;';
         return query;
     }
@@ -127,6 +209,12 @@ import { appConfig } from '../app-config';
      */
     private buildBody(query: any): string {
         return qs.stringify({ data: query });
+    }
+
+    private extractTags(tags: any): Tag[] {
+        return tags ? Object.keys(tags).map((key: string) => {
+            return { key: key, value: tags[key] as string };
+        }) : [];
     }
 
 }

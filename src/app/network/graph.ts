@@ -1,3 +1,5 @@
+import * as combine from 'mout/array/combine';
+
 /**
  * Tag describes the meaning of the particular element to which it is attached.
  */
@@ -14,7 +16,7 @@ export interface Tag {
 export interface Member {
 
     type: string;
-    ref: string;
+    ref: number;
     role: string;
 
 }
@@ -24,17 +26,21 @@ export interface Member {
  */
 export class Node {
 
-    private nodeId: string;
+    public nodeId: number;
 
-    private lat: number;
+    public lat: number;
 
-    private lon: number;
+    public lon: number;
 
-    private tags: Tag[];
+    public tags: Tag[] = [];
 
-    private incomingEdges: Edge[];
+    public incomingEdges: Edge[] = [];
 
-    private outgoingEdges: Edge[];
+    public outgoingEdges: Edge[] = [];
+
+    constructor(nodeId: number) {
+        this.nodeId = nodeId;
+    }
 
 }
 
@@ -43,27 +49,31 @@ export class Node {
  */
 export class Edge {
 
-    private edgeId: string;
+    public edgeId: number;
 
-    private origin: Node;
+    public origin: Node;
 
-    private destination: Node;
+    public destination: Node;
 
-    private tags: Tag[];
+    public tags: Tag[] = [];
 
-    private distance: number;
+    public distance: number;
 
-    private duration: number;
+    public duration: number;
 
-    private durationInTraffic: number;
+    public durationInTraffic: number;
 
-    private velocity: number;
+    public velocity: number;
 
-    private density: number;
+    public density: number;
 
-    private flow: number;
+    public flow: number;
 
-    private linkFlow: number;
+    public linkFlow: number;
+
+    constructor(edgeId: number) {
+        this.edgeId = edgeId;
+    }
 
     /**
      * Calculates the value of the arc flow and assigns it to the linkFlow attribute.
@@ -79,11 +89,15 @@ export class Edge {
  */
 export class Relation {
 
-    private relationId: string;
+    public relationId: number;
 
-    private members: Member[];
+    public members: Member[];
 
-    private tags: Tag[];
+    public tags: Tag[] = [];
+
+    constructor(relationId: number) {
+        this.relationId = relationId;
+    }
 
 }
 
@@ -92,11 +106,44 @@ export class Relation {
  */
 export class Graph {
 
-    private nodes: Node[];
+    private nodes: Node[] = [];
 
-    private edges: Edge[];
+    private edges: Edge[] = [];
 
-    private relations: Relation[];
+    private relations: Relation[] = [];
+
+    public getNodes(): Node[] {
+        return this.nodes;
+    }
+
+    public getEdges(): Edge[] {
+        return this.edges;
+    }
+
+    public getRelations(): Relation[] {
+        return this.relations;
+    }
+
+    public getNode(nodeId: number): Node | undefined {
+        return this.nodes.find((node: Node) => node.nodeId == nodeId);
+    }
+
+    public addOrUpdateNode(node: Node): void {
+        const existingNode = this.getNode(node.nodeId);
+        if (existingNode) {
+            existingNode.lat = node.lat;
+            existingNode.lon = node.lon;
+            existingNode.tags = combine(existingNode.tags, node.tags);
+            existingNode.incomingEdges = combine(existingNode.incomingEdges, node.incomingEdges);
+            existingNode.outgoingEdges = combine(existingNode.outgoingEdges, node.outgoingEdges);
+        } else {
+            this.nodes.push(node);
+        }
+    }
+
+    public addEdge(edge: Edge): void {
+        this.edges.push(edge);
+    }
 
     /**
      * Gets the incidence matrix of paths for O/D pairs.

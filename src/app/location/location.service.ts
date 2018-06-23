@@ -18,6 +18,11 @@ import { Observable, Observer } from 'rxjs';
         this.geocoder = new google.maps.Geocoder();
     }
 
+    public reset(): void {
+        this.latLng = null;
+        this.geocoder = null;
+    }
+
     /**
      * Geocoding service.
      * Wraps the Google Maps API geocoding service into an observable.
