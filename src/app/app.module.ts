@@ -24,7 +24,7 @@ import { SimulationModule } from './simulation/simulation.module';
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        SharedModule,
+        SharedModule.forRoot(),
         StoreModule.forRoot({}),
         EffectsModule.forRoot([]),
         LocationModule,

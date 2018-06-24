@@ -50,8 +50,8 @@ export class MapComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.center = { lat: 41.910943, lng: 12.476358 };
-        this.zoom = 4;
+        this.center = uiConfig.map.center;
+        this.zoom = uiConfig.map.zoom;
 
         this.valueChanges();
         this.receiveActions();

@@ -2,6 +2,12 @@ import { Injectable } from "@angular/core";
 
 import { Store, select } from '@ngrx/store';
 
+import { LocationService } from "../../location/location.service";
+import { NetworkService } from "../../network/network.service";
+import { WeatherService } from "../../network/weather/weather.service";
+import { DemandService } from "../../demand/demand.service";
+import { SimulationService } from "../../simulation/simulation.service";
+
 import * as fromUi from '../models/reducers';
 import { WizardActionTypes } from '../models/actions/wizard.actions';
 import { WizardState } from "../models/reducers/wizard.reducer";
@@ -10,7 +16,14 @@ import { WizardState } from "../models/reducers/wizard.reducer";
 
     public state: WizardState;
 
-    constructor(private store: Store<fromUi.UiState>) {
+    constructor(
+        private store: Store<fromUi.UiState>,
+        private location: LocationService,
+        private network: NetworkService,
+        private weather: WeatherService,
+        private demand: DemandService,
+        private simulation: SimulationService
+    ) {
         this.store.pipe(select(fromUi.wizardState)).subscribe((state: WizardState) => {
             this.state = state;
             // TODO Remove
@@ -54,6 +67,11 @@ import { WizardState } from "../models/reducers/wizard.reducer";
     }
 
     public reset(): void {
+        this.location.reset();
+        this.network.reset();
+        this.weather.reset();
+        this.demand.reset();
+        this.simulation.reset();
         this.store.dispatch({
             type: WizardActionTypes.Reset
         });

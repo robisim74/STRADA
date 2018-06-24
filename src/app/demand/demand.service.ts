@@ -5,4 +5,8 @@ import { Injectable } from '@angular/core';
  */
 @Injectable() export class DemandService {
 
+    public reset(): void {
+        //
+    }
+
 }

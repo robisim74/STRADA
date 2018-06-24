@@ -1,7 +1,7 @@
 <div class="wizard-content">
     <mat-card>
         <form [formGroup]="wizardForm" (ngSubmit)="exit()" novalidate>
-            <mat-vertical-stepper formArrayName="formSteps" linear (selectionChange)="stepClick($event)">
+            <mat-vertical-stepper formArrayName="formSteps" linear #stepper (selectionChange)="stepClick($event)">
                 <mat-step formGroupName="0" [stepControl]="formSteps.get([0])" editable="false">
                     <ng-template matStepLabel>
                         <div matTooltip="Search the simulation area by entering the location or allowing access to position">Search for the area</div>

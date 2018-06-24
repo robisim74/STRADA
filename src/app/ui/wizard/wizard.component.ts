@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { MatStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { WizardService } from './wizard.service';
@@ -11,6 +12,8 @@ import { WizardService } from './wizard.service';
     encapsulation: ViewEncapsulation.None
 })
 export class WizardComponent implements OnInit {
+
+    @ViewChild('stepper') stepper: MatStepper;
 
     wizardForm: FormGroup;
 
