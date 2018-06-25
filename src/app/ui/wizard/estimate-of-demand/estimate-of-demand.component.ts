@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { concat } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 
 import { Store, select } from '@ngrx/store';
 
@@ -45,11 +44,11 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
     }
 
     sendActions(): void {
-        this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
+        this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
             if (currentStep == this.index) {
                 this.schedule();
             }
-        });
+        }));
     }
 
     /**
@@ -60,20 +59,33 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
     schedule(): void {
         this.wizard.putOnHold();
 
-        this.network.getNetwork().pipe(
-            map((response: any) => concat([
-                this.network.createGraph(response),
-                this.network.getTrafficData()
-            ]))
-        ).subscribe(
+        const stream = this.network.getNetwork().pipe(
+            switchMap((response: any) => {
+                return this.network.createGraph(response);
+            }),
+            switchMap(() => {
+                return this.network.getTrafficData();
+            })
+        );
+
+        this.subscriptions.push(stream.subscribe(
             () => { },
             (error: any) => {
-                this.wizard.putInError('The request could not be processed. Check your Internet connection and try again');
+                let message: string;
+                switch (error) {
+                    case 'createGraph':
+                        message = 'The graph can not be created. Try with another area';
+                        break;
+                    default:
+                        message = 'The request could not be processed. Check your Internet connection and try again';
+                }
+                this.wizard.putInError(message);
+                this.wizard.reset();
             },
             () => {
                 this.wizard.removeFromWaiting();
             }
-        );
+        ));
     }
 
 }

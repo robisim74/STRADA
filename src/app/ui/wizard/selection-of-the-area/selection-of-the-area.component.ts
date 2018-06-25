@@ -67,11 +67,11 @@ export class SelectionOfTheAreaComponent extends BaseComponent implements OnInit
     }
 
     receiveActions(): void {
-        this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
+        this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
             if (steps[this.index]) {
                 this.formGroup.get('bounds').setValue(steps[this.index]['data']['bounds']);
             }
-        });
+        }));
     }
 
     sendActions(): void {

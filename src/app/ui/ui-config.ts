@@ -14,5 +14,6 @@ export const uiConfig = {
     /**
      * Area limit in hectares.
      */
-    areaLimit: 50
+    areaMaxLimit: 50,
+    areaMinLimit: 10,
 };

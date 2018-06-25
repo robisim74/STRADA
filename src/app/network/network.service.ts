@@ -87,66 +87,72 @@ import { appConfig } from '../app-config';
 
         // Creation of the graph algorithm.
         return Observable.create((observer: Observer<any>) => {
-            for (const way of ways) {
-                // Gets the list of nodes.
-                const wayNodes: number[] = way['nodes'];
-                for (const node of wayNodes) {
-                    const degree = nodesDegrees.get(node);
-                    nodesDegrees.set(node, degree ? degree + 1 : 1);
+            try {
+                for (const way of ways) {
+                    // Gets the list of nodes.
+                    const wayNodes: number[] = way['nodes'];
+                    for (const node of wayNodes) {
+                        const degree = nodesDegrees.get(node);
+                        nodesDegrees.set(node, degree ? degree + 1 : 1);
+                    }
                 }
-            }
-            let edgeId = 1;
-            for (const way of ways) {
-                // Gets the list of nodes.
-                const wayNodes: number[] = way['nodes'];
-                // Removes the nodes that have degree equal to one.
-                const filteredWayNodes = wayNodes.filter((node: number, i: number, arr: number[]) => {
-                    return i == 0 || // first node
-                        i == arr.length - 1 || // last node
-                        nodesDegrees.get(node) > 1; // degree greater than one
-                });
-                for (let i = 0; i < filteredWayNodes.length - 1; i++) {
-                    // Gets or creates first and second node.
-                    const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
-                    const secondNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i + 1]);
-                    // Creates the first edge.
-                    const firstEdge: Edge = new Edge(edgeId++);
-                    firstEdge.origin = firstNode;
-                    firstEdge.destination = secondNode;
-                    firstEdge.tags = this.extractTags(way['tags']);
-                    // Second edge (two-way);
-                    let secondEdge: Edge;
-                    if (!way['tags']['oneway']) {
-                        secondEdge = new Edge(edgeId++);
-                        secondEdge.origin = secondNode;
-                        secondEdge.destination = firstNode;
-                        secondEdge.tags = this.extractTags(way['tags']);
+                let edgeId = 1;
+                for (const way of ways) {
+                    // Gets the list of nodes.
+                    const wayNodes: number[] = way['nodes'];
+                    // Removes the nodes that have degree equal to one.
+                    const filteredWayNodes = wayNodes.filter((node: number, i: number, arr: number[]) => {
+                        return i == 0 || // first node
+                            i == arr.length - 1 || // last node
+                            nodesDegrees.get(node) > 1; // degree greater than one
+                    });
+                    for (let i = 0; i < filteredWayNodes.length - 1; i++) {
+                        // Gets or creates first and second node.
+                        const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
+                        const secondNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i + 1]);
+                        // Creates the first edge.
+                        const firstEdge: Edge = new Edge(edgeId++);
+                        firstEdge.origin = firstNode;
+                        firstEdge.destination = secondNode;
+                        firstEdge.tags = this.extractTags(way['tags']);
+                        // Second edge (two-way);
+                        let secondEdge: Edge;
+                        if (!way['tags']['oneway']) {
+                            secondEdge = new Edge(edgeId++);
+                            secondEdge.origin = secondNode;
+                            secondEdge.destination = firstNode;
+                            secondEdge.tags = this.extractTags(way['tags']);
+                        }
+                        // Updates nodes.
+                        const refFirstNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i]);
+                        const refSecondNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i + 1]);
+                        if (refFirstNode) {
+                            firstNode.lat = refFirstNode['lat'];
+                            firstNode.lon = refFirstNode['lon'];
+                            firstNode.tags = this.extractTags(refFirstNode['tags']);
+                            firstNode.outgoingEdges.push(firstEdge);
+                            if (secondEdge) { firstNode.incomingEdges.push(secondEdge); }
+                        }
+                        if (refSecondNode) {
+                            secondNode.lat = refSecondNode['lat'];
+                            secondNode.lon = refSecondNode['lon'];
+                            secondNode.tags = this.extractTags(refSecondNode['tags']);
+                            secondNode.incomingEdges.push(firstEdge);
+                            if (secondEdge) { secondNode.outgoingEdges.push(secondEdge); }
+                        }
+                        // Updates graph.
+                        this.graph.addOrUpdateNode(firstNode);
+                        this.graph.addOrUpdateNode(secondNode);
+                        this.graph.addEdge(firstEdge);
+                        if (secondEdge) { this.graph.addEdge(secondEdge); }
                     }
-                    // Updates nodes.
-                    const refFirstNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i]);
-                    const refSecondNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i + 1]);
-                    if (refFirstNode) {
-                        firstNode.lat = refFirstNode['lat'];
-                        firstNode.lon = refFirstNode['lon'];
-                        firstNode.tags = this.extractTags(refFirstNode['tags']);
-                        firstNode.outgoingEdges.push(firstEdge);
-                        if (secondEdge) { firstNode.incomingEdges.push(secondEdge); }
-                    }
-                    if (refSecondNode) {
-                        secondNode.lat = refSecondNode['lat'];
-                        secondNode.lon = refSecondNode['lon'];
-                        secondNode.tags = this.extractTags(refSecondNode['tags']);
-                        secondNode.incomingEdges.push(firstEdge);
-                        if (secondEdge) { secondNode.outgoingEdges.push(secondEdge); }
-                    }
-                    // Updates graph.
-                    this.graph.addOrUpdateNode(firstNode);
-                    this.graph.addOrUpdateNode(secondNode);
-                    this.graph.addEdge(firstEdge);
-                    if (secondEdge) { this.graph.addEdge(secondEdge); }
                 }
+            } catch (error) {
+                observer.error('createGraph');
+            } finally {
+                observer.next(null);
+                observer.complete();
             }
-            observer.next(null);
         });
     }
 

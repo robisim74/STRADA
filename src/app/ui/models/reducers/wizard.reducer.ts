@@ -63,9 +63,7 @@ export function wizardReducer(state: WizardState = cloneDeep(initialWizardState)
             };
         }
         case WizardActionTypes.Reset: {
-            return {
-                ...initialWizardState
-            };
+            return cloneDeep(initialWizardState);
         }
         default: {
             return state;

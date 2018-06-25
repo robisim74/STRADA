@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
+import { MatStepper } from "@angular/material";
 
 import { Store, select } from '@ngrx/store';
 
+import { MapService } from "../map/map.service";
 import { LocationService } from "../../location/location.service";
 import { NetworkService } from "../../network/network.service";
 import { WeatherService } from "../../network/weather/weather.service";
@@ -16,8 +18,11 @@ import { WizardState } from "../models/reducers/wizard.reducer";
 
     public state: WizardState;
 
+    public stepper: MatStepper;
+
     constructor(
         private store: Store<fromUi.UiState>,
+        private map: MapService,
         private location: LocationService,
         private network: NetworkService,
         private weather: WeatherService,
@@ -67,14 +72,20 @@ import { WizardState } from "../models/reducers/wizard.reducer";
     }
 
     public reset(): void {
+        // App.
         this.location.reset();
         this.network.reset();
         this.weather.reset();
         this.demand.reset();
         this.simulation.reset();
+        // UI.
+        this.map.reset();
+        // UI state.
         this.store.dispatch({
             type: WizardActionTypes.Reset
         });
+        // Stepper.
+        this.stepper.reset();
     }
 
 }

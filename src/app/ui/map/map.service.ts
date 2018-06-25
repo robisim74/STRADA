@@ -1,13 +1,17 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, EventEmitter, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import area from '@turf/area';
 import { point, polygon } from '@turf/helpers';
 
+import { uiConfig } from '../ui-config';
+
 /**
  * Instances the map.
  */
 @Injectable() export class MapService {
+
+    @Output() public resetMap: EventEmitter<any> = new EventEmitter<any>();
 
     private map: google.maps.Map;
 
@@ -15,9 +19,16 @@ import { point, polygon } from '@turf/helpers';
 
     private infoWindow: google.maps.InfoWindow;
 
-    private area = new BehaviorSubject<number>(0);
+    private area = new BehaviorSubject<number | null>(null);
 
     constructor(private zone: NgZone) { }
+
+    reset(): void {
+        this.resetMap.emit(null);
+        this.rectangle.setMap(null);
+        this.infoWindow.close();
+        this.area.next(null);
+    }
 
     /**
      * Creates a new map inside of the given HTML container.

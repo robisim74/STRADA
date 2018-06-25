@@ -1,9 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Subscription } from 'rxjs';
+
+import { Store, select } from '@ngrx/store';
 
 import { WizardService } from './wizard.service';
+import * as fromUi from '../models/reducers';
 
 @Component({
     selector: 'ui-wizard',
@@ -11,7 +15,7 @@ import { WizardService } from './wizard.service';
     styleUrls: ['./wizard.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class WizardComponent implements OnInit {
+export class WizardComponent implements OnInit, OnDestroy {
 
     @ViewChild('stepper') stepper: MatStepper;
 
@@ -21,8 +25,11 @@ export class WizardComponent implements OnInit {
         return this.wizardForm.get('formSteps') as FormArray;
     }
 
+    subscriptions: Subscription[] = [];
+
     constructor(
         private formBuilder: FormBuilder,
+        private store: Store<fromUi.UiState>,
         private wizard: WizardService
     ) { }
 
@@ -52,6 +59,14 @@ export class WizardComponent implements OnInit {
                 })
             ])
         }, { updateOn: 'blur' });
+
+        this.wizard.stepper = this.stepper;
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((subscription: Subscription) => {
+            if (subscription) { subscription.unsubscribe(); }
+        });
     }
 
     /**
@@ -61,11 +76,13 @@ export class WizardComponent implements OnInit {
     stepClick(event: StepperSelectionEvent): void {
         const index: number = event.previouslySelectedIndex;
         const nextIndex: number = event.selectedIndex;
-        this.wizard.goOn(
-            this.wizardForm.get('formSteps').get([index]).value,
-            index,
-            nextIndex
-        );
+        if (nextIndex > index) {
+            this.wizard.goOn(
+                this.wizardForm.get('formSteps').get([index]).value,
+                index,
+                nextIndex
+            );
+        }
     }
 
     exit(): void {

@@ -77,13 +77,18 @@ export class MapComponent extends BaseComponent implements OnInit {
 
         // Checks area limit.
         this.subscriptions.push(this.map.getArea().subscribe((area: number) => {
-            if (area > uiConfig.areaLimit) {
-                this.wizard.putInError('The area can not exceed 50 hectares');
-                this.wizard.updateStep({ bounds: null }, 1);
-            } else if (area > 0) {
+            if (area >= uiConfig.areaMinLimit && area <= uiConfig.areaMaxLimit) {
                 // Updates step state.
                 this.wizard.updateStep({ bounds: this.map.getBounds() }, 1);
+            } else if (area) {
+                this.wizard.putInError(`The area must be between ${uiConfig.areaMinLimit} and ${uiConfig.areaMaxLimit} hectares`);
+                this.wizard.updateStep({ bounds: null }, 1);
             }
+        }));
+
+        this.subscriptions.push(this.map.resetMap.subscribe(() => {
+            this.center = uiConfig.map.center;
+            this.zoom = uiConfig.map.zoom;
         }));
     }
 

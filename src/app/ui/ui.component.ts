@@ -62,6 +62,15 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         );
     }
 
+    reset(): void {
+        this.openDialog('Are you sure you want to reset the application?').subscribe(
+            (dialogResult: boolean) => {
+                if (dialogResult) {
+                    this.wizard.reset();
+                }
+            });
+    }
+
     exit(): void {
         this.router.navigate(['/home']);
     }

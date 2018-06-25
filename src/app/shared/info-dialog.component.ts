@@ -9,7 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
             {{ data }}
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button type="button" mat-raised-button color="accent" [mat-dialog-close]="false">No</button>
+            <button type="button" mat-raised-button [mat-dialog-close]="false">No</button>
             <button type="button" mat-raised-button color="accent" [mat-dialog-close]="true">Yes</button>
         </mat-dialog-actions>
     `,
