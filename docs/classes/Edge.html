@@ -921,7 +921,7 @@
 </nav>
                </div>
                <!-- START CONTENT -->
-               <div class="content miscellaneous-functions">
+               <div class="content class">
                    <div class="content-data">
 
 
@@ -932,99 +932,800 @@
 
 
 
-
-
-
-
 <ol class="breadcrumb">
-  <li>Miscellaneous</li>
-  <li>Functions</li>
+  <li>Classes</li>
+  <li>Edge</li>
 </ol>
 
-<section>
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/network/graph.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Link between two nodes.</p>
+
+            </p>
+
+
+
+
+            <section>
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                        <li>
-                            <a href="#wizardReducer" title="src/app/ui/models/reducers/wizard.reducer.ts"><b>wizardReducer</b>&nbsp;&nbsp;&nbsp;(src/.../wizard.reducer.ts)</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#density">density</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#destination">destination</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#distance">distance</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#duration">duration</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#durationInTraffic">durationInTraffic</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#edgeId">edgeId</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#flow">flow</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#linkFlow">linkFlow</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#origin">origin</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#tags">tags</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#velocity">velocity</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#calcLinkFlow">calcLinkFlow</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
         </tbody>
     </table>
 </section>
 
-    <h3>src/app/ui/models/reducers/wizard.reducer.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="wizardReducer"></a>
-                        <span class="name">
-                            <b>
-                            wizardReducer
-                            </b>
-                            <a href="#wizardReducer"><span class="fa fa-link"></span></a>
-                        </span>
+<code>constructor(edgeId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
                     </td>
                 </tr>
-                <tr>
-                    <td class="col-md-4">
-<code>wizardReducer(state: undefined, action: undefined)</code>
-                    </td>
-                </tr>
-
-
-
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="72" class="link-to-prism">src/app/network/graph.ts:72</a></div>
+                            </td>
+                        </tr>
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>ngrx: wizard Reducer.</p>
-</div>
-
-                            <div class="io-description">
+                            <div>
                                     <b>Parameters :</b>
                                     <table class="params">
                                         <thead>
                                             <tr>
                                                 <td>Name</td>
+                                                    <td>Type</td>
                                                 <td>Optional</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                                 <tr>
-                                                        <td>state</td>
-                                                    
+                                                        <td>edgeId</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                  
                                                     <td>
                                                             no
                                                     </td>
                                                     
-
-                                                </tr>
-                                                <tr>
-                                                        <td>action</td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
                                                 </tr>
                                         </tbody>
                                     </table>
-                            </div>
-                            <div>
                             </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 </section>
+
+            <section>
+    
+        <h3 id="inputs">
+            Properties
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="density"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            density
+                            </b>
+                            <a href="#density"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>density:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="68" class="link-to-prism">src/app/network/graph.ts:68</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="destination"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            destination
+                            </b>
+                            <a href="#destination"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>destination:     <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/network/graph.ts:56</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="distance"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            distance
+                            </b>
+                            <a href="#distance"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>distance:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/network/graph.ts:60</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="duration"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            duration
+                            </b>
+                            <a href="#duration"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>duration:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="62" class="link-to-prism">src/app/network/graph.ts:62</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="durationInTraffic"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            durationInTraffic
+                            </b>
+                            <a href="#durationInTraffic"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>durationInTraffic:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/network/graph.ts:64</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="edgeId"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            edgeId
+                            </b>
+                            <a href="#edgeId"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>edgeId:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/network/graph.ts:52</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="flow"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            flow
+                            </b>
+                            <a href="#flow"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>flow:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/network/graph.ts:70</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="linkFlow"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            linkFlow
+                            </b>
+                            <a href="#linkFlow"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>linkFlow:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="72" class="link-to-prism">src/app/network/graph.ts:72</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="origin"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            origin
+                            </b>
+                            <a href="#origin"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>origin:     <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/network/graph.ts:54</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="tags"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            tags
+                            </b>
+                            <a href="#tags"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>tags:     <code><a href="../interfaces/Tag.html" target="_self" >Tag[]</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="../interfaces/Tag.html" target="_self" >Tag[]</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/network/graph.ts:58</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="velocity"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            velocity
+                            </b>
+                            <a href="#velocity"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>velocity:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="66" class="link-to-prism">src/app/network/graph.ts:66</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+        <h3 id="methods">
+            Methods
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="calcLinkFlow"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            calcLinkFlow
+                            </b>
+                            <a href="#calcLinkFlow"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>calcLinkFlow()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="81" class="link-to-prism">src/app/network/graph.ts:81</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Calculates the value of the arc flow and assigns it to the linkFlow attribute.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import * as combine from &#x27;mout/array/combine&#x27;;
+
+/**
+ * Tag describes the meaning of the particular element to which it is attached.
+ */
+export interface Tag {
+
+    key: string;
+    value: string;
+
+}
+
+/**
+ * Relation&#x27;s member.
+ */
+export interface Member {
+
+    type: string;
+    ref: number;
+    role: string;
+
+}
+
+/**
+ * Node represents a specific point on the earth&#x27;s surface defined by its latitude and longitude.
+ */
+export class Node {
+
+    public nodeId: number;
+
+    public lat: number;
+
+    public lon: number;
+
+    public tags: Tag[] &#x3D; [];
+
+    public incomingEdges: Edge[] &#x3D; [];
+
+    public outgoingEdges: Edge[] &#x3D; [];
+
+    constructor(nodeId: number) {
+        this.nodeId &#x3D; nodeId;
+    }
+
+}
+
+/**
+ * Link between two nodes.
+ */
+export class Edge {
+
+    public edgeId: number;
+
+    public origin: Node;
+
+    public destination: Node;
+
+    public tags: Tag[] &#x3D; [];
+
+    public distance: number;
+
+    public duration: number;
+
+    public durationInTraffic: number;
+
+    public velocity: number;
+
+    public density: number;
+
+    public flow: number;
+
+    public linkFlow: number;
+
+    constructor(edgeId: number) {
+        this.edgeId &#x3D; edgeId;
+    }
+
+    /**
+     * Calculates the value of the arc flow and assigns it to the linkFlow attribute.
+     */
+    public calcLinkFlow(): void {
+
+    }
+
+}
+
+/**
+ * Relation is a multi-purpose data structure that documents a relationship between two or more data elements.
+ */
+export class Relation {
+
+    public relationId: number;
+
+    public members: Member[];
+
+    public tags: Tag[] &#x3D; [];
+
+    constructor(relationId: number) {
+        this.relationId &#x3D; relationId;
+    }
+
+}
+
+/**
+ * Graph of the transport network.
+ */
+export class Graph {
+
+    private nodes: Node[] &#x3D; [];
+
+    private edges: Edge[] &#x3D; [];
+
+    private relations: Relation[] &#x3D; [];
+
+    public getNodes(): Node[] {
+        return this.nodes;
+    }
+
+    public getEdges(): Edge[] {
+        return this.edges;
+    }
+
+    public getRelations(): Relation[] {
+        return this.relations;
+    }
+
+    public getNode(nodeId: number): Node | undefined {
+        return this.nodes.find((node: Node) &#x3D;&gt; node.nodeId &#x3D;&#x3D; nodeId);
+    }
+
+    public addOrUpdateNode(node: Node): void {
+        const existingNode &#x3D; this.getNode(node.nodeId);
+        if (existingNode) {
+            existingNode.lat &#x3D; node.lat;
+            existingNode.lon &#x3D; node.lon;
+            existingNode.tags &#x3D; combine(existingNode.tags, node.tags);
+            existingNode.incomingEdges &#x3D; combine(existingNode.incomingEdges, node.incomingEdges);
+            existingNode.outgoingEdges &#x3D; combine(existingNode.outgoingEdges, node.outgoingEdges);
+        } else {
+            this.nodes.push(node);
+        }
+    }
+
+    public addEdge(edge: Edge): void {
+        this.edges.push(edge);
+    }
+
+    /**
+     * Gets the incidence matrix of paths for O/D pairs.
+     */
+    public getIncidenceMatrix(): boolean[][] {
+        return null;
+    }
+
+    /**
+     * Calculates the set of minimum paths between a source and destination node based on the link duration attribute.
+     * k Shortest Paths algorithm in the Eppstein version.
+     * @param origin Source node
+     * @param destination Destination node
+     */
+    public getShortestPaths(origin: Node, destination: Node): Node[][] {
+        return null;
+    }
+
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
 
 
                    </div><div class="search-results">
@@ -1052,8 +1753,8 @@
 
         <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-functions';
-            var COMPODOC_CURRENT_PAGE_URL = 'functions.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'Edge.html';
         </script>
 
        <script src="../js/search/search.js"></script>

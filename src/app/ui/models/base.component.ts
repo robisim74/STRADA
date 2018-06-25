@@ -27,7 +27,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
     abstract receiveActions(): void;
 
     /**
-     * Subscribe to the actions sent to other components.
+     * Subscribes to the actions sent to other components.
      */
     abstract sendActions(): void;
 

@@ -921,7 +921,7 @@
 </nav>
                </div>
                <!-- START CONTENT -->
-               <div class="content miscellaneous-functions">
+               <div class="content class">
                    <div class="content-data">
 
 
@@ -932,99 +932,413 @@
 
 
 
-
-
-
-
 <ol class="breadcrumb">
-  <li>Miscellaneous</li>
-  <li>Functions</li>
+  <li>Classes</li>
+  <li>BaseComponent</li>
 </ol>
 
-<section>
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/ui/models/base.component.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Abstract class inherited from UI components.</p>
+
+            </p>
+
+
+            <p class="comment">
+                <h3>Implements</h3>
+            </p>
+            <p class="comment">
+                        <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+                        <code><a href="https://angular.io/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+            </p>
+
+
+            <section>
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                        <li>
-                            <a href="#wizardReducer" title="src/app/ui/models/reducers/wizard.reducer.ts"><b>wizardReducer</b>&nbsp;&nbsp;&nbsp;(src/.../wizard.reducer.ts)</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#subscriptions">subscriptions</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#ngOnDestroy">ngOnDestroy</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#ngOnInit">ngOnInit</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#receiveActions">receiveActions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#sendActions">sendActions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#valueChanges">valueChanges</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
         </tbody>
     </table>
 </section>
 
-    <h3>src/app/ui/models/reducers/wizard.reducer.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
+
+            <section>
+    
+        <h3 id="inputs">
+            Properties
+        </h3>
+        <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="wizardReducer"></a>
+                        <a name="subscriptions"></a>
                         <span class="name">
                             <b>
-                            wizardReducer
+                            subscriptions
                             </b>
-                            <a href="#wizardReducer"><span class="fa fa-link"></span></a>
+                            <a href="#subscriptions"><span class="fa fa-link"></span></a>
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td class="col-md-4">
-<code>wizardReducer(state: undefined, action: undefined)</code>
+                        <code>subscriptions:     <code>Subscription[]</code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>Subscription[]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/app/ui/models/base.component.ts:9</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+        <h3 id="methods">
+            Methods
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="ngOnDestroy"></a>
+                        <span class="name">
+                            <b>
+                            ngOnDestroy
+                            </b>
+                            <a href="#ngOnDestroy"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+<code>ngOnDestroy()</code>
                     </td>
                 </tr>
 
 
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/ui/models/base.component.ts:13</a></div>
+                            </td>
+                        </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>ngrx: wizard Reducer.</p>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="ngOnInit"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier"></span>
+                            ngOnInit
+                            </b>
+                            <a href="#ngOnInit"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>ngOnInit()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/ui/models/base.component.ts:11</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="receiveActions"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier"></span>
+                            receiveActions
+                            </b>
+                            <a href="#receiveActions"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>receiveActions()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/ui/models/base.component.ts:27</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Subscribes to the actions sent by other components.</p>
 </div>
 
                             <div class="io-description">
-                                    <b>Parameters :</b>
-                                    <table class="params">
-                                        <thead>
-                                            <tr>
-                                                <td>Name</td>
-                                                <td>Optional</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                                <tr>
-                                                        <td>state</td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
 
-                                                </tr>
-                                                <tr>
-                                                        <td>action</td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                </tr>
-                                        </tbody>
-                                    </table>
                             </div>
-                            <div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="sendActions"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier"></span>
+                            sendActions
+                            </b>
+                            <a href="#sendActions"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>sendActions()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/ui/models/base.component.ts:32</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Subscribe to the actions sent to other components.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="valueChanges"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier"></span>
+                            valueChanges
+                            </b>
+                            <a href="#valueChanges"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>valueChanges()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/ui/models/base.component.ts:22</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Subscribes to the form changes.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
                             </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 </section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { OnInit, OnDestroy } from &quot;@angular/core&quot;;
+import { Subscription } from &quot;rxjs&quot;;
+
+/**
+ * Abstract class inherited from UI components.
+ */
+export abstract class BaseComponent implements OnInit, OnDestroy {
+
+    subscriptions: Subscription[] &#x3D; [];
+
+    abstract ngOnInit(): void;
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((subscription: Subscription) &#x3D;&gt; {
+            if (subscription) { subscription.unsubscribe(); }
+        });
+    }
+
+    /**
+     * Subscribes to the form changes.
+     */
+    abstract valueChanges(): void;
+
+    /**
+     * Subscribes to the actions sent by other components.
+     */
+    abstract receiveActions(): void;
+
+    /**
+     * Subscribe to the actions sent to other components.
+     */
+    abstract sendActions(): void;
+
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
 
 
                    </div><div class="search-results">
@@ -1052,8 +1366,8 @@
 
         <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-functions';
-            var COMPODOC_CURRENT_PAGE_URL = 'functions.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'BaseComponent.html';
         </script>
 
        <script src="../js/search/search.js"></script>

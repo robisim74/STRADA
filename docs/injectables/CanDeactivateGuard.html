@@ -921,7 +921,7 @@
 </nav>
                </div>
                <!-- START CONTENT -->
-               <div class="content miscellaneous-functions">
+               <div class="content injectable">
                    <div class="content-data">
 
 
@@ -929,63 +929,94 @@
 
 
 
-
-
-
-
-
-
-
 <ol class="breadcrumb">
-  <li>Miscellaneous</li>
-  <li>Functions</li>
+  <li>Injectables</li>
+  <li>CanDeactivateGuard</li>
 </ol>
 
-<section>
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/shared/can-deactivate-guard.service.ts</code>
+        </p>
+
+
+
+            <section>
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                        <li>
-                            <a href="#wizardReducer" title="src/app/ui/models/reducers/wizard.reducer.ts"><b>wizardReducer</b>&nbsp;&nbsp;&nbsp;(src/.../wizard.reducer.ts)</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#canDeactivate">canDeactivate</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
         </tbody>
     </table>
 </section>
 
-    <h3>src/app/ui/models/reducers/wizard.reducer.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
+
+            <section>
+    
+        <h3 id="methods">
+            Methods
+        </h3>
+        <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="wizardReducer"></a>
+                        <a name="canDeactivate"></a>
                         <span class="name">
                             <b>
-                            wizardReducer
+                            canDeactivate
                             </b>
-                            <a href="#wizardReducer"><span class="fa fa-link"></span></a>
+                            <a href="#canDeactivate"><span class="fa fa-link"></span></a>
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td class="col-md-4">
-<code>wizardReducer(state: undefined, action: undefined)</code>
+<code>canDeactivate(component: <a href="../interfaces/CanComponentDeactivate.html">CanComponentDeactivate</a>)</code>
                     </td>
                 </tr>
 
 
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/shared/can-deactivate-guard.service.ts:11</a></div>
+                            </td>
+                        </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>ngrx: wizard Reducer.</p>
-</div>
 
                             <div class="io-description">
                                     <b>Parameters :</b>
@@ -993,21 +1024,16 @@
                                         <thead>
                                             <tr>
                                                 <td>Name</td>
+                                                    <td>Type</td>
                                                 <td>Optional</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                                 <tr>
-                                                        <td>state</td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                </tr>
-                                                <tr>
-                                                        <td>action</td>
+                                                        <td>component</td>
+                                                        <td>
+                                                                    <code><a href="../interfaces/CanComponentDeactivate.html" target="_self" >CanComponentDeactivate</a></code>
+                                                        </td>
                                                     
                                                     <td>
                                                             no
@@ -1020,11 +1046,49 @@
                             </div>
                             <div>
                             </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 </section>
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
+import { CanDeactivate } from &#x27;@angular/router&#x27;;
+import { Observable } from &#x27;rxjs&#x27;;
+
+export interface CanComponentDeactivate {
+    canDeactivate: () &#x3D;&gt; Observable&lt;boolean&gt; | Promise&lt;boolean&gt; | boolean;
+}
+
+@Injectable()
+export class CanDeactivateGuard implements CanDeactivate&lt;CanComponentDeactivate&gt; {
+    canDeactivate(component: CanComponentDeactivate) {
+        return component.canDeactivate ? component.canDeactivate() : true;
+    }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
 
 
                    </div><div class="search-results">
@@ -1052,8 +1116,8 @@
 
         <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-functions';
-            var COMPODOC_CURRENT_PAGE_URL = 'functions.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'CanDeactivateGuard.html';
         </script>
 
        <script src="../js/search/search.js"></script>
