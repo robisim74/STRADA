@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -14,6 +14,8 @@ import { LocationModule } from './location/location.module';
 import { NetworkModule } from './network/network.module';
 import { DemandModule } from './demand/demand.module';
 import { SimulationModule } from './simulation/simulation.module';
+
+import { loadScripts } from './utils';
 
 @NgModule({
     declarations: [
@@ -32,7 +34,14 @@ import { SimulationModule } from './simulation/simulation.module';
         DemandModule,
         SimulationModule
     ],
-    providers: [],
+    providers: [
+        {
+            provide: APP_INITIALIZER,
+            useFactory: loadScripts,
+            deps: [],
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

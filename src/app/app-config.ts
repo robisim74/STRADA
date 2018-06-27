@@ -2,7 +2,11 @@
  * App configuration.
  */
 export const appConfig = {
-    api: {
+    apis: {
+        googleMaps: {
+            url: 'https://maps.googleapis.com/maps/api/js',
+            apiKey: 'YOUR_API_KEY'
+        },
         overpassApi: {
             url: 'https://lz4.overpass-api.de/api/interpreter',
             timeout: 5000,

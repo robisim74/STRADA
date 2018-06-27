@@ -15,7 +15,7 @@ Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)
 - [Angular CLI](https://github.com/angular/angular-cli)
 
 ### Prerequisites
-- Add a Google Maps Platform API key in `src/index.html`
+- Update `src/app/app-config.ts` with your api keys.
 
 ```Shell
 npm install
