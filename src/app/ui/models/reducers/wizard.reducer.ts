@@ -1,4 +1,4 @@
-import cloneDeep from 'clone-deep';
+import deepClone from 'mout/lang/deepClone';
 
 import { Step, STEPS } from "../wizard";
 import { WizardActions, WizardActionTypes } from '../actions/wizard.actions';
@@ -25,14 +25,14 @@ export const initialWizardState: WizardState = {
 /**
  * ngrx: wizard Reducer.
  */
-export function wizardReducer(state: WizardState = cloneDeep(initialWizardState), action: WizardActions): WizardState {
+export function wizardReducer(state: WizardState = deepClone(initialWizardState), action: WizardActions): WizardState {
     switch (action.type) {
         case WizardActionTypes.StepChanged: {
             // Updates the step at the provided index.
             state.steps[action.payload.index] = action.payload.step;
             return {
                 ...state,
-                steps: cloneDeep(state.steps),
+                steps: deepClone(state.steps),
                 error: null,
                 pending: false
             };
@@ -56,14 +56,14 @@ export function wizardReducer(state: WizardState = cloneDeep(initialWizardState)
             state.steps[action.payload.index] = action.payload.step;
             return {
                 ...state,
-                steps: cloneDeep(state.steps),
+                steps: deepClone(state.steps),
                 currentStep: action.payload.nextIndex,
                 error: null,
                 pending: false
             };
         }
         case WizardActionTypes.Reset: {
-            return cloneDeep(initialWizardState);
+            return deepClone(initialWizardState);
         }
         default: {
             return state;

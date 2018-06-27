@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --aot",
+    "start": "ng serve --aot --open",
     "build": "ng build --prod",
     "test": "ng test",
     "test:ci": "ng test --single-run true",
@@ -31,7 +31,6 @@
     "@turf/area": "6.0.1",
     "@turf/helpers": "6.1.4",
     "ng-pick-datetime": "6.0.5",
-    "clone-deep": "4.0.0",
     "mout": "1.1.0",
     "web-animations-js": "2.3.1",
     "hammerjs": "2.0.8",
