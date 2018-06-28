@@ -28,12 +28,15 @@ import { appConfig } from '../app-config';
      */
     private time: Date | null;
 
+    private edgeId = 1;
+
     constructor(private http: HttpClient) { }
 
     public reset(): void {
         this.graph = null;
         this.bounds = null;
         this.time = null;
+        this.edgeId = 1;
     }
 
     public getGraph(): Graph {
@@ -56,8 +59,8 @@ import { appConfig } from '../app-config';
      * Calls the Interpreter resource by providing the query in the Overpass language.
      */
     public getNetwork(): Observable<any> {
-        const url: string = appConfig.api.overpassApi.url;
-        const headers: HttpHeaders = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        const url: string = appConfig.apis.overpassApi.url;
+        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         const query: string = this.buildQuery();
         const body: string = this.buildBody(query);
 
@@ -88,6 +91,7 @@ import { appConfig } from '../app-config';
         // Creation of the graph algorithm.
         return Observable.create((observer: Observer<any>) => {
             try {
+                // First step.
                 for (const way of ways) {
                     // Gets the list of nodes.
                     const wayNodes: number[] = way['nodes'];
@@ -96,7 +100,7 @@ import { appConfig } from '../app-config';
                         nodesDegrees.set(node, degree ? degree + 1 : 1);
                     }
                 }
-                let edgeId = 1;
+                // Second step.
                 for (const way of ways) {
                     // Gets the list of nodes.
                     const wayNodes: number[] = way['nodes'];
@@ -106,45 +110,12 @@ import { appConfig } from '../app-config';
                             i == arr.length - 1 || // last node
                             nodesDegrees.get(node) > 1; // degree greater than one
                     });
-                    for (let i = 0; i < filteredWayNodes.length - 1; i++) {
-                        // Gets or creates first and second node.
-                        const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
-                        const secondNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i + 1]);
-                        // Creates the first edge.
-                        const firstEdge: Edge = new Edge(edgeId++);
-                        firstEdge.origin = firstNode;
-                        firstEdge.destination = secondNode;
-                        firstEdge.tags = this.extractTags(way['tags']);
-                        // Second edge (two-way);
-                        let secondEdge: Edge;
-                        if (!way['tags']['oneway']) {
-                            secondEdge = new Edge(edgeId++);
-                            secondEdge.origin = secondNode;
-                            secondEdge.destination = firstNode;
-                            secondEdge.tags = this.extractTags(way['tags']);
-                        }
-                        // Updates nodes.
-                        const refFirstNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i]);
-                        const refSecondNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i + 1]);
-                        if (refFirstNode) {
-                            firstNode.lat = refFirstNode['lat'];
-                            firstNode.lon = refFirstNode['lon'];
-                            firstNode.tags = this.extractTags(refFirstNode['tags']);
-                            firstNode.outgoingEdges.push(firstEdge);
-                            if (secondEdge) { firstNode.incomingEdges.push(secondEdge); }
-                        }
-                        if (refSecondNode) {
-                            secondNode.lat = refSecondNode['lat'];
-                            secondNode.lon = refSecondNode['lon'];
-                            secondNode.tags = this.extractTags(refSecondNode['tags']);
-                            secondNode.incomingEdges.push(firstEdge);
-                            if (secondEdge) { secondNode.outgoingEdges.push(secondEdge); }
-                        }
-                        // Updates graph.
-                        this.graph.addOrUpdateNode(firstNode);
-                        this.graph.addOrUpdateNode(secondNode);
-                        this.graph.addEdge(firstEdge);
-                        if (secondEdge) { this.graph.addEdge(secondEdge); }
+                    // First direction.
+                    this.splitWay(filteredWayNodes, nodes, way);
+                    // First direction (two-way).
+                    if (!way['tags']['oneway']) {
+                        // Reverse the order of filtered way nodes.
+                        this.splitWay(filteredWayNodes.reverse(), nodes, way);
                     }
                 }
             } catch (error) {
@@ -160,6 +131,8 @@ import { appConfig } from '../app-config';
      * Reiterates the invocation of the Route interface method to obtain all link traffic data.
      */
     public getTrafficData(): Observable<any> {
+        // To use directions in the Maps JavaScript API, creates an object of type DirectionsService.
+        const directionsService = new google.maps.DirectionsService();
 
         return of(null);
     }
@@ -185,7 +158,7 @@ import { appConfig } from '../app-config';
         // Result in JSON.
         let query = '[out:json]';
         // Request timeout.
-        query += '[timeout:' + appConfig.api.overpassApi.timeout + ']';
+        query += '[timeout:' + appConfig.apis.overpassApi.timeout + ']';
         // Bounding box.
         query += '[bbox:' +
             this.bounds.south + ',' +
@@ -197,7 +170,7 @@ import { appConfig } from '../app-config';
         query += '(';
         // Roads.
         query += 'way[highway~"^(';
-        for (const highway of appConfig.api.overpassApi.highways) {
+        for (const highway of appConfig.apis.overpassApi.highways) {
             query += highway + '|';
         }
         query += ')$"];';
@@ -215,6 +188,38 @@ import { appConfig } from '../app-config';
      */
     private buildBody(query: any): string {
         return qs.stringify({ data: query });
+    }
+
+    private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
+        for (let i = 0; i < filteredWayNodes.length - 1; i++) {
+            // Gets or creates first and second node.
+            const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
+            const secondNode = this.graph.getNode(filteredWayNodes[i + 1]) || new Node(filteredWayNodes[i + 1]);
+            // Creates the edge.
+            const edge: Edge = new Edge(this.edgeId++);
+            edge.origin = firstNode;
+            edge.destination = secondNode;
+            edge.tags = this.extractTags(way['tags']);
+            // Updates nodes.
+            const refFirstNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i]);
+            const refSecondNode: any = nodes.find((value: any) => value['id'] == filteredWayNodes[i + 1]);
+            if (refFirstNode) {
+                firstNode.lat = refFirstNode['lat'];
+                firstNode.lon = refFirstNode['lon'];
+                firstNode.tags = this.extractTags(refFirstNode['tags']);
+                firstNode.outgoingEdges.push(edge);
+            }
+            if (refSecondNode) {
+                secondNode.lat = refSecondNode['lat'];
+                secondNode.lon = refSecondNode['lon'];
+                secondNode.tags = this.extractTags(refSecondNode['tags']);
+                secondNode.incomingEdges.push(edge);
+            }
+            this.graph.addOrUpdateNode(firstNode);
+            this.graph.addOrUpdateNode(secondNode);
+            // Add edge.
+            this.graph.addEdge(edge);
+        }
     }
 
     private extractTags(tags: any): Tag[] {

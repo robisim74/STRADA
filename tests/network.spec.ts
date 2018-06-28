@@ -25,7 +25,7 @@ describe('NetworkService', () => {
                 const graph = service.getGraph();
 
                 expect(graph.getEdges().length).toBe(19);
-                expect(graph.getNodes().length).toBe(11);
+                expect(graph.getNodes().length).toBe(12);
                 expect(graph.getRelations().length).toBe(0);
             });
         });
