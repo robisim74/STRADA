@@ -20,7 +20,6 @@ import { Observable, Observer } from 'rxjs';
 
     public reset(): void {
         this.latLng = null;
-        this.geocoder = new google.maps.Geocoder();
     }
 
     /**

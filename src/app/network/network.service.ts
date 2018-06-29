@@ -47,13 +47,7 @@ import { appConfig } from '../app-config';
      */
     private getDirectionsService: any;
 
-    constructor(private http: HttpClient) {
-        // Google Maps.
-        this.directionsService = new google.maps.DirectionsService();
-        // Mapbox.
-        this.baseClient = mbxClient({ accessToken: appConfig.apis.mapbox.accessToken });
-        this.getDirectionsService = mbxGetDirections(this.baseClient);
-    }
+    constructor(private http: HttpClient) { }
 
     public reset(): void {
         this.graph = null;
@@ -154,6 +148,12 @@ import { appConfig } from '../app-config';
      * Reiterates the invocation of the Route interface method to obtain all link traffic data.
      */
     public getTrafficData(): Observable<any> {
+        // Google Maps.
+        this.directionsService = new google.maps.DirectionsService();
+        // Mapbox.
+        this.baseClient = mbxClient({ accessToken: appConfig.apis.mapbox.accessToken });
+        this.getDirectionsService = mbxGetDirections(this.baseClient);
+
         return Observable.create((observer: Observer<any>) => {
             const edges = this.graph.getEdges();
 
