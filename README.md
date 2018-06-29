@@ -15,7 +15,7 @@ Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)
 - [Angular CLI](https://github.com/angular/angular-cli)
 
 ### Prerequisites
-- Update `src/app/app-config.ts` with your api keys.
+- Update `src/app/app-config.ts` with your api keys or access tokens.
 
 ```Shell
 npm install

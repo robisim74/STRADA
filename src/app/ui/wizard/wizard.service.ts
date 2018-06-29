@@ -31,8 +31,6 @@ import { WizardState } from "../models/reducers/wizard.reducer";
     ) {
         this.store.pipe(select(fromUi.wizardState)).subscribe((state: WizardState) => {
             this.state = state;
-            // TODO Remove
-            console.log(state);
         });
     }
 

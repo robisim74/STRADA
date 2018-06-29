@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, throwError, Observer } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, throwError, Observer, interval } from 'rxjs';
+import { map, catchError, take, concatMap } from 'rxjs/operators';
 
 import * as qs from 'qs';
+import * as mbxClient from '@mapbox/mapbox-sdk';
+import * as mbxGetDirections from '@mapbox/mapbox-sdk/services/directions';
 
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
@@ -28,15 +30,36 @@ import { appConfig } from '../app-config';
      */
     private time: Date | null;
 
-    private edgeId = 1;
+    private edgeId = 0;
 
-    constructor(private http: HttpClient) { }
+    /**
+     * Google Maps Directions service.
+     */
+    private directionsService: google.maps.DirectionsService;
+
+    /**
+     * Mapbox client.
+     */
+    private baseClient: any;
+
+    /**
+     * Mapbox getDirections service.
+     */
+    private getDirectionsService: any;
+
+    constructor(private http: HttpClient) {
+        // Google Maps.
+        this.directionsService = new google.maps.DirectionsService();
+        // Mapbox.
+        this.baseClient = mbxClient({ accessToken: appConfig.apis.mapbox.accessToken });
+        this.getDirectionsService = mbxGetDirections(this.baseClient);
+    }
 
     public reset(): void {
         this.graph = null;
         this.bounds = null;
         this.time = null;
-        this.edgeId = 1;
+        this.edgeId = 0;
     }
 
     public getGraph(): Graph {
@@ -131,10 +154,53 @@ import { appConfig } from '../app-config';
      * Reiterates the invocation of the Route interface method to obtain all link traffic data.
      */
     public getTrafficData(): Observable<any> {
-        // To use directions in the Maps JavaScript API, creates an object of type DirectionsService.
-        const directionsService = new google.maps.DirectionsService();
+        return Observable.create((observer: Observer<any>) => {
+            const edges = this.graph.getEdges();
 
-        return of(null);
+            // Builds the stream of route requests.
+            const stream = interval(1000).pipe(
+                take(edges.length),
+                map((i: number) => edges[i]),
+                concatMap((edge: Edge) => this.route(edge))
+            );
+            // Executes the stream.
+            stream.subscribe(
+                () => { /* Status OK */ },
+                (streamError: any) => {
+                    /*
+                     * Stops the execution on error.
+                     * Fallback stream.
+                     */
+                    // Buids the fallback stream.
+                    const fallbackStream = interval().pipe(
+                        take(edges.length),
+                        map((i: number) => edges[i]),
+                        concatMap((edge: Edge) => this.getDirections(edge))
+                    );
+                    // Executes the fallback stream.
+                    fallbackStream.subscribe(
+                        () => { },
+                        (fallbackStreamError: any) => {
+                            observer.error('getTrafficData');
+                        },
+                        () => {
+                            // TODO remove
+                            console.log(edges);
+
+                            observer.next(null);
+                            observer.complete();
+                        }
+                    );
+                },
+                () => {
+                    // TODO remove
+                    console.log(edges);
+
+                    observer.next(null);
+                    observer.complete();
+                }
+            );
+        });
     }
 
     /**
@@ -226,6 +292,120 @@ import { appConfig } from '../app-config';
         return tags ? Object.keys(tags).map((key: string) => {
             return { key: key, value: tags[key] as string };
         }) : [];
+    }
+
+    /**
+     * Makes the request to Google Maps Directions API.
+     * @param edge The current egde.
+     */
+    private route(edge: Edge): Observable<any> {
+        return Observable.create((observer: Observer<any>) => {
+            this.directionsService.route(
+                this.buildRequest(edge),
+                (response: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        // For routes that contain no waypoints, the route will consist of a single leg.
+                        if (response && response.routes[0] && response.routes[0].legs[0]) {
+                            const leg = response.routes[0].legs[0];
+                            edge.distance = leg.distance.value;
+                            edge.duration = leg.duration.value;
+                            edge.durationInTraffic = leg.duration_in_traffic.value;
+                            observer.next(null);
+                            observer.complete();
+                        } else {
+                            // Missing data.
+                        }
+                    } else {
+                        observer.error('route');
+                    }
+                }
+            );
+        });
+    }
+
+    /**
+     * Builds a Google Maps DirectionsRequest.
+     * @param edge The current egde.
+     */
+    private buildRequest(edge: Edge): google.maps.DirectionsRequest {
+        return {
+            origin: { lat: edge.origin.lat, lng: edge.origin.lon },
+            destination: { lat: edge.destination.lat, lng: edge.destination.lon },
+            travelMode: google.maps.TravelMode.DRIVING,
+            drivingOptions: {
+                departureTime: this.time || new Date(Date.now()),
+                trafficModel: google.maps.TrafficModel.PESSIMISTIC
+            },
+            unitSystem: google.maps.UnitSystem.METRIC
+        };
+    }
+
+    /**
+     * Makes the request to Mapbox Directions API.
+     * @param edge The current egde.
+     */
+    private getDirections(edge: Edge): Observable<any> {
+        return Observable.create((observer: Observer<any>) => {
+            // Gets distance and duration.
+            this.getDirectionsService.getDirections(this.buildDrivingConfig(edge))
+                .send()
+                .then(
+                    (response1: any) => {
+                        if (response1 && response1.body && response1.body.routes[0] && response1.body.routes[0].legs[0]) {
+                            const leg1 = response1.body.routes[0].legs[0];
+                            edge.distance = leg1.distance;
+                            edge.duration = leg1.duration;
+
+                            // Gets duration in traffic.
+                            this.getDirectionsService.getDirections(this.buildDrivingTrafficConfig(edge))
+                                .send()
+                                .then(
+                                    (response2: any) => {
+                                        if (response2 && response2.body && response2.body.routes[0] && response2.body.routes[0].legs[0]) {
+                                            const leg2 = response2.body.routes[0].legs[0];
+                                            edge.durationInTraffic = leg2.duration;
+
+                                            observer.next(null);
+                                            observer.complete();
+                                        } else {
+                                            // Missing data.
+                                        }
+                                    },
+                                    (error: any) => {
+                                        observer.error('getDirections');
+                                    }
+                                );
+                        } else {
+                            // Missing data.
+                        }
+                    },
+                    (error: any) => {
+                        observer.error('getDirections');
+                    }
+                );
+        });
+    }
+
+    /**
+     * Builds a Mapbox Config object for driving profile.
+     * @param edge The current egde.
+     */
+    private buildDrivingConfig(edge: Edge): any {
+        return {
+            profile: 'driving',
+            waypoints: [{ coordinates: [edge.origin.lon, edge.origin.lat] }, { coordinates: [edge.destination.lon, edge.destination.lat] }]
+        };
+    }
+
+    /**
+     * Builds a Mapbox Config object for driving in traffic profile.
+     * @param edge The current egde.
+     */
+    private buildDrivingTrafficConfig(edge: Edge): any {
+        return {
+            profile: 'driving-traffic',
+            waypoints: [{ coordinates: [edge.origin.lon, edge.origin.lat] }, { coordinates: [edge.destination.lon, edge.destination.lat] }]
+        };
     }
 
 }

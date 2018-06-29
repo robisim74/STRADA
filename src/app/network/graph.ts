@@ -57,10 +57,19 @@ export class Edge {
 
     public tags: Tag[] = [];
 
+    /**
+     * Indicates the distance in meters.
+     */
     public distance: number;
 
+    /**
+     * Indicates the duration in seconds.
+     */
     public duration: number;
 
+    /**
+     * Indicates the total duration of the edge, taking into account current traffic conditions.
+     */
     public durationInTraffic: number;
 
     public velocity: number;

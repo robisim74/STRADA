@@ -5,6 +5,7 @@
             <button mat-icon-button matSuffix [owlDateTimeTrigger]="t1" title="Open time picker">
                 <mat-icon>calendar_today</mat-icon>
             </button>
+            <mat-hint align="start">Opnional. Leave it empty for the current time</mat-hint>
             <mat-error>
                 <div *ngIf="formGroup.get('time').hasError('owlDateTimeMin') || formGroup.get('time').hasError('owlDateTimeMax'); then thenBlock else elseBlock"></div>
                 <ng-template #thenBlock>

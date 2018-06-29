@@ -3,10 +3,6 @@
  */
 export const appConfig = {
     apis: {
-        googleMaps: {
-            url: 'https://maps.googleapis.com/maps/api/js',
-            apiKey: 'YOUR_API_KEY'
-        },
         overpassApi: {
             url: 'https://lz4.overpass-api.de/api/interpreter',
             timeout: 5000,
@@ -15,6 +11,16 @@ export const appConfig = {
              * https://wiki.openstreetmap.org/wiki/Key:highway
              */
             highways: ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']
+        },
+        googleMaps: {
+            url: 'https://maps.googleapis.com/maps/api/js',
+            apiKey: 'YOUR_API_KEY'
+        },
+        /**
+         * Used as fallback for Google Maps Directions API. Optional.
+         */
+        mapbox: {
+            accessToken: 'YOUR_ACCESS_TOKEN'
         },
         openWeatherMap: {
             url: '',

@@ -76,6 +76,9 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
                     case 'createGraph':
                         message = 'The graph can not be created. Try with another area';
                         break;
+                    case 'getTrafficData':
+                        message = 'Traffic data cannot be retrieved. Please try again at another time';
+                        break;
                     default:
                         message = 'The request could not be processed. Check your Internet connection and try again';
                 }
