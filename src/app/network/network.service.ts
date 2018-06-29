@@ -296,7 +296,7 @@ import { appConfig } from '../app-config';
 
     /**
      * Makes the request to Google Maps Directions API.
-     * @param edge The current egde.
+     * @param edge The current egde
      */
     private route(edge: Edge): Observable<any> {
         return Observable.create((observer: Observer<any>) => {
@@ -325,7 +325,7 @@ import { appConfig } from '../app-config';
 
     /**
      * Builds a Google Maps DirectionsRequest.
-     * @param edge The current egde.
+     * @param edge The current egde
      */
     private buildRequest(edge: Edge): google.maps.DirectionsRequest {
         return {
@@ -342,28 +342,32 @@ import { appConfig } from '../app-config';
 
     /**
      * Makes the request to Mapbox Directions API.
-     * @param edge The current egde.
+     * @param edge The current egde
      */
     private getDirections(edge: Edge): Observable<any> {
         return Observable.create((observer: Observer<any>) => {
             // Gets distance and duration.
-            this.getDirectionsService.getDirections(this.buildDrivingConfig(edge))
+            this.getDirectionsService.getDirections(this.buildConfig(edge, 'driving'))
                 .send()
                 .then(
-                    (response1: any) => {
-                        if (response1 && response1.body && response1.body.routes[0] && response1.body.routes[0].legs[0]) {
-                            const leg1 = response1.body.routes[0].legs[0];
-                            edge.distance = leg1.distance;
-                            edge.duration = leg1.duration;
+                    (response: any) => {
+                        if (response && response.body && response.body.routes[0] && response.body.routes[0].legs[0]) {
+                            const leg = response.body.routes[0].legs[0];
+                            edge.distance = leg.distance;
+                            edge.duration = leg.duration;
 
                             // Gets duration in traffic.
-                            this.getDirectionsService.getDirections(this.buildDrivingTrafficConfig(edge))
+                            this.getDirectionsService.getDirections(this.buildConfig(edge, 'driving-traffic'))
                                 .send()
                                 .then(
-                                    (response2: any) => {
-                                        if (response2 && response2.body && response2.body.routes[0] && response2.body.routes[0].legs[0]) {
-                                            const leg2 = response2.body.routes[0].legs[0];
-                                            edge.durationInTraffic = leg2.duration;
+                                    (trafficResponse: any) => {
+                                        if (trafficResponse &&
+                                            trafficResponse.body &&
+                                            trafficResponse.body.routes[0] &&
+                                            trafficResponse.body.routes[0].legs[0]) {
+                                            const trafficLeg = trafficResponse.body.routes[0].legs[0];
+                                            // duration-based, with additional penalties for less desirable maneuvers.
+                                            edge.durationInTraffic = trafficLeg.weight;
 
                                             observer.next(null);
                                             observer.complete();
@@ -387,23 +391,13 @@ import { appConfig } from '../app-config';
     }
 
     /**
-     * Builds a Mapbox Config object for driving profile.
-     * @param edge The current egde.
+     * Builds a Mapbox Config object
+     * @param edge The current egde
+     * @param profile 'driving' or 'driving-traffic'
      */
-    private buildDrivingConfig(edge: Edge): any {
+    private buildConfig(edge: Edge, profile: string): any {
         return {
-            profile: 'driving',
-            waypoints: [{ coordinates: [edge.origin.lon, edge.origin.lat] }, { coordinates: [edge.destination.lon, edge.destination.lat] }]
-        };
-    }
-
-    /**
-     * Builds a Mapbox Config object for driving in traffic profile.
-     * @param edge The current egde.
-     */
-    private buildDrivingTrafficConfig(edge: Edge): any {
-        return {
-            profile: 'driving-traffic',
+            profile: profile,
             waypoints: [{ coordinates: [edge.origin.lon, edge.origin.lat] }, { coordinates: [edge.destination.lon, edge.destination.lat] }]
         };
     }
