@@ -8,25 +8,38 @@
 ## Documentation
 Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)
 
-## Installation
+## Development
 
 ### Requirements
-- [Node.js and npm](https://docs.npmjs.com/getting-started/installing-node#install-npm--manage-npm-versions)
-- [Angular CLI](https://github.com/angular/angular-cli)
+- [Node.js and npm](https://nodejs.org)
+- Update npm: `npm install npm@latest -g`
+- Angular CLI: `npm install -g @angular/cli`
+- Firebase
+    - Create a Firebase project in the [Firebase console](https://console.firebase.google.com/)
+    - Firebase CLI: `npm install -g firebase-tools`
+    - Login: `firebase login`
+- Google Maps 
+    - Get your Api keys: https://cloud.google.com/maps-platform/
+    - Enable _Maps JavaScript API_, _Geocoding API_ and _Directions API_
 
 ### Prerequisites
-- Update `src/app/app-config.ts` with your api keys or access tokens.
+- Update `src/app/app-config.ts` and `functions/functions-config.ts` with your api keys
+- Update `src/environments/environment.ts` and `.firebaserc` with your Firebase project id.
 
+### Firebase Functions
 ```Shell
+cd functions
 npm install
+npm run serve:dev
 ```
 
-## Running
+### App
 ```Shell
+npm install
 npm start
 ```
 
-## Running the tests
+## Test
 ```Shell
 npm test
 ```

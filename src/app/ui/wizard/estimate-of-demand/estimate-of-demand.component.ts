@@ -53,7 +53,9 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
 
     /**
      * Performs in sequence the following operations:
+     * - Getting network data
      * - Creation of the graph
+     * - Getting traffic data
      * - Association of values to the graph
      */
     schedule(): void {
@@ -65,6 +67,9 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
             }),
             switchMap(() => {
                 return this.network.getTrafficData();
+            }),
+            switchMap((response: any) => {
+                return this.network.updateGraph(response);
             })
         );
 
@@ -73,20 +78,26 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
             (error: any) => {
                 let message: string;
                 switch (error) {
+                    case 'getNetwork':
+                        message = 'The request could not be processed. Check your Internet connection and try again';
+                        break;
                     case 'createGraph':
                         message = 'The graph can not be created. Try with another area';
                         break;
                     case 'getTrafficData':
-                        message = 'Traffic data cannot be retrieved. Please try again at another time';
+                        message = 'Traffic data cannot be retrieved. ' +
+                            'Past the quota limits traffic data become paid. ' +
+                            'This is an open source project: install a version of it locally or become a sponsor';
                         break;
-                    default:
-                        message = 'The request could not be processed. Check your Internet connection and try again';
                 }
                 this.wizard.putInError(message);
                 this.wizard.reset();
             },
             () => {
+                // Removes from waiting.
                 this.wizard.removeFromWaiting();
+
+                console.log(this.network.getGraph());
             }
         ));
     }

@@ -16,12 +16,6 @@ export const appConfig = {
             url: 'https://maps.googleapis.com/maps/api/js',
             apiKey: 'YOUR_API_KEY'
         },
-        /**
-         * Used as fallback for Google Maps Directions API. Optional.
-         */
-        mapbox: {
-            accessToken: 'YOUR_ACCESS_TOKEN'
-        },
         openWeatherMap: {
             url: '',
             apiKey: ''

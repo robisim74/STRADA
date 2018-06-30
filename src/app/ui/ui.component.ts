@@ -78,7 +78,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     openSnackBar(message: string): void {
         this.snackBar.openFromComponent(MessageArchivedComponent, {
             data: message,
-            duration: 4000,
+            duration: 5000,
             panelClass: ['error-snackbar']
         });
     }

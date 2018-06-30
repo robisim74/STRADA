@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, Observer, interval } from 'rxjs';
-import { map, catchError, take, concatMap } from 'rxjs/operators';
+import { Observable, throwError, Observer, of, from } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import * as qs from 'qs';
-import * as mbxClient from '@mapbox/mapbox-sdk';
-import * as mbxGetDirections from '@mapbox/mapbox-sdk/services/directions';
 
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
+import { environment } from '../../environments/environment';
 
 /**
  * Creates and develops the graph of the transport network in the selected area.
@@ -31,21 +30,6 @@ import { appConfig } from '../app-config';
     private time: Date | null;
 
     private edgeId = 0;
-
-    /**
-     * Google Maps Directions service.
-     */
-    private directionsService: google.maps.DirectionsService;
-
-    /**
-     * Mapbox client.
-     */
-    private baseClient: any;
-
-    /**
-     * Mapbox getDirections service.
-     */
-    private getDirectionsService: any;
 
     constructor(private http: HttpClient) { }
 
@@ -83,7 +67,7 @@ import { appConfig } from '../app-config';
 
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),
-            catchError((error: any) => throwError(error))
+            catchError((error: any) => throwError('getNetwork'))
         );
     }
 
@@ -145,62 +129,47 @@ import { appConfig } from '../app-config';
     }
 
     /**
-     * Reiterates the invocation of the Route interface method to obtain all link traffic data.
+     * Call the trafficData cloud function,
+     * that reiterates the invocation of the Directions API to obtain all link traffic data.
      */
     public getTrafficData(): Observable<any> {
-        // Google Maps.
-        this.directionsService = new google.maps.DirectionsService();
-        // Mapbox.
-        this.baseClient = mbxClient({ accessToken: appConfig.apis.mapbox.accessToken });
-        this.getDirectionsService = mbxGetDirections(this.baseClient);
-
-        return Observable.create((observer: Observer<any>) => {
-            const edges = this.graph.getEdges();
-
-            // Builds the stream of route requests.
-            const stream = interval(1000).pipe(
-                take(edges.length),
-                map((i: number) => edges[i]),
-                concatMap((edge: Edge) => this.route(edge))
-            );
-            // Executes the stream.
-            stream.subscribe(
-                () => { /* Status OK */ },
-                (streamError: any) => {
-                    /*
-                     * Stops the execution on error.
-                     * Fallback stream.
-                     */
-                    // Buids the fallback stream.
-                    const fallbackStream = interval().pipe(
-                        take(edges.length),
-                        map((i: number) => edges[i]),
-                        concatMap((edge: Edge) => this.getDirections(edge))
-                    );
-                    // Executes the fallback stream.
-                    fallbackStream.subscribe(
-                        () => { },
-                        (fallbackStreamError: any) => {
-                            observer.error('getTrafficData');
-                        },
-                        () => {
-                            // TODO remove
-                            console.log(edges);
-
-                            observer.next(null);
-                            observer.complete();
-                        }
-                    );
-                },
-                () => {
-                    // TODO remove
-                    console.log(edges);
-
-                    observer.next(null);
-                    observer.complete();
-                }
-            );
+        const url: string = environment.functions.trafficData.url;
+        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const edges = this.graph.getEdges();
+        const data = edges.map((v: Edge, i: number, arr: Edge[]) => {
+            return {
+                origin: { lat: v.origin.lat, lon: v.origin.lon },
+                destination: { lat: v.destination.lat, lon: v.destination.lon },
+                distance: null,
+                duration: null,
+                durationInTraffic: null
+            };
         });
+        const body = JSON.stringify({
+            edges: data,
+            time: this.time
+        });
+
+        // To trafficData function.
+        return this.http.post(url, body, { headers: headers }).pipe(
+            map((response: any) => response),
+            catchError((error: any) => throwError('getTrafficData'))
+        );
+    }
+
+    /**
+     * Updates graph using the data obtained from Directions API.
+     * @param data Traffic data
+     */
+    public updateGraph(data: any[]): Observable<any> {
+        const edges = this.graph.getEdges();
+        return from(data).pipe(
+            map((value: any, i: number) => {
+                edges[i].distance = value.distance;
+                edges[i].duration = value.duration;
+                edges[i].durationInTraffic = value.durationInTraffic;
+            })
+        );
     }
 
     /**
@@ -292,114 +261,6 @@ import { appConfig } from '../app-config';
         return tags ? Object.keys(tags).map((key: string) => {
             return { key: key, value: tags[key] as string };
         }) : [];
-    }
-
-    /**
-     * Makes the request to Google Maps Directions API.
-     * @param edge The current egde
-     */
-    private route(edge: Edge): Observable<any> {
-        return Observable.create((observer: Observer<any>) => {
-            this.directionsService.route(
-                this.buildRequest(edge),
-                (response: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        // For routes that contain no waypoints, the route will consist of a single leg.
-                        if (response && response.routes[0] && response.routes[0].legs[0]) {
-                            const leg = response.routes[0].legs[0];
-                            edge.distance = leg.distance.value;
-                            edge.duration = leg.duration.value;
-                            edge.durationInTraffic = leg.duration_in_traffic.value;
-                            observer.next(null);
-                            observer.complete();
-                        } else {
-                            // Missing data.
-                        }
-                    } else {
-                        observer.error('route');
-                    }
-                }
-            );
-        });
-    }
-
-    /**
-     * Builds a Google Maps DirectionsRequest.
-     * @param edge The current egde
-     */
-    private buildRequest(edge: Edge): google.maps.DirectionsRequest {
-        return {
-            origin: { lat: edge.origin.lat, lng: edge.origin.lon },
-            destination: { lat: edge.destination.lat, lng: edge.destination.lon },
-            travelMode: google.maps.TravelMode.DRIVING,
-            drivingOptions: {
-                departureTime: this.time || new Date(Date.now()),
-                trafficModel: google.maps.TrafficModel.PESSIMISTIC
-            },
-            unitSystem: google.maps.UnitSystem.METRIC
-        };
-    }
-
-    /**
-     * Makes the request to Mapbox Directions API.
-     * @param edge The current egde
-     */
-    private getDirections(edge: Edge): Observable<any> {
-        return Observable.create((observer: Observer<any>) => {
-            // Gets distance and duration.
-            this.getDirectionsService.getDirections(this.buildConfig(edge, 'driving'))
-                .send()
-                .then(
-                    (response: any) => {
-                        if (response && response.body && response.body.routes[0] && response.body.routes[0].legs[0]) {
-                            const leg = response.body.routes[0].legs[0];
-                            edge.distance = leg.distance;
-                            edge.duration = leg.duration;
-
-                            // Gets duration in traffic.
-                            this.getDirectionsService.getDirections(this.buildConfig(edge, 'driving-traffic'))
-                                .send()
-                                .then(
-                                    (trafficResponse: any) => {
-                                        if (trafficResponse &&
-                                            trafficResponse.body &&
-                                            trafficResponse.body.routes[0] &&
-                                            trafficResponse.body.routes[0].legs[0]) {
-                                            const trafficLeg = trafficResponse.body.routes[0].legs[0];
-                                            // duration-based, with additional penalties for less desirable maneuvers.
-                                            edge.durationInTraffic = trafficLeg.weight;
-
-                                            observer.next(null);
-                                            observer.complete();
-                                        } else {
-                                            // Missing data.
-                                        }
-                                    },
-                                    (error: any) => {
-                                        observer.error('getDirections');
-                                    }
-                                );
-                        } else {
-                            // Missing data.
-                        }
-                    },
-                    (error: any) => {
-                        observer.error('getDirections');
-                    }
-                );
-        });
-    }
-
-    /**
-     * Builds a Mapbox Config object
-     * @param edge The current egde
-     * @param profile 'driving' or 'driving-traffic'
-     */
-    private buildConfig(edge: Edge, profile: string): any {
-        return {
-            profile: profile,
-            waypoints: [{ coordinates: [edge.origin.lon, edge.origin.lat] }, { coordinates: [edge.destination.lon, edge.destination.lat] }]
-        };
     }
 
 }
