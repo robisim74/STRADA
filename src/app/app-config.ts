@@ -1,3 +1,5 @@
+import * as config from '../../config.json';
+
 /**
  * App configuration.
  */
@@ -14,11 +16,11 @@ export const appConfig = {
         },
         googleMaps: {
             url: 'https://maps.googleapis.com/maps/api/js',
-            apiKey: 'YOUR_API_KEY'
+            apiKey: (<any>config).googleMaps.apiKey
         },
         openWeatherMap: {
             url: '',
-            apiKey: ''
+            apiKey: (<any>config).openWeatherMap.apiKey
         }
     }
 };

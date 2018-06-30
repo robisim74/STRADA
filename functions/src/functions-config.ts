@@ -1,10 +1,12 @@
+const config = require('../../config.json');
+
 /**
  * Functions configuration.
  */
 export const functionsConfig = {
     apis: {
         googleMaps: {
-            serverKey: 'YOUR_API_KEY'
+            serverKey: config.googleMaps.serverKey
         }
     }
 };

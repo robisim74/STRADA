@@ -1,3 +1,5 @@
+import * as config from '../../config.json';
+
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -6,7 +8,7 @@ export const environment = {
     production: false,
     functions: {
         trafficData: {
-            url: 'http://localhost:4201/YOUR-PROJECT-ID/us-central1/trafficData'
+            url: 'http://localhost:4201/' + (<any>config).firebase.projectId + '/us-central1/trafficData'
         }
     }
 };

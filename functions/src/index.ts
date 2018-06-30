@@ -8,7 +8,7 @@ const whitelist: string[] = [
     'http://localhost:4200'
 ];
 const options: _cors.CorsOptions = {
-    origin: true
+    origin: whitelist
 };
 const cors = _cors;
 

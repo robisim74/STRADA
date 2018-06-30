@@ -19,12 +19,12 @@ Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)
     - Firebase CLI: `npm install -g firebase-tools`
     - Login: `firebase login`
 - Google Maps 
-    - Get your Api keys: https://cloud.google.com/maps-platform/
+    - Get your API keys: https://cloud.google.com/maps-platform/
     - Enable _Maps JavaScript API_, _Geocoding API_ and _Directions API_
 
 ### Prerequisites
-- Update `src/app/app-config.ts` and `functions/functions-config.ts` with your api keys
-- Update `src/environments/environment.ts` and `.firebaserc` with your Firebase project id.
+- Update `config.json` file
+- Update `.firebaserc` file
 
 ### Firebase Functions
 ```Shell
