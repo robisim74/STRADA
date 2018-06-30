@@ -80,14 +80,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -533,14 +533,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -1048,7 +1048,7 @@
                     <tr>
                         <td class="col-md-4">
                             <i>Default value : </i><code>{
-    api: {
+    apis: {
         overpassApi: {
             url: &#x27;https://lz4.overpass-api.de/api/interpreter&#x27;,
             timeout: 5000,
@@ -1058,9 +1058,13 @@
              */
             highways: [&#x27;motorway&#x27;, &#x27;trunk&#x27;, &#x27;primary&#x27;, &#x27;secondary&#x27;, &#x27;tertiary&#x27;, &#x27;unclassified&#x27;, &#x27;residential&#x27;]
         },
+        googleMaps: {
+            url: &#x27;https://maps.googleapis.com/maps/api/js&#x27;,
+            apiKey: (&lt;any&gt;config).googleMaps.apiKey
+        },
         openWeatherMap: {
             url: &#x27;&#x27;,
-            apiKey: &#x27;&#x27;
+            apiKey: (&lt;any&gt;config).openWeatherMap.apiKey
         }
     }
 }</code>
@@ -1395,7 +1399,12 @@
                     <tr>
                         <td class="col-md-4">
                             <i>Default value : </i><code>{
-    production: false
+    production: false,
+    functions: {
+        trafficData: {
+            url: &#x27;http://localhost:4201/&#x27; + (&lt;any&gt;config).firebase.projectId + &#x27;/us-central1/trafficData&#x27;
+        }
+    }
 }</code>
                         </td>
                     </tr>
@@ -1434,7 +1443,12 @@
                     <tr>
                         <td class="col-md-4">
                             <i>Default value : </i><code>{
-    production: true
+    production: true,
+    functions: {
+        trafficData: {
+            url: &#x27;https://us-central1-&#x27; + (&lt;any&gt;config).firebase.projectId + &#x27;.cloudfunctions.net/trafficData&#x27;
+        }
+    }
 }</code>
                         </td>
                     </tr>
@@ -1928,7 +1942,7 @@
      * Area limit in hectares.
      */
     areaMaxLimit: 50,
-    areaMinLimit: 10,
+    areaMinLimit: 3,
 }</code>
                         </td>
                     </tr>

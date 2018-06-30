@@ -80,14 +80,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -533,14 +533,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -934,18 +934,35 @@
 </blockquote>
 <h2 id="documentation">Documentation</h2>
 <p>Official docs: <a href="https://robisim74.github.io/STRADA/">STRADA documentation</a></p>
-<h2 id="installation">Installation</h2>
+<h2 id="development">Development</h2>
 <h3 id="requirements">Requirements</h3>
 <ul>
-<li><a href="https://docs.npmjs.com/getting-started/installing-node#install-npm--manage-npm-versions">Node.js and npm</a></li>
-<li><a href="https://github.com/angular/angular-cli">Angular CLI</a></li>
+<li><a href="https://nodejs.org">Node.js and npm</a></li>
+<li>Update npm: <code>npm install npm@latest -g</code></li>
+<li>Angular CLI: <code>npm install -g @angular/cli</code></li>
+<li>Firebase<ul>
+<li>Create a Firebase project in the <a href="https://console.firebase.google.com/">Firebase console</a></li>
+<li>Firebase CLI: <code>npm install -g firebase-tools</code></li>
+<li>Login: <code>firebase login</code></li>
+</ul>
+</li>
+<li>Google Maps <ul>
+<li>Get your API keys: <a href="https://cloud.google.com/maps-platform/">https://cloud.google.com/maps-platform/</a></li>
+<li>Enable <em>Maps JavaScript API</em>, <em>Geocoding API</em> and <em>Directions API</em></li>
+</ul>
+</li>
 </ul>
 <h3 id="prerequisites">Prerequisites</h3>
 <ul>
-<li>Add a Google Maps Platform API key in <code>src/index.html</code></li>
+<li>Update <code>config.json</code> file</li>
+<li>Update <code>.firebaserc</code> file</li>
 </ul>
-<div><pre class="line-numbers"><code class="language-Shell">npm install</code></pre></div><h2 id="running">Running</h2>
-<div><pre class="line-numbers"><code class="language-Shell">npm start</code></pre></div><h2 id="running-the-tests">Running the tests</h2>
+<h3 id="firebase-functions">Firebase Functions</h3>
+<div><pre class="line-numbers"><code class="language-Shell">cd functions
+npm install
+npm run serve:dev</code></pre></div><h3 id="app">App</h3>
+<div><pre class="line-numbers"><code class="language-Shell">npm install
+npm start</code></pre></div><h2 id="test">Test</h2>
 <div><pre class="line-numbers"><code class="language-Shell">npm test</code></pre></div><h2 id="license">License</h2>
 <p>MIT</p>
 

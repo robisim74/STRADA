@@ -80,14 +80,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -533,14 +533,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -1014,7 +1014,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="96" class="link-to-prism">src/app/network/graph.ts:96</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="105" class="link-to-prism">src/app/network/graph.ts:105</a></div>
                             </td>
                         </tr>
 
@@ -1085,7 +1085,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="94" class="link-to-prism">src/app/network/graph.ts:94</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="103" class="link-to-prism">src/app/network/graph.ts:103</a></div>
                             </td>
                         </tr>
 
@@ -1120,7 +1120,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="92" class="link-to-prism">src/app/network/graph.ts:92</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="101" class="link-to-prism">src/app/network/graph.ts:101</a></div>
                             </td>
                         </tr>
 
@@ -1160,7 +1160,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="96" class="link-to-prism">src/app/network/graph.ts:96</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="105" class="link-to-prism">src/app/network/graph.ts:105</a></div>
                             </td>
                         </tr>
 
@@ -1238,10 +1238,19 @@ export class Edge {
 
     public tags: Tag[] &#x3D; [];
 
+    /**
+     * Indicates the distance in meters.
+     */
     public distance: number;
 
+    /**
+     * Indicates the duration in seconds.
+     */
     public duration: number;
 
+    /**
+     * Indicates the total duration of the edge, taking into account current traffic conditions.
+     */
     public durationInTraffic: number;
 
     public velocity: number;

@@ -80,14 +80,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -533,14 +533,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -1171,7 +1171,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule } from &#x27;@angular/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule, APP_INITIALIZER } from &#x27;@angular/core&#x27;;
 import { BrowserModule } from &#x27;@angular/platform-browser&#x27;;
 import { BrowserAnimationsModule } from &#x27;@angular/platform-browser/animations&#x27;;
 
@@ -1187,6 +1187,8 @@ import { LocationModule } from &#x27;./location/location.module&#x27;;
 import { NetworkModule } from &#x27;./network/network.module&#x27;;
 import { DemandModule } from &#x27;./demand/demand.module&#x27;;
 import { SimulationModule } from &#x27;./simulation/simulation.module&#x27;;
+
+import { loadScripts } from &#x27;./utils&#x27;;
 
 @NgModule({
     declarations: [
@@ -1205,7 +1207,14 @@ import { SimulationModule } from &#x27;./simulation/simulation.module&#x27;;
         DemandModule,
         SimulationModule
     ],
-    providers: [],
+    providers: [
+        {
+            provide: APP_INITIALIZER,
+            useFactory: loadScripts,
+            deps: [],
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

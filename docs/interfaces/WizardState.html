@@ -80,14 +80,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="xs-components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="xs-components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
                                     >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -533,14 +533,14 @@
                         <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
-                                        data-target="#components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        data-target="#components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
-                                        id="components-links-module-AppModule-623a15d761d18bdbaa46cf346a335bf3"
+                                        id="components-links-module-AppModule-3663230c2a281404ea7e31f3e8e480d8"
 >
                                         <li class="link">
                                             <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
@@ -1121,7 +1121,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import cloneDeep from &#x27;clone-deep&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import deepClone from &#x27;mout/lang/deepClone&#x27;;
 
 import { Step, STEPS } from &quot;../wizard&quot;;
 import { WizardActions, WizardActionTypes } from &#x27;../actions/wizard.actions&#x27;;
@@ -1148,14 +1148,14 @@ export const initialWizardState: WizardState &#x3D; {
 /**
  * ngrx: wizard Reducer.
  */
-export function wizardReducer(state: WizardState &#x3D; cloneDeep(initialWizardState), action: WizardActions): WizardState {
+export function wizardReducer(state: WizardState &#x3D; deepClone(initialWizardState), action: WizardActions): WizardState {
     switch (action.type) {
         case WizardActionTypes.StepChanged: {
             // Updates the step at the provided index.
             state.steps[action.payload.index] &#x3D; action.payload.step;
             return {
                 ...state,
-                steps: cloneDeep(state.steps),
+                steps: deepClone(state.steps),
                 error: null,
                 pending: false
             };
@@ -1179,14 +1179,14 @@ export function wizardReducer(state: WizardState &#x3D; cloneDeep(initialWizardS
             state.steps[action.payload.index] &#x3D; action.payload.step;
             return {
                 ...state,
-                steps: cloneDeep(state.steps),
+                steps: deepClone(state.steps),
                 currentStep: action.payload.nextIndex,
                 error: null,
                 pending: false
             };
         }
         case WizardActionTypes.Reset: {
-            return cloneDeep(initialWizardState);
+            return deepClone(initialWizardState);
         }
         default: {
             return state;
