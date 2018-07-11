@@ -8,6 +8,8 @@ import * as qs from 'qs';
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
 import { environment } from '../../environments/environment';
+// TODO Remove
+/* import { interpreter, directions } from 'tests/mock-data/graph'; */
 
 /**
  * Creates and develops the graph of the transport network in the selected area.
@@ -69,6 +71,8 @@ import { environment } from '../../environments/environment';
             map((response: any) => response),
             catchError((error: any) => throwError('getNetwork'))
         );
+        // TODO Remove
+        /* return of(interpreter); */
     }
 
     /**
@@ -155,6 +159,8 @@ import { environment } from '../../environments/environment';
             map((response: any) => response),
             catchError((error: any) => throwError('getTrafficData'))
         );
+        // TODO Remove
+        /* return of(directions); */
     }
 
     /**

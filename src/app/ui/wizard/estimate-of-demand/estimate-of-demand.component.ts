@@ -6,6 +6,7 @@ import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
+import { WeatherService } from '../../../network/weather/weather.service';
 import * as fromUi from '../../models/reducers';
 
 import { BaseComponent } from '../../models/base.component';
@@ -24,7 +25,8 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
     constructor(
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
-        private network: NetworkService
+        private network: NetworkService,
+        private weather: WeatherService
     ) {
         super();
     }
@@ -57,6 +59,7 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
      * - Creation of the graph
      * - Getting traffic data
      * - Association of values to the graph
+     * - Getting and management of weather data
      */
     schedule(): void {
         this.wizard.putOnHold();
@@ -70,6 +73,12 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
             }),
             switchMap((response: any) => {
                 return this.network.updateGraph(response);
+            }),
+            switchMap(() => {
+                return this.weather.getWeatherData(this.network.getTime());
+            }),
+            switchMap((response: any) => {
+                return this.weather.manageWeatherData(response);
             })
         );
 
@@ -89,6 +98,9 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
                             'Past the quota limits traffic data become paid. ' +
                             'Please, try at another time or install your own version';
                         break;
+                    case 'getWeatherData':
+                        message = 'Weather data cannot be retrieved. You can still continue the simulation';
+                        break;
                 }
                 this.wizard.putInError(message);
                 this.wizard.reset();
@@ -96,8 +108,6 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
             () => {
                 // Removes from waiting.
                 this.wizard.removeFromWaiting();
-
-                console.log(this.network.getGraph());
             }
         ));
     }
