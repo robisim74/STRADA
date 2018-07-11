@@ -1,9 +1,10 @@
-import * as config from '../../config.json';
-
 /**
  * App configuration.
  */
 export const appConfig = {
+    firebase: {
+        projectId: 'YOUR_PROJECT_ID'
+    },
     apis: {
         overpassApi: {
             url: 'https://lz4.overpass-api.de/api/interpreter',
@@ -16,11 +17,11 @@ export const appConfig = {
         },
         googleMaps: {
             url: 'https://maps.googleapis.com/maps/api/js',
-            apiKey: (<any>config).googleMaps.apiKey
+            apiKey: 'YOUR_API_KEY'
         },
         openWeatherMap: {
             url: '',
-            apiKey: (<any>config).openWeatherMap.apiKey
+            apiKey: ''
         }
     }
 };

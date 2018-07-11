@@ -87,7 +87,7 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
                     case 'getTrafficData':
                         message = 'Traffic data cannot be retrieved. ' +
                             'Past the quota limits traffic data become paid. ' +
-                            'This is an open source project: install a version of it locally or become a sponsor';
+                            'Please, try at another time or install your own version';
                         break;
                 }
                 this.wizard.putInError(message);

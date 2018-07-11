@@ -113,7 +113,7 @@ import { environment } from '../../environments/environment';
                     });
                     // First direction.
                     this.splitWay(filteredWayNodes, nodes, way);
-                    // First direction (two-way).
+                    // Second direction (two-way).
                     if (!way['tags']['oneway']) {
                         // Reverse the order of filtered way nodes.
                         this.splitWay(filteredWayNodes.reverse(), nodes, way);

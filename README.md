@@ -23,8 +23,9 @@ Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)
     - Enable _Maps JavaScript API_, _Geocoding API_ and _Directions API_
 
 ### Prerequisites
-- Update `config.json` file
 - Update `.firebaserc` file
+- Update `src/app/app-config.json` file
+- Update `functions/src/functions-config.json` file
 
 ### Firebase Functions
 ```Shell

@@ -1,10 +1,10 @@
-import * as config from '../../config.json';
+import { appConfig } from "../app/app-config";
 
 export const environment = {
     production: true,
     functions: {
         trafficData: {
-            url: 'https://us-central1-' + (<any>config).firebase.projectId + '.cloudfunctions.net/trafficData'
+            url: 'https://us-central1-' + appConfig.firebase.projectId + '.cloudfunctions.net/trafficData'
         }
     }
 };
