@@ -26,7 +26,8 @@ export const appConfig = {
         openWeatherMap: {
             weatherUrl: 'https://api.openweathermap.org/data/2.5/weather',
             forecastUrl: 'https://api.openweathermap.org/data/2.5/forecast',
-            apiKey: 'YOUR_API_KEY'
+            apiKey: 'YOUR_API_KEY',
+            iconUrl: 'https://openweathermap.org/img/w'
         }
     }
 };

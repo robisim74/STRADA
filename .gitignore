@@ -42,6 +42,3 @@ Thumbs.db
 /functions/node_modules
 /functions/lib
 /functions/*.log
-
-# TODO Remove
-tests/mock-data/graph.ts

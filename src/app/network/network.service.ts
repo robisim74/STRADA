@@ -93,6 +93,9 @@ import { environment } from '../../environments/environment';
 
         // Gets the list of elements.
         const elements: any[] = data.elements;
+        // Checks empty list.
+        if (elements.length == 0) { return throwError('createGraph'); }
+
         // Create a degree list of nodes:
         // a Map object that holds nodeId-degree as key-value pairs.
         const nodesDegrees: Map<number, number> = new Map();

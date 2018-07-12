@@ -125,7 +125,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                 return this.weather.getWeatherData(this.network.getTime());
             }),
             switchMap((response: any) => {
-                return this.weather.manageWeatherData(response);
+                return this.weather.updateWeatherData(response, this.network.getTime());
             })
         );
 
@@ -153,7 +153,6 @@ export class WizardComponent implements OnInit, OnDestroy {
             () => {
                 // Removes from waiting.
                 this.wizard.removeFromWaiting();
-                console.log(this.network.getGraph());
             }
         ));
     }

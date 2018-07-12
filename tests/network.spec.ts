@@ -29,15 +29,12 @@ describe('NetworkService', () => {
                 expect(graph.getRelations().length).toBe(0);
             });
         });
-        it('should accept 0 elements', () => {
+        it('should not accept 0 elements', () => {
             service = TestBed.get(NetworkService);
-            service.createGraph({ elements: [] }).subscribe(() => {
-                const graph = service.getGraph();
-
-                expect(graph.getEdges().length).toBe(0);
-                expect(graph.getNodes().length).toBe(0);
-                expect(graph.getRelations().length).toBe(0);
-            });
+            service.createGraph({ elements: [] }).subscribe(
+                () => { },
+                (error: any) => { expect(error).toBe('createGraph'); }
+            );
         });
     });
 });

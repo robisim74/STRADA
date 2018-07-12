@@ -1,3 +1,6 @@
 <mat-card>
-    weather
+    <mat-card-content fxLayout="row wrap" fxLayoutAlign="start center">
+        <span>Weather: {{ description | uppercase }}</span>
+        <span id="iconContainer"></span>
+    </mat-card-content>
 </mat-card>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { Store, select } from '@ngrx/store';
 
@@ -53,7 +53,6 @@ export class MapComponent extends BaseComponent implements OnInit {
         this.center = uiConfig.map.center;
         this.zoom = uiConfig.map.zoom;
 
-        this.valueChanges();
         this.receiveActions();
         this.sendActions();
     }
