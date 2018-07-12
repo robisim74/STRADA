@@ -57,9 +57,7 @@ export function wizardReducer(state: WizardState = deepClone(initialWizardState)
             return {
                 ...state,
                 steps: deepClone(state.steps),
-                currentStep: action.payload.nextIndex,
-                error: null,
-                pending: false
+                currentStep: action.payload.nextIndex
             };
         }
         case WizardActionTypes.Reset: {

@@ -93,6 +93,11 @@ import { uiConfig } from '../ui-config';
         this.infoWindow = new google.maps.InfoWindow();
     }
 
+    public removeRect(): void {
+        this.rectangle.setMap(null);
+        this.infoWindow.close();
+    }
+
     public getArea(): Observable<number> {
         return this.area.asObservable();
     }

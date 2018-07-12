@@ -1,4 +1,5 @@
 /**
+ * @ignore
  * App configuration.
  */
 export const appConfig = {
@@ -18,6 +19,9 @@ export const appConfig = {
         googleMaps: {
             url: 'https://maps.googleapis.com/maps/api/js',
             apiKey: 'YOUR_API_KEY'
+        },
+        mapbox: {
+            accessToken: 'YOUR_ACCESS_TOKEN'
         },
         openWeatherMap: {
             weatherUrl: 'https://api.openweathermap.org/data/2.5/weather',

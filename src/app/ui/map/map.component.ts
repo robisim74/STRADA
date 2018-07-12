@@ -72,6 +72,10 @@ export class MapComponent extends BaseComponent implements OnInit {
                         this.zoom = 16;
                     }
                     break;
+                case 2:
+                    // Removes the rectangle.
+                    this.map.removeRect();
+                    break;
             }
         }));
 

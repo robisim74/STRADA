@@ -38,6 +38,7 @@
     "@ngrx/effects": "6.0.1",
     "@turf/area": "6.0.1",
     "@turf/helpers": "6.1.4",
+    "@mapbox/mapbox-sdk": "0.2.0",
     "ng-pick-datetime": "6.0.5",
     "mout": "1.1.0",
     "web-animations-js": "2.3.1",

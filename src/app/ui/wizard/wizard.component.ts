@@ -3,10 +3,13 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { Store, select } from '@ngrx/store';
 
 import { WizardService } from './wizard.service';
+import { NetworkService } from '../../network/network.service';
+import { WeatherService } from '../../network/weather/weather.service';
 import * as fromUi from '../models/reducers';
 
 @Component({
@@ -30,7 +33,9 @@ export class WizardComponent implements OnInit, OnDestroy {
     constructor(
         private formBuilder: FormBuilder,
         private store: Store<fromUi.UiState>,
-        private wizard: WizardService
+        private wizard: WizardService,
+        private network: NetworkService,
+        private weather: WeatherService
     ) { }
 
     ngOnInit(): void {
@@ -77,6 +82,12 @@ export class WizardComponent implements OnInit, OnDestroy {
         const index: number = event.previouslySelectedIndex;
         const nextIndex: number = event.selectedIndex;
         if (nextIndex > index) {
+            switch (nextIndex) {
+                case 2:
+                    this.schedule();
+                    break;
+
+            }
             this.wizard.goOn(
                 this.wizardForm.get('formSteps').get([index]).value,
                 index,
@@ -87,6 +98,64 @@ export class WizardComponent implements OnInit, OnDestroy {
 
     exit(): void {
         //
+    }
+
+    /**
+     * Performs in sequence the following operations:
+     * - Gets network
+     * - Creates the graph
+     * - Gets network data
+     * - Associates data to the graph
+     * - Gets and manages weather data
+     */
+    schedule(): void {
+        this.wizard.putOnHold();
+
+        const stream = this.network.getNetwork().pipe(
+            switchMap((response: any) => {
+                return this.network.createGraph(response);
+            }),
+            switchMap(() => {
+                return this.network.getNetworkData();
+            }),
+            switchMap((response: any) => {
+                return this.network.updateGraph(response);
+            }),
+            switchMap(() => {
+                return this.weather.getWeatherData(this.network.getTime());
+            }),
+            switchMap((response: any) => {
+                return this.weather.manageWeatherData(response);
+            })
+        );
+
+        this.subscriptions.push(stream.subscribe(
+            () => { },
+            (error: any) => {
+                let message: string;
+                switch (error) {
+                    case 'getNetwork':
+                        message = 'The request could not be processed. Check your Internet connection and try again';
+                        break;
+                    case 'createGraph':
+                        message = 'The graph cannnot be created. Try with another area';
+                        break;
+                    case 'getNetWorkData':
+                        message = 'Network data cannot be retrieved. Please, try at another time';
+                        break;
+                    case 'getWeatherData':
+                        message = 'Weather data cannot be retrieved. You can still continue the simulation';
+                        break;
+                }
+                this.wizard.putInError(message);
+                this.wizard.reset();
+            },
+            () => {
+                // Removes from waiting.
+                this.wizard.removeFromWaiting();
+                console.log(this.network.getGraph());
+            }
+        ));
     }
 
 }
