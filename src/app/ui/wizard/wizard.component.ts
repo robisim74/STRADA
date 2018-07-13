@@ -106,7 +106,7 @@ export class WizardComponent implements OnInit, OnDestroy {
      * - Creates the graph
      * - Gets network data
      * - Associates data to the graph
-     * - Gets and manages weather data
+     * - Gets and updates weather data
      */
     schedule(): void {
         this.wizard.putOnHold();

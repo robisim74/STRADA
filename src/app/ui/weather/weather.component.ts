@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard/wizard.service';
 import { WeatherService } from '../../network/weather/weather.service';
+import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
 
@@ -22,12 +23,15 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
 
     icon: any;
 
+    time: any | string = '';
+
     constructor(
         private elementRef: ElementRef,
         private renderer: Renderer2,
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
-        private weather: WeatherService
+        private weather: WeatherService,
+        private network: NetworkService
     ) {
         super();
     }
@@ -53,6 +57,7 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
                     if (this.icon) {
                         this.renderer.removeChild(this.iconContainer, this.icon);
                         this.icon = null;
+                        this.time = '';
                     }
                     break;
                 case 3:
@@ -60,6 +65,7 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
                     this.description = weatherConditions.description;
                     this.icon = weatherConditions.icon;
                     this.renderer.appendChild(this.iconContainer, this.icon);
+                    this.time = this.network.getTimeString();
                     break;
             }
         }));

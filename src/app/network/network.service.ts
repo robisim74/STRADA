@@ -68,6 +68,13 @@ import { environment } from '../../environments/environment';
         this.time = time;
     }
 
+    public getTimeString(): string {
+        const time = new Date();
+        return this.time ?
+            this.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' }) :
+            time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+    }
+
     /**
      * Calls the Interpreter resource by providing the query in the Overpass language.
      */
