@@ -65,14 +65,14 @@ import { WeatherConditions } from './weather';
                 }
                 preDt = data.list[i].dt * 1000;
             }
-            this.addWeatherCondition(forecast);
+            this.addWeatherConditions(forecast);
         } else {
-            this.addWeatherCondition(data);
+            this.addWeatherConditions(data);
         }
         return of(null);
     }
 
-    private addWeatherCondition(data: any): void {
+    private addWeatherConditions(data: any): void {
         // Gets the icon image.
         const icon = new Image();
         if (data.weather[0]) {

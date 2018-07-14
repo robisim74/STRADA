@@ -10,6 +10,7 @@ import { Store, select } from '@ngrx/store';
 import { WizardService } from './wizard.service';
 import { NetworkService } from '../../network/network.service';
 import { WeatherService } from '../../network/weather/weather.service';
+import { MapService } from '../map/map.service';
 import * as fromUi from '../models/reducers';
 
 @Component({
@@ -35,7 +36,8 @@ export class WizardComponent implements OnInit, OnDestroy {
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
         private network: NetworkService,
-        private weather: WeatherService
+        private weather: WeatherService,
+        private map: MapService
     ) { }
 
     ngOnInit(): void {
@@ -140,7 +142,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                     case 'createGraph':
                         message = 'The graph cannnot be created. Try with another area';
                         break;
-                    case 'getNetWorkData':
+                    case 'getNetworkData':
                         message = 'Network data cannot be retrieved. Please, try at another time';
                         break;
                     case 'getWeatherData':
@@ -153,6 +155,10 @@ export class WizardComponent implements OnInit, OnDestroy {
             () => {
                 // Removes from waiting.
                 this.wizard.removeFromWaiting();
+                // Draws graph;
+                this.map.drawGraph();
+
+                console.log(this.network.getGraph());
             }
         ));
     }

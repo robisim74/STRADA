@@ -3,17 +3,16 @@ import { map, take, concatMap } from 'rxjs/operators';
 
 import * as _googleMaps from '@google/maps';
 
-import { trafficDirections } from './models/traffic-directions';
+import { networkDirections } from './models/network-directions';
 import { functionsConfig } from './functions-config';
 
 const googleMaps = _googleMaps;
 
 /**
- * Traffic data function.
+ * Network data function.
  */
-export function trafficDataFunction(request, response): void {
-    const edges: any = request.body.edges;
-    const time: Date = request.body.time ? new Date(request.body.time) : null;
+export function networkDataFunction(request, response): void {
+    const ways: any = request.body.ways;
 
     try {
         // Instances Google Maps.
@@ -24,17 +23,13 @@ export function trafficDataFunction(request, response): void {
         const data: any[] = [];
         // Builds the stream of directions requests.
         const stream = interval().pipe(
-            take(edges.length),
-            map((i: number) => edges[i]),
-            concatMap((edge: any) => trafficDirections(edge, time, googleMapsClient))
+            take(ways.length),
+            map((i: number) => ways[i]),
+            concatMap((way: any) => networkDirections(way, googleMapsClient))
         );
         // Executes the stream.
         stream.subscribe(
-            (edge: any) => {
-                data.push({
-                    durationInTraffic: edge.durationInTraffic
-                });
-            },
+            (edge: any) => { data.push(edge); },
             (error: any) => {
                 // Stops the execution.
                 response.status(500).send(error);

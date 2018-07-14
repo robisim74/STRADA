@@ -4,7 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import area from '@turf/area';
 import { point, polygon } from '@turf/helpers';
 
+import { NetworkService } from '../../network/network.service';
 import { uiConfig } from '../ui-config';
+import { Edge, Node } from '../../network/graph';
 
 /**
  * Instances the map.
@@ -21,13 +23,27 @@ import { uiConfig } from '../ui-config';
 
     private area = new BehaviorSubject<number | null>(null);
 
-    constructor(private zone: NgZone) { }
+    constructor(
+        private zone: NgZone,
+        private network: NetworkService
+    ) { }
 
     reset(): void {
         this.resetMap.emit(null);
         this.rectangle.setMap(null);
         this.infoWindow.close();
         this.area.next(null);
+        const graph = this.network.getGraph();
+        if (graph) {
+            const edges = graph.getEdges();
+            const nodes = graph.getNodes();
+            for (const edge of edges) {
+                edge.drawingOptions.polyline.setMap(null);
+            }
+            for (const node of nodes) {
+                node.drawingOptions.marker.setMap(null);
+            }
+        }
     }
 
     /**
@@ -110,6 +126,34 @@ import { uiConfig } from '../ui-config';
             east: bounds.getNorthEast().lng(),
             west: bounds.getSouthWest().lng()
         };
+    }
+
+    /**
+     * Draws the graph on the map.
+     */
+    public drawGraph(): void {
+        const graph = this.network.getGraph();
+        const edges = graph.getEdges();
+        const nodes = graph.getNodes();
+        for (const edge of edges) {
+            this.drawBaseEdge(edge);
+        }
+        for (const node of nodes) {
+            this.showNode(node);
+        }
+    }
+
+    private drawBaseEdge(edge: Edge): void {
+        edge.drawingOptions.polyline.setMap(this.map);
+    }
+
+    private showNode(node: Node): void {
+        node.drawingOptions.marker = new google.maps.Marker({
+            position: { lat: node.lat, lng: node.lon },
+            icon: '../../assets/images/add_location.png',
+            title: 'Node: ' + node.label,
+            map: this.map
+        });
     }
 
     private checkRect(): void {

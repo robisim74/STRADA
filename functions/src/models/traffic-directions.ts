@@ -1,9 +1,10 @@
 import { Observable, Observer } from "rxjs";
 
 /**
- * Makes the request to Google Maps Directions API.
+ * Makes the request to Google Maps Directions API
+ * to retrieve traffic information.
  */
-export function directions(edge: any, time: Date, googleMapsClient: any): Observable<any> {
+export function trafficDirections(edge: any, time: Date, googleMapsClient: any): Observable<any> {
     return Observable.create((observer: Observer<any>) => {
         googleMapsClient.directions(buildRequest(edge, time))
             .asPromise()
@@ -11,8 +12,7 @@ export function directions(edge: any, time: Date, googleMapsClient: any): Observ
                 // For routes that contain no waypoints, the route will consist of a single leg.
                 if (response.json && response.json.routes[0] && response.json.routes[0].legs[0]) {
                     const leg = response.json.routes[0].legs[0];
-                    edge.distance = leg.distance.value;
-                    edge.duration = leg.duration.value;
+                    // Traffic information.
                     edge.durationInTraffic = leg.duration_in_traffic.value;
                     observer.next(edge);
                     observer.complete();
@@ -21,12 +21,16 @@ export function directions(edge: any, time: Date, googleMapsClient: any): Observ
                     observer.complete();
                 }
             })
-            .catch((err) => {
-                observer.error(err);
+            .catch((error) => {
+                observer.error(error);
             });
     });
 }
 
+/**
+ * Builds a Directions Request object
+ * @param edge The current edge
+ */
 export function buildRequest(edge: any, time: Date): any {
     return {
         origin: { lat: edge.origin.lat, lng: edge.origin.lon },

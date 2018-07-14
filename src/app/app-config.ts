@@ -20,9 +20,6 @@ export const appConfig = {
             url: 'https://maps.googleapis.com/maps/api/js',
             apiKey: 'YOUR_API_KEY'
         },
-        mapbox: {
-            accessToken: 'YOUR_ACCESS_TOKEN'
-        },
         openWeatherMap: {
             weatherUrl: 'https://api.openweathermap.org/data/2.5/weather',
             forecastUrl: 'https://api.openweathermap.org/data/2.5/forecast',

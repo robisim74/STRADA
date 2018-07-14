@@ -70,12 +70,6 @@ import { WizardState } from "../models/reducers/wizard.reducer";
     }
 
     public reset(): void {
-        // App.
-        this.location.reset();
-        this.network.reset();
-        this.weather.reset();
-        this.demand.reset();
-        this.simulation.reset();
         // UI.
         this.map.reset();
         // UI state.
@@ -84,6 +78,12 @@ import { WizardState } from "../models/reducers/wizard.reducer";
         });
         // Stepper.
         this.stepper.reset();
+        // App.
+        this.location.reset();
+        this.network.reset();
+        this.weather.reset();
+        this.demand.reset();
+        this.simulation.reset();
     }
 
 }

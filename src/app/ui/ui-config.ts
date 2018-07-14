@@ -16,4 +16,10 @@ export const uiConfig = {
      */
     areaMaxLimit: 50,
     areaMinLimit: 3,
+    edges: {
+        baseColor: '#babdbe',
+        noTrafficColor: '#76d219',
+        moderateTrafficColor: '#d27519',
+        heavyTrafficColor: '#d2191a'
+    }
 };

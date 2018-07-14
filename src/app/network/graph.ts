@@ -28,6 +28,8 @@ export class Node {
 
     public nodeId: number;
 
+    public label: number;
+
     public lat: number;
 
     public lon: number;
@@ -38,8 +40,11 @@ export class Node {
 
     public outgoingEdges: Edge[] = [];
 
-    constructor(nodeId: number) {
+    public drawingOptions: { marker?: google.maps.Marker } = {};
+
+    constructor(nodeId: number, label: number) {
         this.nodeId = nodeId;
+        this.label = label;
     }
 
 }
@@ -79,6 +84,8 @@ export class Edge {
     public flow: number;
 
     public linkFlow: number;
+
+    public drawingOptions: { polyline?: google.maps.Polyline } = {};
 
     constructor(edgeId: number) {
         this.edgeId = edgeId;

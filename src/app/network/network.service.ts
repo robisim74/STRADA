@@ -4,11 +4,10 @@ import { Observable, throwError, Observer, of, from, interval } from 'rxjs';
 import { map, catchError, take, concatMap } from 'rxjs/operators';
 
 import * as qs from 'qs';
-import * as mbxClient from '@mapbox/mapbox-sdk';
-import * as mbxGetDirections from '@mapbox/mapbox-sdk/services/directions';
 
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
+import { uiConfig } from '../ui/ui-config';
 import { environment } from '../../environments/environment';
 
 /**
@@ -33,15 +32,7 @@ import { environment } from '../../environments/environment';
 
     private edgeId = 0;
 
-    /**
-     * Mapbox client.
-     */
-    private mapBoxClient: any;
-
-    /**
-     * Mapbox getDirections service.
-     */
-    private getDirectionsService: any;
+    private nodeLabel = 1;
 
     constructor(private http: HttpClient) { }
 
@@ -50,6 +41,7 @@ import { environment } from '../../environments/environment';
         this.bounds = null;
         this.time = null;
         this.edgeId = 0;
+        this.nodeLabel = 1;
     }
 
     public getGraph(): Graph {
@@ -151,8 +143,57 @@ import { environment } from '../../environments/environment';
     }
 
     /**
+     * Call the networkData cloud function,
+     * that reiterates the invocation of the Directions API to obtain all links network data.
+     */
+    public getNetworkData(): Observable<any> {
+        const url: string = environment.functions.networkData.url;
+        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const ways: any[][] = this.getWays();
+        const body = JSON.stringify({
+            ways: ways
+        });
+
+        // To networkData function.
+        return this.http.post(url, body, { headers: headers }).pipe(
+            map((response: any) => response),
+            catchError((error: any) => throwError('getNetworkData'))
+        );
+    }
+
+    /**
+     * Updates graph using the data obtained from Directions API.
+     * @param data Network data
+     */
+    public updateGraph(data: any[]): Observable<any> {
+        const edges = this.graph.getEdges();
+        return from(data).pipe(
+            map((value: any, i: number) => {
+                edges[i].distance = value.distance;
+                edges[i].duration = value.duration;
+
+                // Decodes polyline paths.
+                let path: google.maps.LatLng[] = [];
+                for (const polyline of value.polylines) {
+                    path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
+                }
+                // Updates drawing options.
+                edges[i].drawingOptions.polyline = new google.maps.Polyline(
+                    {
+                        path: path,
+                        geodesic: true,
+                        strokeColor: uiConfig.edges.baseColor,
+                        strokeOpacity: 1,
+                        strokeWeight: 10
+                    }
+                );
+            })
+        );
+    }
+
+    /**
      * Call the trafficData cloud function,
-     * that reiterates the invocation of the Directions API to obtain all link traffic data.
+     * that reiterates the invocation of the Directions API to obtain all links traffic data.
      */
     public getTrafficData(): Observable<any> {
         const url: string = environment.functions.trafficData.url;
@@ -162,8 +203,6 @@ import { environment } from '../../environments/environment';
             return {
                 origin: { lat: v.origin.lat, lon: v.origin.lon },
                 destination: { lat: v.destination.lat, lon: v.destination.lon },
-                distance: null,
-                duration: null,
                 durationInTraffic: null
             };
         });
@@ -176,53 +215,6 @@ import { environment } from '../../environments/environment';
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),
             catchError((error: any) => throwError('getTrafficData'))
-        );
-    }
-
-    /**
-     * Gets network data from Mapbox Directions API.
-     */
-    public getNetworkData(): Observable<any> {
-        // Mapbox.
-        this.mapBoxClient = mbxClient({ accessToken: appConfig.apis.mapbox.accessToken });
-        this.getDirectionsService = mbxGetDirections(this.mapBoxClient);
-
-        return Observable.create((observer: Observer<any>) => {
-            const ways: any[][] = this.getWays();
-            const data: any[] = [];
-
-            // Builds the stream of getDirections requests.
-            const stream = interval().pipe(
-                take(ways.length),
-                map((i: number) => ways[i]),
-                concatMap((way: any[]) => this.getDirections(way))
-            );
-            // Executes the stream.
-            stream.subscribe(
-                (leg: any) => { data.push(leg); },
-                (error: any) => {
-                    // Stops the execution.
-                    observer.error(error);
-                },
-                () => {
-                    observer.next(data);
-                    observer.complete();
-                }
-            );
-        });
-    }
-
-    /**
-     * Updates graph using the data obtained from Mapbox Directions API.
-     * @param data Traffic data
-     */
-    public updateGraph(data: any[]): Observable<any> {
-        const edges = this.graph.getEdges();
-        return from(data).pipe(
-            map((value: any, i: number) => {
-                edges[i].distance = value.distance;
-                edges[i].duration = value.duration;
-            })
         );
     }
 
@@ -282,8 +274,8 @@ import { environment } from '../../environments/environment';
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
         for (let i = 0; i < filteredWayNodes.length - 1; i++) {
             // Gets or creates first and second node.
-            const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
-            const secondNode = this.graph.getNode(filteredWayNodes[i + 1]) || new Node(filteredWayNodes[i + 1]);
+            const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i], this.nodeLabel++);
+            const secondNode = this.graph.getNode(filteredWayNodes[i + 1]) || new Node(filteredWayNodes[i + 1], this.nodeLabel++);
             // Creates the edge.
             const edge: Edge = new Edge(this.edgeId++);
             edge.origin = firstNode;
@@ -324,8 +316,8 @@ import { environment } from '../../environments/environment';
         if (edges.length > 0) {
             let wayIndex = 0;
             ways[wayIndex] = [];
-            ways[wayIndex].push({ coordinates: [edges[0].origin.lon, edges[0].origin.lat] });
-            ways[wayIndex].push({ coordinates: [edges[0].destination.lon, edges[0].destination.lat] });
+            ways[wayIndex].push(edges[0].origin.lat + ',' + edges[0].origin.lon);
+            ways[wayIndex].push(edges[0].destination.lat + ',' + edges[0].destination.lon);
             for (let i = 1; i < edges.length; i++) {
                 // Checks if same way.
                 if (edges[i].origin.lon == edges[i - 1].destination.lon &&
@@ -333,57 +325,16 @@ import { environment } from '../../environments/environment';
                     edges[i].destination.lon != edges[i - 1].origin.lon &&
                     edges[i].destination.lat != edges[i - 1].origin.lat
                 ) {
-                    ways[wayIndex].push({ coordinates: [edges[i].destination.lon, edges[i].destination.lat] });
+                    ways[wayIndex].push(edges[i].destination.lat + ',' + edges[i].destination.lon);
                 } else {
                     wayIndex++;
                     ways[wayIndex] = [];
-                    ways[wayIndex].push({ coordinates: [edges[i].origin.lon, edges[i].origin.lat] });
-                    ways[wayIndex].push({ coordinates: [edges[i].destination.lon, edges[i].destination.lat] });
+                    ways[wayIndex].push(edges[i].origin.lat + ',' + edges[i].origin.lon);
+                    ways[wayIndex].push(edges[i].destination.lat + ',' + edges[i].destination.lon);
                 }
             }
         }
         return ways;
-    }
-
-    /**
-     * Makes the request to Mapbox Directions API.
-     * @param way The current way with waypoints
-     */
-    private getDirections(way: any[]): Observable<any> {
-        return Observable.create((observer: Observer<any>) => {
-            // Gets distance and duration.
-            this.getDirectionsService.getDirections(this.buildConfig(way))
-                .send()
-                .then(
-                    (response: any) => {
-                        if (response && response.body && response.body.routes[0] && response.body.routes[0].legs.length > 0) {
-                            for (const leg of response.body.routes[0].legs) {
-                                observer.next({ distance: leg.distance, duration: leg.duration });
-                            }
-                            observer.complete();
-                        } else {
-                            for (let i = 0; i <= way.length - 1; i++) {
-                                observer.next({ distance: null, duration: null });
-                            }
-                            observer.complete();
-                        }
-                    },
-                    (error: any) => {
-                        observer.error('getNetworkData');
-                    }
-                );
-        });
-    }
-
-    /**
-     * Builds a Mapbox Config object
-     * @param way The current way with waypoints
-     */
-    private buildConfig(way: any[]): any {
-        return {
-            profile: 'driving',
-            waypoints: way
-        };
     }
 
 }

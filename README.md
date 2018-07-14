@@ -21,8 +21,6 @@ Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)
 - Google Maps 
     - Get your API keys: https://cloud.google.com/maps-platform/
     - Enable _Maps JavaScript API_, _Geocoding API_ and _Directions API_
-- Mapbox
-    - Get your Access token: https://www.mapbox.com/
 - OpenWeatherMap
     - Get your API key: https://openweathermap.org/
 

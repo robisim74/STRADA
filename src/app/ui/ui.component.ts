@@ -53,7 +53,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     }
 
     canDeactivate(): Observable<boolean> | boolean {
-        return this.openDialog('Are you sure you want to quit the application?').pipe(
+        return this.openDialog('Are you sure you want to exit the simulation?').pipe(
             tap((dialogResult: boolean) => {
                 if (dialogResult) {
                     this.wizard.reset();
@@ -63,7 +63,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     }
 
     reset(): void {
-        this.openDialog('Are you sure you want to reset the application?').subscribe(
+        this.openDialog('Are you sure you want to reset the simulation?').subscribe(
             (dialogResult: boolean) => {
                 if (dialogResult) {
                     this.wizard.reset();

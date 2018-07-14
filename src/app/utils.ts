@@ -5,7 +5,7 @@ import { appConfig } from './app-config';
 export function loadScripts(): Function {
     const scripts: Array<Promise<any>> = [];
     // Adds scripts.
-    scripts.push(getScript(appConfig.apis.googleMaps.url + '?key=' + appConfig.apis.googleMaps.apiKey));
+    scripts.push(getScript(appConfig.apis.googleMaps.url + '?key=' + appConfig.apis.googleMaps.apiKey + '&libraries=geometry'));
 
     return () => Promise.all(scripts);
 }
