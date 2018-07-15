@@ -21,5 +21,7 @@ export const uiConfig = {
         noTrafficColor: '#76d219',
         moderateTrafficColor: '#d27519',
         heavyTrafficColor: '#d2191a'
-    }
+    },
+    // Maximum number of O/D pairs that the user can select.
+    maxOdPairs: 5
 };

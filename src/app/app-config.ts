@@ -13,8 +13,10 @@ export const appConfig = {
             /**
              * The main key used for identifying any kind of road.
              * https://wiki.openstreetmap.org/wiki/Key:highway
+             *
+             * Excluded: 'residential' and 'service'.
              */
-            highways: ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']
+            highways: ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified']
         },
         googleMaps: {
             url: 'https://maps.googleapis.com/maps/api/js',

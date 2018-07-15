@@ -13,7 +13,9 @@ import { Edge, Node } from '../../network/graph';
  */
 @Injectable() export class MapService {
 
-    @Output() public resetMap: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public mapReset: EventEmitter<any> = new EventEmitter<any>();
+
+    @Output() public nodeSelected: EventEmitter<Node> = new EventEmitter<Node>();
 
     private map: google.maps.Map;
 
@@ -29,7 +31,7 @@ import { Edge, Node } from '../../network/graph';
     ) { }
 
     reset(): void {
-        this.resetMap.emit(null);
+        this.mapReset.emit(null);
         this.rectangle.setMap(null);
         this.infoWindow.close();
         this.area.next(null);
@@ -38,10 +40,10 @@ import { Edge, Node } from '../../network/graph';
             const edges = graph.getEdges();
             const nodes = graph.getNodes();
             for (const edge of edges) {
-                edge.drawingOptions.polyline.setMap(null);
+                if (edge.drawingOptions.polyline) { edge.drawingOptions.polyline.setMap(null); }
             }
             for (const node of nodes) {
-                node.drawingOptions.marker.setMap(null);
+                if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
             }
         }
     }
@@ -144,7 +146,9 @@ import { Edge, Node } from '../../network/graph';
     }
 
     private drawBaseEdge(edge: Edge): void {
-        edge.drawingOptions.polyline.setMap(this.map);
+        if (edge.drawingOptions.polyline) {
+            edge.drawingOptions.polyline.setMap(this.map);
+        }
     }
 
     private showNode(node: Node): void {
@@ -153,6 +157,21 @@ import { Edge, Node } from '../../network/graph';
             icon: '../../assets/images/add_location.png',
             title: 'Node: ' + node.label,
             map: this.map
+        });
+        // Adds listener.
+        node.drawingOptions.marker.addListener('click', () => this.selectNode(node));
+    }
+
+    /**
+     * Changes the marker icon of the selected node and sends an event.
+     * @param node Selected node
+     */
+    private selectNode(node: Node): void {
+        this.zone.run(() => {
+            node.drawingOptions.marker.setIcon('../../assets/images/place.png');
+
+            // Sends the node to subscribers.
+            this.nodeSelected.emit(node);
         });
     }
 

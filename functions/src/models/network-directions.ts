@@ -45,7 +45,6 @@ export function buildRequest(way: any[]): any {
     const waypoints = way.filter((waypoint: any, i: number) => {
         return i != 0 && i != way.length - 1;
     });
-    console.log(waypoints)
     return {
         origin: way[0],
         destination: way[way.length - 1],

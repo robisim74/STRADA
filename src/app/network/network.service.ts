@@ -167,16 +167,21 @@ import { environment } from '../../environments/environment';
      */
     public updateGraph(data: any[]): Observable<any> {
         const edges = this.graph.getEdges();
-        return from(data).pipe(
-            map((value: any, i: number) => {
-                edges[i].distance = value.distance;
-                edges[i].duration = value.duration;
+        for (let i = 0; i < data.length; i++) {
+            const value: any = data[i];
+            edges[i].distance = value.distance;
+            edges[i].duration = value.duration;
 
-                // Decodes polyline paths.
+            // Decodes polyline paths.
+            if (value.polylines) {
                 let path: google.maps.LatLng[] = [];
                 for (const polyline of value.polylines) {
                     path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
                 }
+                // Removes duplicates from path.
+                path = path.filter((point, index, self) =>
+                    index === self.findIndex((p) => (point.equals(p)))
+                );
                 // Updates drawing options.
                 edges[i].drawingOptions.polyline = new google.maps.Polyline(
                     {
@@ -187,8 +192,19 @@ import { environment } from '../../environments/environment';
                         strokeWeight: 10
                     }
                 );
-            })
-        );
+            }
+        }
+        return of(null);
+    }
+
+    /**
+     * Cleans the graph data to avoid inconsistencies between data in the OpenStreetMap network and data from Google Maps.
+     */
+    public cleanGraph(): Observable<any> {
+
+        // Remove from the graph invalidated edges and dead nodes.
+
+        return of(null);
     }
 
     /**
@@ -320,10 +336,8 @@ import { environment } from '../../environments/environment';
             ways[wayIndex].push(edges[0].destination.lat + ',' + edges[0].destination.lon);
             for (let i = 1; i < edges.length; i++) {
                 // Checks if same way.
-                if (edges[i].origin.lon == edges[i - 1].destination.lon &&
-                    edges[i].origin.lat == edges[i - 1].destination.lat &&
-                    edges[i].destination.lon != edges[i - 1].origin.lon &&
-                    edges[i].destination.lat != edges[i - 1].origin.lat
+                if (edges[i].origin.nodeId == edges[i - 1].destination.nodeId &&
+                    edges[i].destination.nodeId != edges[i - 1].origin.nodeId
                 ) {
                     ways[wayIndex].push(edges[i].destination.lat + ',' + edges[i].destination.lon);
                 } else {
@@ -335,6 +349,16 @@ import { environment } from '../../environments/environment';
             }
         }
         return ways;
+    }
+
+    private isLocationOnEdge(point: google.maps.LatLng, poly: google.maps.Polyline, tolerance: number): boolean {
+        return google.maps.geometry.poly.isLocationOnEdge(point, poly, tolerance);
+    }
+
+    private invalidateEdge(edge: Edge): void {
+        edge.distance = null;
+        edge.duration = null;
+        edge.drawingOptions = {};
     }
 
 }

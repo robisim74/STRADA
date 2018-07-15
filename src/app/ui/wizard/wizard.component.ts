@@ -53,7 +53,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                     time: [null]
                 }),
                 this.formBuilder.group({
-
+                    odPairs: [[]]
                 }),
                 this.formBuilder.group({
 
@@ -124,6 +124,9 @@ export class WizardComponent implements OnInit, OnDestroy {
                 return this.network.updateGraph(response);
             }),
             switchMap(() => {
+                return this.network.cleanGraph();
+            }),
+            switchMap(() => {
                 return this.weather.getWeatherData(this.network.getTime());
             }),
             switchMap((response: any) => {
@@ -146,11 +149,10 @@ export class WizardComponent implements OnInit, OnDestroy {
                         message = 'Network data cannot be retrieved. Please, try at another time';
                         break;
                     case 'getWeatherData':
-                        message = 'Weather data cannot be retrieved. You can still continue the simulation';
+                        message = 'Weather data cannot be retrieved. lease, try at another time';
                         break;
                 }
                 this.wizard.putInError(message);
-                this.wizard.reset();
             },
             () => {
                 // Removes from waiting.

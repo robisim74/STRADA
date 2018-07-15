@@ -8,6 +8,7 @@ import { MapStyle } from './map.style';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
 import { uiConfig } from '../ui-config';
+import { Node } from '../../network/graph';
 
 import { BaseComponent } from '../models/base.component';
 
@@ -89,9 +90,15 @@ export class MapComponent extends BaseComponent implements OnInit {
             }
         }));
 
-        this.subscriptions.push(this.map.resetMap.subscribe(() => {
+        // mapReset event.
+        this.subscriptions.push(this.map.mapReset.subscribe(() => {
             this.center = uiConfig.map.center;
             this.zoom = uiConfig.map.zoom;
+        }));
+
+        // nodeSelected event.
+        this.subscriptions.push(this.map.nodeSelected.subscribe((node: Node) => {
+            this.updateOdPairs(node);
         }));
     }
 
@@ -107,6 +114,33 @@ export class MapComponent extends BaseComponent implements OnInit {
                     break;
             }
         }));
+    }
+
+    updateOdPairs(node: Node): void {
+        const odPairs: number[][] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
+        if (odPairs.length > 0) {
+            // Checks limit.
+            if (odPairs.length == uiConfig.maxOdPairs && odPairs[uiConfig.maxOdPairs - 1].length == 2) {
+                this.wizard.putInError(`The maximum number of O/D pairs is ${uiConfig.maxOdPairs}`);
+            } else {
+                const lastOdPair = odPairs[odPairs.length - 1];
+                // Checks if last O/D pair is completed.
+                if (lastOdPair.length == 2) {
+                    odPairs.push([node.label]);
+                } else {
+                    // Checks if same node.
+                    if (lastOdPair[0] == node.label) {
+                        this.wizard.putInError(`The origin and destination nodes can not be the same`);
+                    } else {
+                        lastOdPair.push(node.label);
+                    }
+                }
+            }
+        } else {
+            odPairs.push([node.label]);
+        }
+        // Updates step state.
+        this.wizard.updateStep({ odPairs: odPairs }, 2);
     }
 
 }
