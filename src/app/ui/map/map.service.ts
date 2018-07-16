@@ -140,8 +140,13 @@ import { Edge, Node } from '../../network/graph';
         for (const edge of edges) {
             this.drawBaseEdge(edge);
         }
+        let nodeId = 1;
         for (const node of nodes) {
-            this.showNode(node);
+            // Shows only nodes at the end of the ways.
+            if (node.incomingEdges.length + node.outgoingEdges.length <= 2) {
+                node.label = nodeId++;
+                this.showNode(node);
+            }
         }
     }
 

@@ -34,8 +34,6 @@ import { environment } from '../../environments/environment';
 
     private edgeId = 0;
 
-    private nodeLabel = 1;
-
     constructor(private http: HttpClient) { }
 
     public reset(): void {
@@ -43,7 +41,6 @@ import { environment } from '../../environments/environment';
         this.bounds = null;
         this.time = null;
         this.edgeId = 0;
-        this.nodeLabel = 1;
     }
 
     public getGraph(): Graph {
@@ -154,6 +151,7 @@ import { environment } from '../../environments/environment';
         const url: string = environment.functions.networkData.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
         const ways: any[][] = this.getWays();
+        console.log(ways);
         const body = JSON.stringify({
             ways: ways
         });
@@ -200,7 +198,8 @@ import { environment } from '../../environments/environment';
      * Remove from the graph invalidated edges and dead nodes.
      */
     public cleanGraph(): Observable<any> {
-
+        this.graph.removeInvalidatedEdges();
+        this.graph.removeDeadNodes();
         return of(null);
     }
 
@@ -317,8 +316,8 @@ import { environment } from '../../environments/environment';
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
         for (let i = 0; i < filteredWayNodes.length - 1; i++) {
             // Gets or creates first and second node.
-            const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i], this.nodeLabel++);
-            const secondNode = this.graph.getNode(filteredWayNodes[i + 1]) || new Node(filteredWayNodes[i + 1], this.nodeLabel++);
+            const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
+            const secondNode = this.graph.getNode(filteredWayNodes[i + 1]) || new Node(filteredWayNodes[i + 1]);
             // Creates the edge.
             const edge: Edge = new Edge(this.edgeId++);
             edge.origin = firstNode;

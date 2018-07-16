@@ -28,7 +28,7 @@ export class Node {
 
     public nodeId: number;
 
-    public label: number;
+    public label?: number;
 
     public lat: number;
 
@@ -42,9 +42,8 @@ export class Node {
 
     public drawingOptions: { marker?: google.maps.Marker } = {};
 
-    constructor(nodeId: number, label: number) {
+    constructor(nodeId: number) {
         this.nodeId = nodeId;
-        this.label = label;
     }
 
 }
@@ -159,6 +158,52 @@ export class Graph {
 
     public addEdge(edge: Edge): void {
         this.edges.push(edge);
+    }
+
+    /**
+     * Removes the edges with null distance.
+     */
+    public removeInvalidatedEdges(): void {
+        const removedEdges: number[] = [];
+        if (this.edges.length > 0) {
+            for (let i = this.edges.length - 1; i >= 0; i--) {
+                if (!this.edges[i].distance) {
+                    removedEdges.push(this.edges[i].edgeId);
+                    this.edges.splice(i, 1);
+                }
+            }
+            for (const edgeId of removedEdges) {
+                for (const node of this.nodes) {
+                    if (node.incomingEdges.length > 0) {
+                        for (let i = node.incomingEdges.length - 1; i >= 0; i--) {
+                            if (node.incomingEdges[i].edgeId == edgeId) {
+                                node.incomingEdges.splice(i, 1);
+                            }
+                        }
+                    }
+                    if (node.outgoingEdges.length > 0) {
+                        for (let i = node.outgoingEdges.length - 1; i >= 0; i--) {
+                            if (node.outgoingEdges[i].edgeId == edgeId) {
+                                node.outgoingEdges.splice(i, 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes the nodes with no outgoing edges and incoming edges.
+     */
+    public removeDeadNodes(): void {
+        if (this.nodes.length > 0) {
+            for (let i = this.nodes.length - 1; i >= 0; i--) {
+                if (this.nodes[i].incomingEdges.length == 0 && this.nodes[i].outgoingEdges.length == 0) {
+                    this.nodes.splice(i, 1);
+                }
+            }
+        }
     }
 
     /**
