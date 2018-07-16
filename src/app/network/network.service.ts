@@ -4,6 +4,8 @@ import { Observable, throwError, Observer, of, from, interval } from 'rxjs';
 import { map, catchError, take, concatMap } from 'rxjs/operators';
 
 import * as qs from 'qs';
+import * as deepFillIn from 'mout/object/deepFillIn';
+import * as combine from 'mout/array/combine';
 
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
@@ -99,7 +101,9 @@ import { environment } from '../../environments/environment';
         // a Map object that holds nodeId-degree as key-value pairs.
         const nodesDegrees: Map<number, number> = new Map();
         // Gets the list of ways.
-        const ways: any[] = elements.filter((element: any) => element['type'] == 'way');
+        let ways: any[] = elements.filter((element: any) => element['type'] == 'way');
+        // Merges the ways with the same name and same direction.
+        ways = this.mergeWays(ways);
         // Gets the list of nodes.
         const nodes: any[] = elements.filter((element: any) => element['type'] == 'node');
 
@@ -128,7 +132,7 @@ import { environment } from '../../environments/environment';
                     // First direction.
                     this.splitWay(filteredWayNodes, nodes, way);
                     // Second direction (two-way).
-                    if (!way['tags']['oneway']) {
+                    if (!way['tags']['oneway'] || way['tags']['oneway'] == 'no') {
                         // Reverse the order of filtered way nodes.
                         this.splitWay(filteredWayNodes.reverse(), nodes, way);
                     }
@@ -178,15 +182,10 @@ import { environment } from '../../environments/environment';
                 for (const polyline of value.polylines) {
                     path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
                 }
-                // Removes duplicates from path.
-                path = path.filter((point, index, self) =>
-                    index === self.findIndex((p) => (point.equals(p)))
-                );
                 // Updates drawing options.
                 edges[i].drawingOptions.polyline = new google.maps.Polyline(
                     {
-                        path: path,
-                        geodesic: true,
+                        path: this.cleanPath(path),
                         strokeColor: uiConfig.edges.baseColor,
                         strokeOpacity: 1,
                         strokeWeight: 10
@@ -198,11 +197,9 @@ import { environment } from '../../environments/environment';
     }
 
     /**
-     * Cleans the graph data to avoid inconsistencies between data in the OpenStreetMap network and data from Google Maps.
+     * Remove from the graph invalidated edges and dead nodes.
      */
     public cleanGraph(): Observable<any> {
-
-        // Remove from the graph invalidated edges and dead nodes.
 
         return of(null);
     }
@@ -287,6 +284,36 @@ import { environment } from '../../environments/environment';
         return qs.stringify({ data: query });
     }
 
+    /**
+     * Merges the ways with the same name and same direction.
+     * @param ways Array of OpenStreetMap ways
+     */
+    private mergeWays(ways: any[]) {
+        const mergedWays: any[] = [];
+        for (const way of ways) {
+            // Gets way without name.
+            if (!way['tags']['name']) {
+                mergedWays.push(way);
+            }
+            if (mergedWays.find(item => item['tags']['name'] == way['tags']['name'] &&
+                (!item['tags']['oneway'] && !way['tags']['oneway'] || item['tags']['oneway'] == way['tags']['oneway'])
+            )) {
+                continue;
+            }
+            // Finds the same ways.
+            const sameWays = ways.filter(item => item['tags']['name'] == way['tags']['name'] &&
+                (!item['tags']['oneway'] && !way['tags']['oneway'] || item['tags']['oneway'] == way['tags']['oneway'])
+            );
+            let mergedWay: any = {};
+            for (const sameWay of sameWays) {
+                mergedWay = deepFillIn(mergedWay, sameWay);
+                mergedWay['nodes'] = combine(mergedWay['nodes'], sameWay['nodes']);
+            }
+            mergedWays.push(mergedWay);
+        }
+        return mergedWays;
+    }
+
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
         for (let i = 0; i < filteredWayNodes.length - 1; i++) {
             // Gets or creates first and second node.
@@ -351,14 +378,14 @@ import { environment } from '../../environments/environment';
         return ways;
     }
 
-    private isLocationOnEdge(point: google.maps.LatLng, poly: google.maps.Polyline, tolerance: number): boolean {
-        return google.maps.geometry.poly.isLocationOnEdge(point, poly, tolerance);
-    }
-
-    private invalidateEdge(edge: Edge): void {
-        edge.distance = null;
-        edge.duration = null;
-        edge.drawingOptions = {};
+    /**
+     * Removes duplicates from path.
+     * @param path Array of google.maps.LatLng
+     */
+    private cleanPath(path: google.maps.LatLng[]): google.maps.LatLng[] {
+        return path.filter((point, index, self) =>
+            index === self.findIndex((p) => (point.equals(p)))
+        );
     }
 
 }

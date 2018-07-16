@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
-import { map } from "rxjs/operators";
 
 import { NetworkService } from "src/app/network/network.service";
 

@@ -12,16 +12,21 @@ export function networkDirections(way: any[], googleMapsClient: any): Observable
                 if (response.json && response.json.routes[0] && response.json.routes[0].legs.length > 0) {
                     for (let i = 0; i < response.json.routes[0].legs.length; i++) {
                         const leg = response.json.routes[0].legs[i];
-                        // Gets polyline for each step.
-                        let polylines = [];
-                        for (const step of leg.steps) {
-                            polylines = polylines.concat(step.polyline);
+                        // To avoid inconsistencies between data in the OpenStreetMap network and data from Google Maps.
+                        if (leg.steps.length <= 3) {
+                            // Gets polyline for each step.
+                            let polylines = [];
+                            for (const step of leg.steps) {
+                                polylines = polylines.concat(step.polyline);
+                            }
+                            observer.next({
+                                distance: leg.distance.value,
+                                duration: leg.duration.value,
+                                polylines: polylines
+                            });
+                        } else {
+                            observer.next({ distance: null, duration: null, polylines: null });
                         }
-                        observer.next({
-                            distance: leg.distance.value,
-                            duration: leg.duration.value,
-                            polylines: polylines
-                        });
                     }
                     observer.complete();
                 } else {
