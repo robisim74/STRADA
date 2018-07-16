@@ -53,7 +53,7 @@ export const error: MemoizedSelector<object, string> = createSelector(
 /**
  * Exports the pending state.
  */
-export const pending: MemoizedSelector<object, boolean> = createSelector(
+export const pending: MemoizedSelector<object, string | boolean> = createSelector(
     wizardState,
     fromWizard.getPending
 );

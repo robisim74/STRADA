@@ -48,10 +48,10 @@ import { WizardState } from "../models/reducers/wizard.reducer";
         });
     }
 
-    public putOnHold(): void {
+    public putOnHold(message?: string): void {
         this.store.dispatch({
             type: WizardActionTypes.StepPending,
-            payload: true
+            payload: message || true
         });
     }
 

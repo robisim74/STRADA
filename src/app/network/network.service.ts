@@ -6,11 +6,15 @@ import { map, catchError, take, concatMap } from 'rxjs/operators';
 import * as qs from 'qs';
 import * as deepFillIn from 'mout/object/deepFillIn';
 import * as combine from 'mout/array/combine';
+import midpoint from '@turf/midpoint';
+import { getCoord } from '@turf/invariant';
+import { point } from '@turf/helpers';
 
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
 import { uiConfig } from '../ui/ui-config';
 import { environment } from '../../environments/environment';
+import { getRandomColor } from '../utils';
 
 /**
  * Creates and develops the graph of the transport network in the selected area.
@@ -180,11 +184,36 @@ import { environment } from '../../environments/environment';
                 for (const polyline of value.polylines) {
                     path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
                 }
+                path = this.cleanPath(path);
                 // Updates drawing options.
+                const lineSymbol = {
+                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    scale: 5
+                };
+                // If only two points are available, an intermediate point is inserted.
+                if (path.length == 2) {
+                    const point1 = point([path[0].lat(), path[0].lng()]);
+                    const point2 = point([path[1].lat(), path[1].lng()]);
+                    const middlePoint = midpoint(point1, point2);
+                    const coord = getCoord(middlePoint);
+                    const newPoint = new google.maps.LatLng(coord[0], coord[1]);
+                    path.splice(1, 0, newPoint);
+                }
+                // Two-way streets with more than two points are divided into two parts.
+                if (!this.graph.isOneway(i) && path.length > 2) {
+                    // Checks if even.
+                    const mediumIndex = (path.length % 2 == 0 ? (path.length / 2) : Math.round(path.length / 2)) - 1;
+                    path = path.filter((v, index) => index >= mediumIndex);
+                }
                 edges[i].drawingOptions.polyline = new google.maps.Polyline(
                     {
-                        path: this.cleanPath(path),
+                        path: path,
+                        icons: edges[i].distance > 100 ? [{ // Arrows only if greater than 100 meters
+                            icon: lineSymbol,
+                            offset: '100%'
+                        }] : null,
                         strokeColor: uiConfig.edges.baseColor,
+                        /* strokeColor: getRandomColor(), */
                         strokeOpacity: 1,
                         strokeWeight: 10
                     }
@@ -382,8 +411,8 @@ import { environment } from '../../environments/environment';
      * @param path Array of google.maps.LatLng
      */
     private cleanPath(path: google.maps.LatLng[]): google.maps.LatLng[] {
-        return path.filter((point, index, self) =>
-            index === self.findIndex((p) => (point.equals(p)))
+        return path.filter((value, index, self) =>
+            index === self.findIndex((p) => (value.equals(p)))
         );
     }
 

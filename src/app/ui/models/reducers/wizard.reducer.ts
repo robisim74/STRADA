@@ -11,7 +11,7 @@ export interface WizardState {
     steps: Step[];
     currentStep: number;
     error: string | null;
-    pending: boolean;
+    pending: string | boolean;
 
 }
 
@@ -75,4 +75,4 @@ export const getCurrentStep: (state: WizardState) => number = (state: WizardStat
 
 export const getError: (state: WizardState) => string = (state: WizardState) => state.error;
 
-export const getPending: (state: WizardState) => boolean = (state: WizardState) => state.pending;
+export const getPending: (state: WizardState) => string | boolean = (state: WizardState) => state.pending;

@@ -35,7 +35,7 @@ export class StepPending implements Action {
 
     public readonly type: string = WizardActionTypes.StepPending;
 
-    constructor(public payload: boolean) { }
+    constructor(public payload: string | boolean) { }
 
 }
 

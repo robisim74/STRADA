@@ -23,3 +23,12 @@ export function getScript(src: string): Promise<any> {
         document.getElementsByTagName('head')[0].appendChild(script);
     });
 }
+
+export function getRandomColor() {
+    const letters = '0123456789ABCDEF'.split('');
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.round(Math.random() * 15)];
+    }
+    return color;
+}

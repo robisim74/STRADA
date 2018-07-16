@@ -160,6 +160,10 @@ export class Graph {
         this.edges.push(edge);
     }
 
+    public isOneway(index: number): boolean {
+        return this.edges[index].tags.find(tag => tag.key == 'oneway' && tag.value == 'yes') ? true : false;
+    }
+
     /**
      * Removes the edges with null distance.
      */

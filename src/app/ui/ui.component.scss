@@ -29,6 +29,16 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
+
+    .message {
+        position: relative;
+        width: 200px;
+        top: 8px;
+        left: -50px;
+        font-size: 14px;
+        text-align: center;
+        color: $secondary-color-dark;
+    }
 }
 
 .ops {

@@ -1,6 +1,9 @@
 <div class="centered" *ngIf="pending">
     <mat-progress-spinner color="accent" mode="indeterminate">
     </mat-progress-spinner>
+    <div class="message">
+        {{ pending }}
+    </div>
 </div>
 
 <div class="ui-content" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px" [class.ops]="pending">

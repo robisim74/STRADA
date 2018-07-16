@@ -2,7 +2,7 @@ import { Injectable, NgZone, EventEmitter, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import area from '@turf/area';
-import { point, polygon } from '@turf/helpers';
+import { polygon } from '@turf/helpers';
 
 import { NetworkService } from '../../network/network.service';
 import { uiConfig } from '../ui-config';

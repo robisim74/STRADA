@@ -111,22 +111,26 @@ export class WizardComponent implements OnInit, OnDestroy {
      * - Gets and updates weather data
      */
     schedule(): void {
-        this.wizard.putOnHold();
-
+        this.wizard.putOnHold('Getting the network');
         const stream = this.network.getNetwork().pipe(
             switchMap((response: any) => {
+                this.wizard.putOnHold('Creating the graph');
                 return this.network.createGraph(response);
             }),
             switchMap(() => {
+                this.wizard.putOnHold('Getting network data');
                 return this.network.getNetworkData();
             }),
             switchMap((response: any) => {
+                this.wizard.putOnHold('Updating the graph');
                 return this.network.updateGraph(response);
             }),
             switchMap(() => {
+                this.wizard.putOnHold('Cleaning the graph');
                 return this.network.cleanGraph();
             }),
             switchMap(() => {
+                this.wizard.putOnHold('Getting weather data');
                 return this.weather.getWeatherData(this.network.getTime());
             }),
             switchMap((response: any) => {
