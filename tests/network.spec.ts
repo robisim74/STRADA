@@ -3,7 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 
 import { NetworkService } from "src/app/network/network.service";
 
-import { response } from "./mock-data/overpass";
+import { response, roundabout } from "./mock-data/overpass";
 
 describe('NetworkService', () => {
     let service: NetworkService;
@@ -34,6 +34,16 @@ describe('NetworkService', () => {
                 () => { },
                 (error: any) => { expect(error).toBe('createGraph'); }
             );
+        });
+        it('should create the graph for roundabout', () => {
+            service = TestBed.get(NetworkService);
+            service.createGraph(roundabout).subscribe(() => {
+                const graph = service.getGraph();
+
+                expect(graph.getEdges().length).toBe(19);
+                expect(graph.getNodes().length).toBe(13);
+                expect(graph.getRelations().length).toBe(0);
+            });
         });
     });
 });

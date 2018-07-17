@@ -2,7 +2,10 @@ import { Injectable, NgZone, EventEmitter, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import area from '@turf/area';
-import { polygon } from '@turf/helpers';
+import centroid from '@turf/centroid';
+import center from '@turf/center';
+import { polygon, point, featureCollection } from '@turf/helpers';
+import { getCoord } from '@turf/invariant';
 
 import { NetworkService } from '../../network/network.service';
 import { uiConfig } from '../ui-config';
@@ -24,6 +27,11 @@ import { Edge, Node } from '../../network/graph';
     private infoWindow: google.maps.InfoWindow;
 
     private area = new BehaviorSubject<number | null>(null);
+
+    /**
+     * Centroid of the graph.
+     */
+    private centroid: google.maps.LatLngLiteral;
 
     constructor(
         private zone: NgZone,
@@ -85,12 +93,12 @@ import { Edge, Node } from '../../network/graph';
         });
     }
 
-    public buildBounds(center: google.maps.LatLngLiteral): google.maps.LatLngBoundsLiteral {
+    public buildBounds(centerMap: google.maps.LatLngLiteral): google.maps.LatLngBoundsLiteral {
         return {
-            north: center.lat + 0.0012,
-            south: center.lat - 0.0012,
-            east: center.lng + 0.003,
-            west: center.lng - 0.003
+            north: centerMap.lat + 0.0012,
+            south: centerMap.lat - 0.0012,
+            east: centerMap.lng + 0.003,
+            west: centerMap.lng - 0.003
         };
     }
 
@@ -148,6 +156,31 @@ import { Edge, Node } from '../../network/graph';
                 this.showNode(node);
             }
         }
+    }
+
+    public getCentroid(): google.maps.LatLngLiteral {
+        return this.centroid;
+    }
+
+    public setCentroid(odNodes: Node[]): void {
+        const positions = odNodes.map((node: Node) => {
+            return [node.lon, node.lat];
+        });
+        let geojsonCentroid: any;
+        if (positions.length >= 3) {
+            // First and last position must be equivalent.
+            positions.push([odNodes[0].lon, odNodes[0].lat]);
+            const poly = polygon([positions]);
+            geojsonCentroid = centroid(poly);
+        } else {
+            const points = positions.map((value: number[]) => {
+                return point(value);
+            });
+            const collection = featureCollection(points);
+            geojsonCentroid = center(collection);
+        }
+        const coord = getCoord(geojsonCentroid);
+        this.centroid = { lat: coord[1], lng: coord[0] };
     }
 
     private drawBaseEdge(edge: Edge): void {
@@ -218,7 +251,7 @@ import { Edge, Node } from '../../network/graph';
      */
     private calcArea(ne: google.maps.LatLng, sw: google.maps.LatLng): number {
         const p = polygon([[
-            [ne.lat(), ne.lng()], [sw.lat(), ne.lng()], [sw.lat(), sw.lng()], [ne.lat(), sw.lng()], [ne.lat(), ne.lng()]
+            [ne.lng(), ne.lat()], [sw.lng(), ne.lat()], [sw.lng(), sw.lat()], [ne.lng(), sw.lat()], [ne.lng(), ne.lat()]
         ]]);
         let a = area(p) / 10000;
         a = Math.round(a * 10) / 10;

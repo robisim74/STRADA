@@ -6,9 +6,10 @@ import { map, catchError, take, concatMap } from 'rxjs/operators';
 import * as qs from 'qs';
 import * as deepFillIn from 'mout/object/deepFillIn';
 import * as combine from 'mout/array/combine';
-import midpoint from '@turf/midpoint';
-import { getCoord } from '@turf/invariant';
-import { point } from '@turf/helpers';
+import transformTranslate from '@turf/transform-translate';
+import bearing from '@turf/bearing';
+import { getCoords } from '@turf/invariant';
+import { point, lineString } from '@turf/helpers';
 
 import { Graph, Node, Edge, Tag } from './graph';
 import { appConfig } from '../app-config';
@@ -103,7 +104,7 @@ import { getRandomColor } from '../utils';
         const nodesDegrees: Map<number, number> = new Map();
         // Gets the list of ways.
         let ways: any[] = elements.filter((element: any) => element['type'] == 'way');
-        // Merges the ways with the same name and same direction.
+        // Merges continuous ways.
         ways = this.mergeWays(ways);
         // Gets the list of nodes.
         const nodes: any[] = elements.filter((element: any) => element['type'] == 'node');
@@ -133,7 +134,10 @@ import { getRandomColor } from '../utils';
                     // First direction.
                     this.splitWay(filteredWayNodes, nodes, way);
                     // Second direction (two-way).
-                    if (!way['tags']['oneway'] || way['tags']['oneway'] == 'no') {
+                    // Roundabouts are oneway.
+                    const junction = way['tags']['junction'];
+                    const oneway = way['tags']['oneway'];
+                    if ((!oneway || oneway == 'no') && (junction != 'roundabout' && junction != 'circular')) {
                         // Reverse the order of filtered way nodes.
                         this.splitWay(filteredWayNodes.reverse(), nodes, way);
                     }
@@ -179,45 +183,10 @@ import { getRandomColor } from '../utils';
             edges[i].duration = value.duration;
 
             // Decodes polyline paths.
-            if (value.polylines) {
-                let path: google.maps.LatLng[] = [];
-                for (const polyline of value.polylines) {
-                    path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
-                }
-                path = this.cleanPath(path);
+            if (value.polylines.length > 0) {
+                const path = this.decodePolyline(value.polylines);
                 // Updates drawing options.
-                const lineSymbol = {
-                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                    scale: 5
-                };
-                // If only two points are available, an intermediate point is inserted.
-                if (path.length == 2) {
-                    const point1 = point([path[0].lat(), path[0].lng()]);
-                    const point2 = point([path[1].lat(), path[1].lng()]);
-                    const middlePoint = midpoint(point1, point2);
-                    const coord = getCoord(middlePoint);
-                    const newPoint = new google.maps.LatLng(coord[0], coord[1]);
-                    path.splice(1, 0, newPoint);
-                }
-                // Two-way streets with more than two points are divided into two parts.
-                if (!this.graph.isOneway(i) && path.length > 2) {
-                    // Checks if even.
-                    const mediumIndex = (path.length % 2 == 0 ? (path.length / 2) : Math.round(path.length / 2)) - 1;
-                    path = path.filter((v, index) => index >= mediumIndex);
-                }
-                edges[i].drawingOptions.polyline = new google.maps.Polyline(
-                    {
-                        path: path,
-                        icons: edges[i].distance > 100 ? [{ // Arrows only if greater than 100 meters
-                            icon: lineSymbol,
-                            offset: '100%'
-                        }] : null,
-                        strokeColor: uiConfig.edges.baseColor,
-                        /* strokeColor: getRandomColor(), */
-                        strokeOpacity: 1,
-                        strokeWeight: 10
-                    }
-                );
+                this.drawEdge(edges[i], path);
             }
         }
         return of(null);
@@ -313,33 +282,31 @@ import { getRandomColor } from '../utils';
     }
 
     /**
-     * Merges the ways with the same name and same direction.
+     * Merges continuous ways.
      * @param ways Array of OpenStreetMap ways
      */
     private mergeWays(ways: any[]) {
-        const mergedWays: any[] = [];
-        for (const way of ways) {
-            // Gets way without name.
-            if (!way['tags']['name']) {
-                mergedWays.push(way);
-            }
-            if (mergedWays.find(item => item['tags']['name'] == way['tags']['name'] &&
-                (!item['tags']['oneway'] && !way['tags']['oneway'] || item['tags']['oneway'] == way['tags']['oneway'])
-            )) {
-                continue;
-            }
-            // Finds the same ways.
-            const sameWays = ways.filter(item => item['tags']['name'] == way['tags']['name'] &&
-                (!item['tags']['oneway'] && !way['tags']['oneway'] || item['tags']['oneway'] == way['tags']['oneway'])
-            );
-            let mergedWay: any = {};
-            for (const sameWay of sameWays) {
-                mergedWay = deepFillIn(mergedWay, sameWay);
-                mergedWay['nodes'] = combine(mergedWay['nodes'], sameWay['nodes']);
-            }
-            mergedWays.push(mergedWay);
+        if (ways.length > 1) {
+            let continuos: boolean;
+            do {
+                continuos = false;
+                // Iterates in revers order.
+                for (let i = ways.length - 1; i >= 1; i--) {
+                    const wayNodes: number[] = ways[i]['nodes'];
+                    const previousWayNodes: number[] = ways[i - 1]['nodes'];
+                    const wayTag = ways[i]['tags']['oneway'];
+                    const previousWayTag = ways[i - 1]['tags']['oneway'];
+                    // Checks if the first node of the way is equal to the last of the previous way.
+                    if (wayNodes[0] == previousWayNodes[previousWayNodes.length - 1] && wayTag == previousWayTag) {
+                        ways[i - 1] = deepFillIn(ways[i - 1], ways[i]);
+                        ways[i - 1]['nodes'] = combine(ways[i - 1]['nodes'], ways[i]['nodes']);
+                        ways.splice(i, 1);
+                        continuos = true;
+                    }
+                }
+            } while (continuos);
         }
-        return mergedWays;
+        return ways;
     }
 
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
@@ -406,6 +373,14 @@ import { getRandomColor } from '../utils';
         return ways;
     }
 
+    private decodePolyline(polylines: any[]): google.maps.LatLng[] {
+        let path: google.maps.LatLng[] = [];
+        for (const polyline of polylines) {
+            path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
+        }
+        return this.cleanPath(path);
+    }
+
     /**
      * Removes duplicates from path.
      * @param path Array of google.maps.LatLng
@@ -414,6 +389,72 @@ import { getRandomColor } from '../utils';
         return path.filter((value, index, self) =>
             index === self.findIndex((p) => (value.equals(p)))
         );
+    }
+
+    private drawEdge(edge: Edge, path: google.maps.LatLng[]): void {
+        if (edge.distance > 0) {
+            // Arrows only if greater than 10 meters.
+            const lineSymbol = {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale: 2
+            };
+            const icons = edge.distance > 10 ? [{
+                icon: lineSymbol,
+                offset: '100%'
+            }] : null;
+
+            // Two-way streets.
+            if (!this.graph.isOneway(edge.edgeId)) {
+                // Gets bearing.
+                const pos = this.getBearing(path);
+                const angle = pos + 90;
+                // Converts to GeoJSON LineString.
+                const poly = this.toLineString(path);
+                // Translates the polyline.
+                const translatedPoly = transformTranslate(poly, 0.003, angle);
+                // converts to LatLng points.
+                path = this.toLatLng(translatedPoly);
+            }
+
+            edge.drawingOptions.polyline = new google.maps.Polyline(
+                {
+                    path: path,
+                    icons: icons,
+                    strokeColor: uiConfig.edges.baseColor,
+                    /* strokeColor: getRandomColor(), */
+                    strokeOpacity: 1,
+                    strokeWeight: 2
+                }
+            );
+        }
+    }
+
+    /**
+     * Finds the geographic bearing, the angle measured in degrees from the north line (0 degrees).
+     * @param path Array of google.maps.LatLng
+     */
+    private getBearing(path: google.maps.LatLng[]): number {
+        const origin = point([path[0].lng(), path[0].lat()]);
+        const destination = point([path[path.length - 1].lng(), path[path.length - 1].lat()]);
+        return bearing(origin, destination);
+    }
+
+    /**
+     * Convert a list of LatLng to a GeoJSON LineString.
+     * @param path  Array of google.maps.LatLng
+     */
+    private toLineString(path: google.maps.LatLng[]): any {
+        const points = path.map((value: google.maps.LatLng) => {
+            return [value.lng(), value.lat()];
+        });
+        return lineString(points);
+    }
+
+    private toLatLng(poly: any): google.maps.LatLng[] {
+        const coords = getCoords(poly);
+        return coords.map((value: number[]) => {
+            return new google.maps.LatLng(value[1], value[0]);
+        });
     }
 
 }

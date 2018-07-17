@@ -14,7 +14,7 @@ export const uiConfig = {
     /**
      * Area limit in hectares.
      */
-    areaMaxLimit: 50,
+    areaMaxLimit: 30,
     areaMinLimit: 3,
     edges: {
         baseColor: '#babdbe',

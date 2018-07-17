@@ -44,7 +44,7 @@ export class MapComponent extends BaseComponent implements OnInit {
         this.disableDefaultUI = true;
         this.disableDoubleClickZoom = false;
         this.mapTypeId = google.maps.MapTypeId.ROADMAP;
-        this.maxZoom = 18;
+        this.maxZoom = 20;
         this.minZoom = 4;
         this.gestureHandling = 'cooperative';
         this.styles = MapStyle;

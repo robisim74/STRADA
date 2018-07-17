@@ -28,7 +28,7 @@ export class Node {
 
     public nodeId: number;
 
-    public label?: number;
+    public label: number;
 
     public lat: number;
 
@@ -156,12 +156,19 @@ export class Graph {
         }
     }
 
+    public getEdge(edgeId: number): Edge {
+        return this.edges.find((edge: Edge) => edge.edgeId == edgeId);
+    }
+
     public addEdge(edge: Edge): void {
         this.edges.push(edge);
     }
 
-    public isOneway(index: number): boolean {
-        return this.edges[index].tags.find(tag => tag.key == 'oneway' && tag.value == 'yes') ? true : false;
+    public isOneway(edgeId: number): boolean {
+        return this.getEdge(edgeId).tags.find(tag => tag.key == 'oneway' && tag.value == 'yes') ||
+            this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'roundabout') ||
+            this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'circular') ?
+            true : false;
     }
 
     /**
@@ -208,6 +215,10 @@ export class Graph {
                 }
             }
         }
+    }
+
+    public getOdNodes(): Node[] {
+        return this.nodes.filter((node: Node) => node.label);
     }
 
     /**

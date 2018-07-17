@@ -157,14 +157,20 @@ export class WizardComponent implements OnInit, OnDestroy {
                         break;
                 }
                 this.wizard.putInError(message);
+                this.wizard.reset();
             },
             () => {
                 // Removes from waiting.
                 this.wizard.removeFromWaiting();
-                // Draws graph;
+                // Draws graph.
                 this.map.drawGraph();
+                const graph = this.network.getGraph();
+                const odNodes = graph.getOdNodes();
+                this.map.setCentroid(odNodes);
+                this.map.setCenter(this.map.getCentroid());
+                this.map.setZoom(16.5);
 
-                console.log(this.network.getGraph());
+                console.log(graph);
             }
         ));
     }
