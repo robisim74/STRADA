@@ -103,11 +103,12 @@ import { getRandomColor } from '../utils';
         // a Map object that holds nodeId-degree as key-value pairs.
         const nodesDegrees: Map<number, number> = new Map();
         // Gets the list of ways.
-        let ways: any[] = elements.filter((element: any) => element['type'] == 'way');
+        let ways: any[] = this.extractWays(elements);
+        ways = this.reverseNoForward(ways);
         // Merges continuous ways.
-        ways = this.mergeWays(ways);
+        ways = this.mergeWays(ways, elements);
         // Gets the list of nodes.
-        const nodes: any[] = elements.filter((element: any) => element['type'] == 'node');
+        const nodes: any[] = this.extractNodes(elements);
 
         // Creation of the graph algorithm.
         return Observable.create((observer: Observer<any>) => {
@@ -131,12 +132,11 @@ import { getRandomColor } from '../utils';
                             i == arr.length - 1 || // last node
                             nodesDegrees.get(node) > 1; // degree greater than one
                     });
+                    const junction = way['tags']['junction'];
+                    const oneway = way['tags']['oneway'];
                     // First direction.
                     this.splitWay(filteredWayNodes, nodes, way);
                     // Second direction (two-way).
-                    // Roundabouts are oneway.
-                    const junction = way['tags']['junction'];
-                    const oneway = way['tags']['oneway'];
                     if ((!oneway || oneway == 'no') && (junction != 'roundabout' && junction != 'circular')) {
                         // Reverse the order of filtered way nodes.
                         this.splitWay(filteredWayNodes.reverse(), nodes, way);
@@ -177,17 +177,21 @@ import { getRandomColor } from '../utils';
      */
     public updateGraph(data: any[]): Observable<any> {
         const edges = this.graph.getEdges();
-        for (let i = 0; i < data.length; i++) {
-            const value: any = data[i];
-            edges[i].distance = value.distance;
-            edges[i].duration = value.duration;
+        try {
+            for (let i = 0; i < data.length; i++) {
+                const value: any = data[i];
+                edges[i].distance = value.distance;
+                edges[i].duration = value.duration;
 
-            // Decodes polyline paths.
-            if (value.polylines.length > 0) {
-                const path = this.decodePolyline(value.polylines);
-                // Updates drawing options.
-                this.drawEdge(edges[i], path);
+                // Decodes polyline paths.
+                if (value.polylines && value.polylines.length > 0) {
+                    const path = this.decodePolyline(value.polylines);
+                    // Updates drawing options.
+                    this.drawEdge(edges[i], path);
+                }
             }
+        } catch (error) {
+            return throwError('updateGraph');
         }
         return of(null);
     }
@@ -196,8 +200,12 @@ import { getRandomColor } from '../utils';
      * Remove from the graph invalidated edges and dead nodes.
      */
     public cleanGraph(): Observable<any> {
-        this.graph.removeInvalidatedEdges();
-        this.graph.removeDeadNodes();
+        try {
+            this.graph.removeInvalidatedEdges();
+            this.graph.removeDeadNodes();
+        } catch (error) {
+            return throwError('cleanGraph');
+        }
         return of(null);
     }
 
@@ -281,32 +289,81 @@ import { getRandomColor } from '../utils';
         return qs.stringify({ data: query });
     }
 
+    private extractWays(elements: any[]): any[] {
+        return elements.filter((element: any) => element['type'] == 'way');
+    }
+
+    private extractNodes(elements: any[]): any[] {
+        return elements.filter((element: any) => element['type'] == 'node');
+    }
+
+    private extractTotalWaysNodes(ways: any[], elements: any[]): number[] {
+        let totalWaysNodes: number[] = [];
+        for (const way of ways) {
+            totalWaysNodes = totalWaysNodes.concat(way['nodes']);
+        }
+        return totalWaysNodes;
+    }
+
+    /**
+     * oneway = -1 to vehicle:forward=no
+     * @param ways OSM ways
+     */
+    private reverseNoForward(ways: any[]): any[] {
+        for (const way of ways) {
+            let oneway = way['tags']['oneway'];
+            if (oneway == '-1') {
+                way['nodes'].reverse();
+                oneway = 'yes';
+            }
+        }
+        return ways;
+    }
+
     /**
      * Merges continuous ways.
      * @param ways Array of OpenStreetMap ways
+     * @param elements Array of OpenStreetMap elements
      */
-    private mergeWays(ways: any[]) {
+    private mergeWays(ways: any[], elements: any[]): any[] {
+        const totalWaysNodes = this.extractTotalWaysNodes(ways, elements);
         if (ways.length > 1) {
-            let continuos: boolean;
+            let i = 0;
             do {
-                continuos = false;
-                // Iterates in revers order.
-                for (let i = ways.length - 1; i >= 1; i--) {
-                    const wayNodes: number[] = ways[i]['nodes'];
-                    const previousWayNodes: number[] = ways[i - 1]['nodes'];
-                    const wayTag = ways[i]['tags']['oneway'];
-                    const previousWayTag = ways[i - 1]['tags']['oneway'];
-                    // Checks if the first node of the way is equal to the last of the previous way.
-                    if (wayNodes[0] == previousWayNodes[previousWayNodes.length - 1] && wayTag == previousWayTag) {
-                        ways[i - 1] = deepFillIn(ways[i - 1], ways[i]);
-                        ways[i - 1]['nodes'] = combine(ways[i - 1]['nodes'], ways[i]['nodes']);
-                        ways.splice(i, 1);
-                        continuos = true;
+                const wayName: string = ways[i]['tags']['name'];
+                const wayOneway: string = ways[i]['tags']['oneway'];
+                const wayNodes: number[] = ways[i]['nodes'];
+                let n = i + 1;
+                do {
+                    const nextWayName: string = ways[n]['tags']['name'];
+                    const nextWayOneway: string = ways[n]['tags']['oneway'];
+                    const nextWayNodes: number[] = ways[n]['nodes'];
+                    // Checks that they have the same name and direction.
+                    if (wayName === nextWayName && wayOneway === nextWayOneway) {
+                        if (wayNodes[wayNodes.length - 1] == nextWayNodes[0] &&
+                            totalWaysNodes.filter(value => value == nextWayNodes[0]).length == 2) {
+                            this.fillWays(ways[i], ways[n]);
+                            ways.splice(n, 1);
+                            n = i + 1;
+                        }
+                        if (wayNodes[0] == nextWayNodes[nextWayNodes.length - 1] &&
+                            totalWaysNodes.filter(value => value == wayNodes[0]).length == 2) {
+                            this.fillWays(ways[n], ways[i]);
+                            ways.splice(i, 1);
+                            n = ways.length - 1;
+                        }
                     }
-                }
-            } while (continuos);
+                    n++;
+                } while (n < ways.length);
+                i++;
+            } while (i < ways.length - 1);
         }
         return ways;
+    }
+
+    private fillWays(way: any, nextWay: any): void {
+        way = deepFillIn(way, nextWay);
+        way['nodes'] = combine(way['nodes'], nextWay['nodes']);
     }
 
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
@@ -354,19 +411,19 @@ import { getRandomColor } from '../utils';
         if (edges.length > 0) {
             let wayIndex = 0;
             ways[wayIndex] = [];
-            ways[wayIndex].push(edges[0].origin.lat + ',' + edges[0].origin.lon);
-            ways[wayIndex].push(edges[0].destination.lat + ',' + edges[0].destination.lon);
+            ways[wayIndex].push({ lat: edges[0].origin.lat, lng: edges[0].origin.lon });
+            ways[wayIndex].push({ lat: edges[0].destination.lat, lng: edges[0].destination.lon });
             for (let i = 1; i < edges.length; i++) {
                 // Checks if same way.
                 if (edges[i].origin.nodeId == edges[i - 1].destination.nodeId &&
                     edges[i].destination.nodeId != edges[i - 1].origin.nodeId
                 ) {
-                    ways[wayIndex].push(edges[i].destination.lat + ',' + edges[i].destination.lon);
+                    ways[wayIndex].push({ lat: edges[i].destination.lat, lng: edges[i].destination.lon });
                 } else {
                     wayIndex++;
                     ways[wayIndex] = [];
-                    ways[wayIndex].push(edges[i].origin.lat + ',' + edges[i].origin.lon);
-                    ways[wayIndex].push(edges[i].destination.lat + ',' + edges[i].destination.lon);
+                    ways[wayIndex].push({ lat: edges[i].origin.lat, lng: edges[i].origin.lon });
+                    ways[wayIndex].push({ lat: edges[i].destination.lat, lng: edges[i].destination.lon });
                 }
             }
         }
@@ -387,7 +444,7 @@ import { getRandomColor } from '../utils';
      */
     private cleanPath(path: google.maps.LatLng[]): google.maps.LatLng[] {
         return path.filter((value, index, self) =>
-            index === self.findIndex((p) => (value.equals(p)))
+            index === self.findIndex(p => value.equals(p))
         );
     }
 
@@ -411,7 +468,7 @@ import { getRandomColor } from '../utils';
                 // Converts to GeoJSON LineString.
                 const poly = this.toLineString(path);
                 // Translates the polyline.
-                const translatedPoly = transformTranslate(poly, 0.003, angle);
+                const translatedPoly = transformTranslate(poly, 0.004, angle);
                 // converts to LatLng points.
                 path = this.toLatLng(translatedPoly);
             }
@@ -423,7 +480,7 @@ import { getRandomColor } from '../utils';
                     strokeColor: uiConfig.edges.baseColor,
                     /* strokeColor: getRandomColor(), */
                     strokeOpacity: 1,
-                    strokeWeight: 2
+                    strokeWeight: 3
                 }
             );
         }

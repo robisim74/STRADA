@@ -5,7 +5,9 @@ const externals = [
     'firebase-functions',
     'rxjs',
     'rxjs/operators',
-    '@google/maps'
+    '@google/maps',
+    '@turf/distance',
+    '@turf/helpers'
 ];
 
 export default {

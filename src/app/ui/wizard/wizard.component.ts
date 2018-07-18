@@ -147,13 +147,23 @@ export class WizardComponent implements OnInit, OnDestroy {
                         message = 'The request could not be processed. Check your Internet connection and try again';
                         break;
                     case 'createGraph':
-                        message = 'The graph cannnot be created. Try with another area';
+                        message = 'The graph cannnot be created. Please, try with another area';
                         break;
                     case 'getNetworkData':
                         message = 'Network data cannot be retrieved. Please, try at another time';
                         break;
+                    case 'getNetworkData':
+                        message = 'Network data cannot be retrieved. Past the quota limits traffic data become paid.' +
+                            'This is an open source project: install your own version of it';
+                        break;
+                    case 'updateGraph':
+                        message = 'Graph cannot be updated. Please, try with another area';
+                        break;
+                    case 'cleanGraph':
+                        message = 'Graph cannot be cleaned. Please, try with another area';
+                        break;
                     case 'getWeatherData':
-                        message = 'Weather data cannot be retrieved. lease, try at another time';
+                        message = 'Weather data cannot be retrieved. Please, try at another time';
                         break;
                 }
                 this.wizard.putInError(message);
@@ -168,7 +178,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                 const odNodes = graph.getOdNodes();
                 this.map.setCentroid(odNodes);
                 this.map.setCenter(this.map.getCentroid());
-                this.map.setZoom(16.5);
+                this.map.setZoom(17);
 
                 console.log(graph);
             }

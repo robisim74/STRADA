@@ -17,7 +17,9 @@
     "firebase-functions": "1.1.0",
     "cors": "2.8.4",
     "rxjs": "6.2.1",
-    "@google/maps": "0.5.0"
+    "@google/maps": "0.5.0",
+    "@turf/distance": "6.0.1",
+    "@turf/helpers": "6.1.4"
   },
   "devDependencies": {
     "@types/cors": "2.8.4",

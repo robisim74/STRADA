@@ -40,8 +40,8 @@ import { Edge, Node } from '../../network/graph';
 
     reset(): void {
         this.mapReset.emit(null);
-        this.rectangle.setMap(null);
-        this.infoWindow.close();
+        if (this.rectangle) { this.rectangle.setMap(null); }
+        if (this.infoWindow) { this.infoWindow.close(); }
         this.area.next(null);
         const graph = this.network.getGraph();
         if (graph) {
@@ -181,6 +181,10 @@ import { Edge, Node } from '../../network/graph';
         }
         const coord = getCoord(geojsonCentroid);
         this.centroid = { lat: coord[1], lng: coord[0] };
+    }
+
+    public deselectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon('../../assets/images/add_location.png');
     }
 
     private drawBaseEdge(edge: Edge): void {

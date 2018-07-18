@@ -164,9 +164,21 @@ export class Graph {
         this.edges.push(edge);
     }
 
+    /**
+     * https://wiki.openstreetmap.org/wiki/Key:oneway
+     * @param edgeId Id of the edge
+     */
     public isOneway(edgeId: number): boolean {
-        return this.getEdge(edgeId).tags.find(tag => tag.key == 'oneway' && tag.value == 'yes') ||
-            this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'roundabout') ||
+        return !!this.getEdge(edgeId).tags.find(tag => tag.key == 'oneway' && tag.value != 'no') ||
+            this.isRoundabout(edgeId);
+    }
+
+    /**
+     * https://wiki.openstreetmap.org/wiki/Tag:junction%3Droundabout
+     * @param edgeId Id of the edge
+     */
+    public isRoundabout(edgeId: number): boolean {
+        return this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'roundabout') ||
             this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'circular') ?
             true : false;
     }
@@ -175,32 +187,36 @@ export class Graph {
      * Removes the edges with null distance.
      */
     public removeInvalidatedEdges(): void {
-        const removedEdges: number[] = [];
-        if (this.edges.length > 0) {
-            for (let i = this.edges.length - 1; i >= 0; i--) {
-                if (!this.edges[i].distance) {
-                    removedEdges.push(this.edges[i].edgeId);
-                    this.edges.splice(i, 1);
+        try {
+            const removedEdges: number[] = [];
+            if (this.edges.length > 0) {
+                for (let i = this.edges.length - 1; i >= 0; i--) {
+                    if (this.edges[i].distance == null) {
+                        removedEdges.push(this.edges[i].edgeId);
+                        this.edges.splice(i, 1);
+                    }
                 }
-            }
-            for (const edgeId of removedEdges) {
-                for (const node of this.nodes) {
-                    if (node.incomingEdges.length > 0) {
-                        for (let i = node.incomingEdges.length - 1; i >= 0; i--) {
-                            if (node.incomingEdges[i].edgeId == edgeId) {
-                                node.incomingEdges.splice(i, 1);
+                for (const edgeId of removedEdges) {
+                    for (const node of this.nodes) {
+                        if (node.incomingEdges.length > 0) {
+                            for (let i = node.incomingEdges.length - 1; i >= 0; i--) {
+                                if (node.incomingEdges[i].edgeId == edgeId) {
+                                    node.incomingEdges.splice(i, 1);
+                                }
+                            }
+                        }
+                        if (node.outgoingEdges.length > 0) {
+                            for (let i = node.outgoingEdges.length - 1; i >= 0; i--) {
+                                if (node.outgoingEdges[i].edgeId == edgeId) {
+                                    node.outgoingEdges.splice(i, 1);
+                                }
                             }
                         }
                     }
-                    if (node.outgoingEdges.length > 0) {
-                        for (let i = node.outgoingEdges.length - 1; i >= 0; i--) {
-                            if (node.outgoingEdges[i].edgeId == edgeId) {
-                                node.outgoingEdges.splice(i, 1);
-                            }
-                        }
-                    }
                 }
             }
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -208,13 +224,21 @@ export class Graph {
      * Removes the nodes with no outgoing edges and incoming edges.
      */
     public removeDeadNodes(): void {
-        if (this.nodes.length > 0) {
-            for (let i = this.nodes.length - 1; i >= 0; i--) {
-                if (this.nodes[i].incomingEdges.length == 0 && this.nodes[i].outgoingEdges.length == 0) {
-                    this.nodes.splice(i, 1);
+        try {
+            if (this.nodes.length > 0) {
+                for (let i = this.nodes.length - 1; i >= 0; i--) {
+                    if (this.nodes[i].incomingEdges.length == 0 && this.nodes[i].outgoingEdges.length == 0) {
+                        this.nodes.splice(i, 1);
+                    }
                 }
             }
+        } catch (error) {
+            throw error;
         }
+    }
+
+    public getOdNode(label: number): Node {
+        return this.nodes.find((node: Node) => node.label == label);
     }
 
     public getOdNodes(): Node[] {
