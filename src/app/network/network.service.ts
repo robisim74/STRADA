@@ -11,7 +11,7 @@ import bearing from '@turf/bearing';
 import { getCoords } from '@turf/invariant';
 import { point, lineString } from '@turf/helpers';
 
-import { Graph, Node, Edge, Tag } from './graph';
+import { Graph, Node, Edge, Tag, OdPair } from './graph';
 import { appConfig } from '../app-config';
 import { uiConfig } from '../ui/ui-config';
 import { environment } from '../../environments/environment';
@@ -38,6 +38,8 @@ import { getRandomColor } from '../utils';
     private time: Date | null;
 
     private edgeId = 0;
+
+    private odPairs: OdPair[] = [];
 
     constructor(private http: HttpClient) { }
 
@@ -158,7 +160,7 @@ import { getRandomColor } from '../utils';
     public getNetworkData(): Observable<any> {
         const url: string = environment.functions.networkData.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const ways: any[][] = this.getWays();
+        const ways: any[][] = this.getWaypoints();
         console.log(ways);
         const body = JSON.stringify({
             ways: ways
@@ -203,6 +205,7 @@ import { getRandomColor } from '../utils';
         try {
             this.graph.removeInvalidatedEdges();
             this.graph.removeDeadNodes();
+            if (this.graph.getEdges().length == 0 || this.graph.getNodes().length == 0) { return throwError('cleanGraph'); }
         } catch (error) {
             return throwError('cleanGraph');
         }
@@ -234,6 +237,14 @@ import { getRandomColor } from '../utils';
             map((response: any) => response),
             catchError((error: any) => throwError('getTrafficData'))
         );
+    }
+
+    public getOdPairs(): OdPair[] {
+        return this.odPairs;
+    }
+
+    public setOdPairs(odPairs: OdPair[]): void {
+        this.odPairs = odPairs;
     }
 
     /**
@@ -297,14 +308,6 @@ import { getRandomColor } from '../utils';
         return elements.filter((element: any) => element['type'] == 'node');
     }
 
-    private extractTotalWaysNodes(ways: any[], elements: any[]): number[] {
-        let totalWaysNodes: number[] = [];
-        for (const way of ways) {
-            totalWaysNodes = totalWaysNodes.concat(way['nodes']);
-        }
-        return totalWaysNodes;
-    }
-
     /**
      * oneway = -1 to vehicle:forward=no
      * @param ways OSM ways
@@ -326,7 +329,6 @@ import { getRandomColor } from '../utils';
      * @param elements Array of OpenStreetMap elements
      */
     private mergeWays(ways: any[], elements: any[]): any[] {
-        const totalWaysNodes = this.extractTotalWaysNodes(ways, elements);
         if (ways.length > 1) {
             let i = 0;
             do {
@@ -340,14 +342,13 @@ import { getRandomColor } from '../utils';
                     const nextWayNodes: number[] = ways[n]['nodes'];
                     // Checks that they have the same name and direction.
                     if (wayName === nextWayName && wayOneway === nextWayOneway) {
-                        if (wayNodes[wayNodes.length - 1] == nextWayNodes[0] &&
-                            totalWaysNodes.filter(value => value == nextWayNodes[0]).length == 2) {
+                        // Checks the first and last node.
+                        if (wayNodes[wayNodes.length - 1] == nextWayNodes[0]) {
                             this.fillWays(ways[i], ways[n]);
                             ways.splice(n, 1);
                             n = i + 1;
                         }
-                        if (wayNodes[0] == nextWayNodes[nextWayNodes.length - 1] &&
-                            totalWaysNodes.filter(value => value == wayNodes[0]).length == 2) {
+                        if (wayNodes[0] == nextWayNodes[nextWayNodes.length - 1]) {
                             this.fillWays(ways[n], ways[i]);
                             ways.splice(i, 1);
                             n = ways.length - 1;
@@ -404,7 +405,7 @@ import { getRandomColor } from '../utils';
         }) : [];
     }
 
-    private getWays(): any[][] {
+    private getWaypoints(): any[][] {
         const edges = this.graph.getEdges();
         const ways: any[][] = [];
         // Gets the ways.

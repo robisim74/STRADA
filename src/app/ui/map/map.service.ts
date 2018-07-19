@@ -163,28 +163,42 @@ import { Edge, Node } from '../../network/graph';
     }
 
     public setCentroid(odNodes: Node[]): void {
-        const positions = odNodes.map((node: Node) => {
-            return [node.lon, node.lat];
-        });
-        let geojsonCentroid: any;
-        if (positions.length >= 3) {
-            // First and last position must be equivalent.
-            positions.push([odNodes[0].lon, odNodes[0].lat]);
-            const poly = polygon([positions]);
-            geojsonCentroid = centroid(poly);
-        } else {
-            const points = positions.map((value: number[]) => {
-                return point(value);
+        if (odNodes.length > 0) {
+            const positions = odNodes.map((node: Node) => {
+                return [node.lon, node.lat];
             });
-            const collection = featureCollection(points);
-            geojsonCentroid = center(collection);
+            let geojsonCentroid: any;
+            if (positions.length >= 3) {
+                // First and last position must be equivalent.
+                positions.push([odNodes[0].lon, odNodes[0].lat]);
+                const poly = polygon([positions]);
+                geojsonCentroid = centroid(poly);
+            } else {
+                const points = positions.map((value: number[]) => {
+                    return point(value);
+                });
+                const collection = featureCollection(points);
+                geojsonCentroid = center(collection);
+            }
+            const coord = getCoord(geojsonCentroid);
+            this.centroid = { lat: coord[1], lng: coord[0] };
+        } else {
+            this.centroid = null;
         }
-        const coord = getCoord(geojsonCentroid);
-        this.centroid = { lat: coord[1], lng: coord[0] };
     }
 
-    public deselectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/add_location.png');
+    public updateOdNodes(odPairs: number[][]): void {
+        const graph = this.network.getGraph();
+        const odNodes = graph.getOdNodes();
+        for (const node of odNodes) {
+            if (odPairs.find(pair => pair[0] == node.label) ||
+                odPairs.find(pair => pair[1] && pair[1] == node.label)
+            ) {
+                this.selectNode(node);
+            } else {
+                this.deselectNode(node);
+            }
+        }
     }
 
     private drawBaseEdge(edge: Edge): void {
@@ -201,20 +215,23 @@ import { Edge, Node } from '../../network/graph';
             map: this.map
         });
         // Adds listener.
-        node.drawingOptions.marker.addListener('click', () => this.selectNode(node));
+        node.drawingOptions.marker.addListener('click', () => this.sendNodeEvent(node));
     }
 
     /**
-     * Changes the marker icon of the selected node and sends an event.
+     * Sends an event with the selected node.
      * @param node Selected node
      */
-    private selectNode(node: Node): void {
-        this.zone.run(() => {
-            node.drawingOptions.marker.setIcon('../../assets/images/place.png');
+    private sendNodeEvent(node: Node): void {
+        this.nodeSelected.emit(node);
+    }
 
-            // Sends the node to subscribers.
-            this.nodeSelected.emit(node);
-        });
+    private selectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon('../../assets/images/place.png');
+    }
+
+    private deselectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon('../../assets/images/add_location.png');
     }
 
     private checkRect(): void {

@@ -68,11 +68,10 @@ export function buildRequest(way: any[]): any {
 export function isInconsistency(leg: any): boolean {
     // The number of indications is greater than expected.
     if (!leg.steps || leg.steps.length > 3) return true;
-    // The distance of the leg is more than twice the geodesic distance.
+    // The distance of the leg is much greater than the geodesic distance.
     const from = point([leg.start_location.lat, leg.start_location.lng]);
     const to = point([leg.end_location.lat, leg.end_location.lng]);
     const geodesicDistance = distance(from, to) * 1000;
     if (geodesicDistance > 0 && leg.distance.value > geodesicDistance * 3) return true;
-
     return false;
 }

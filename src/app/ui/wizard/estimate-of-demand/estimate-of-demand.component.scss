@@ -1,0 +1,21 @@
+.header {
+    background-color: #eceff1;
+    padding: 4px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.cell {
+    background-color: #eceff1;
+    padding: 4px;
+    text-align: center;
+
+    .mat-icon-button {
+        height: 24px;
+        line-height: 20px;
+
+        .mat-icon {
+            font-size: 20px;
+        }
+    }
+}

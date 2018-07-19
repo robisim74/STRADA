@@ -76,6 +76,11 @@ export class MapComponent extends BaseComponent implements OnInit {
                 case 2:
                     // Removes the rectangle.
                     this.map.removeRect();
+                    if (steps[2]) {
+                        // Updated O/D nodes.
+                        const odPairs: number[][] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
+                        this.map.updateOdNodes(odPairs);
+                    }
                     break;
             }
         }));
@@ -119,52 +124,46 @@ export class MapComponent extends BaseComponent implements OnInit {
 
     updateOdPairs(node: Node): void {
         const odPairs: number[][] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
+
+        let error = null;
+
         if (odPairs.length > 0) {
+            const lastOdPair = odPairs[odPairs.length - 1];
             // Checks limit.
             if (odPairs.length == uiConfig.maxOdPairs && odPairs[uiConfig.maxOdPairs - 1].length == 2) {
-                this.cancelNodeSelection(odPairs, node, `The maximum number of O/D pairs is ${uiConfig.maxOdPairs}`);
-            } else {
-                const lastOdPair = odPairs[odPairs.length - 1];
+                error = `The maximum number of O/D pairs is ${uiConfig.maxOdPairs}`;
                 // Checks if valid node.
-                if (lastOdPair.length == 1 && node.incomingEdges.length == 0) {
-                    this.cancelNodeSelection(odPairs, node, `The node cannot be a destination`);
-                }
-                if (lastOdPair.length == 2 && node.outgoingEdges.length == 0) {
-                    this.cancelNodeSelection(odPairs, node, `The node cannot be an origin`);
-                }
+            } else if (lastOdPair.length == 1 && node.incomingEdges.length == 0) {
+                error = `The node cannot be a destination`;
+            } else if (lastOdPair.length == 2 && node.outgoingEdges.length == 0) {
+                error = `The node cannot be an origin`;
                 // Checks if last O/D pair is completed.
-                if (lastOdPair.length == 2) {
-                    odPairs.push([node.label]);
-                } else {
-                    // Checks if same node.
-                    if (lastOdPair[0] == node.label) {
-                        this.cancelNodeSelection(odPairs, node, `The origin and destination nodes can not be the same`);
-                    } else {
-                        lastOdPair.push(node.label);
-                        // Checks if the pair is valid.
-                        if (odPairs.filter(pair => equals(pair, odPairs[0])).length == 2) {
-                            lastOdPair.pop();
-                            this.cancelNodeSelection(odPairs, node, `O/D pair already selected`);
-                        }
-                    }
+            } else if (lastOdPair.length == 2) {
+                odPairs.push([node.label]);
+                // Checks if same node.
+            } else if (lastOdPair[0] == node.label) {
+                error = `The origin and destination nodes can not be the same`;
+            } else {
+                lastOdPair.push(node.label);
+                // Checks if the pair is valid.
+                if (odPairs.filter(pair => equals(pair, lastOdPair)).length == 2) {
+                    lastOdPair.pop();
+                    error = `O/D pair already selected`;
                 }
             }
         } else {
             if (node.outgoingEdges.length == 0) {
-                this.cancelNodeSelection(odPairs, node, `The node cannot be an origin`);
+                error = `The node cannot be an origin`;
             } else {
                 odPairs.push([node.label]);
             }
         }
-        // Updates step state.
-        this.wizard.updateStep({ odPairs: odPairs }, 2);
-    }
-
-    cancelNodeSelection(odPairs: number[][], node: Node, message): void {
-        if (!odPairs.find(pair => pair.find(label => label == node.label) ? true : false)) {
-            this.map.deselectNode(node);
+        // Sends events.
+        if (error) {
+            this.wizard.putInError(error);
+        } else {
+            // Updates step state.
+            this.wizard.updateStep({ odPairs: odPairs }, 2);
         }
-        this.wizard.putInError(message);
     }
-
 }

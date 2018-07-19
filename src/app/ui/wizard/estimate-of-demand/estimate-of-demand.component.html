@@ -1,0 +1,38 @@
+<div [formGroup]="formGroup">
+    <div formArrayName="odPairs" fxLayout="column" fxLayoutGap="8px">
+        <div fxLayout="column" fxLayoutGap="3px">
+            <div fxLayout="row" fxLayoutGap="3px">
+                <div fxFlex="1 1 20%" class="header">O</div>
+                <div fxFlex="1 1 20%" class="header">D</div>
+                <div fxFlex="1 1 40%" class="header">Path</div>
+                <div fxFlex="1 1 20%" class="header"></div>
+            </div>
+            <div *ngFor="let pair of odPairs.controls; let i=index" [formGroupName]="i" fxLayout="row" fxLayoutGap="3px">
+                <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <span>{{ pair.value.origin }}</span>
+                </div>
+                <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <span *ngIf="pair.value.destination">{{ pair.value.destination }}</span>
+                </div>
+                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <mat-select *ngIf="pair.value.pathType" placeholder="Path type" formControlName="pathType" name="pathType">
+                        <mat-option *ngFor="let path of pathTypes" [value]="path">
+                            {{ path }}
+                        </mat-option>
+                    </mat-select>
+                </div>
+                <div fxFlex="1 1 20%" class="cell">
+                    <button mat-icon-button color="accent" (click)="deletePair(i)" title="Delete" aria-label="Delete">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue
+            <mat-icon>navigate_next</mat-icon>
+        </button>
+    </div>
+</div>

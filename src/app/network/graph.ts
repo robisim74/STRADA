@@ -1,5 +1,21 @@
 import * as combine from 'mout/array/combine';
 
+export enum PathType {
+    distance = 'distance',
+    duration = 'duration'
+}
+
+/**
+ * An O/D pair is described by the origin and destination nodes and the type of path.
+ */
+export interface OdPair {
+
+    origin: number;
+    destination: number;
+    pathType: PathType;
+
+}
+
 /**
  * Tag describes the meaning of the particular element to which it is attached.
  */

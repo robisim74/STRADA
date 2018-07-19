@@ -12,6 +12,7 @@ import { NetworkService } from '../../network/network.service';
 import { WeatherService } from '../../network/weather/weather.service';
 import { MapService } from '../map/map.service';
 import * as fromUi from '../models/reducers';
+import { pairsValidator } from '../directives/pairs.directive';
 
 @Component({
     selector: 'ui-wizard',
@@ -53,7 +54,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                     time: [null]
                 }),
                 this.formBuilder.group({
-                    odPairs: [[]]
+                    odPairs: this.formBuilder.array([], pairsValidator())
                 }),
                 this.formBuilder.group({
 
@@ -147,10 +148,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                         message = 'The request could not be processed. Check your Internet connection and try again';
                         break;
                     case 'createGraph':
-                        message = 'The graph cannnot be created. Please, try with another area';
-                        break;
-                    case 'getNetworkData':
-                        message = 'Network data cannot be retrieved. Please, try at another time';
+                        message = 'Graph cannnot be created. Please, try with another area';
                         break;
                     case 'getNetworkData':
                         message = 'Network data cannot be retrieved. Past the quota limits traffic data become paid.' +
@@ -160,7 +158,7 @@ export class WizardComponent implements OnInit, OnDestroy {
                         message = 'Graph cannot be updated. Please, try with another area';
                         break;
                     case 'cleanGraph':
-                        message = 'Graph cannot be cleaned. Please, try with another area';
+                        message = 'Graph data is not available. Please, try with another area';
                         break;
                     case 'getWeatherData':
                         message = 'Weather data cannot be retrieved. Please, try at another time';
