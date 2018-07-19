@@ -1,3 +1,5 @@
+import { Observable, of } from 'rxjs';
+
 import * as combine from 'mout/array/combine';
 
 export enum PathType {
@@ -143,6 +145,12 @@ export class Graph {
 
     private relations: Relation[] = [];
 
+    private shortestPaths: Node[][] = [];
+
+    private incidenceMatrix: boolean[][] = [];
+
+    private assignmentMatrix: number[][] = [];
+
     public getNodes(): Node[] {
         return this.nodes;
     }
@@ -262,19 +270,47 @@ export class Graph {
     }
 
     /**
-     * Gets the incidence matrix of paths for O/D pairs.
+     * Calculates the set of minimum paths.
+     * @param odPairs The O/D pairs
      */
-    public getIncidenceMatrix(): boolean[][] {
-        return null;
+    public calcShortestPaths(odPairs: OdPair[]): Observable<any> {
+        return of(null);
+    }
+
+    public getShortestPaths(): Node[][] {
+        return this.shortestPaths;
     }
 
     /**
-     * Calculates the set of minimum paths between a source and destination node based on the link duration attribute.
+     * Calculates the incidence matrix of paths for O/D pairs.
+     */
+    public calcIncidenceMatrix(): Observable<any> {
+        return of(null);
+    }
+
+    public getIncidenceMatrix(): boolean[][] {
+        return this.incidenceMatrix;
+    }
+
+    /**
+     * Calculates the assignment matrix.
+     */
+    public calcAssignmentMatrix(): Observable<any> {
+        return of(null);
+    }
+
+    public getAssignmentMatrix(): number[][] {
+        return this.assignmentMatrix;
+    }
+
+    /**
+     * Calculates the set of minimum paths between a source and destination node based on the link distance or duration attribute.
      * k Shortest Paths algorithm in the Eppstein version.
      * @param origin Source node
      * @param destination Destination node
+     * @param pathType Distance or duration
      */
-    public getShortestPaths(origin: Node, destination: Node): Node[][] {
+    private getShortestPath(origin: number, destination: number, pathType: String): Node[] {
         return null;
     }
 

@@ -85,7 +85,6 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
                             pathType: PathType.distance
                         });
                     }
-
                 }
             }
         }));

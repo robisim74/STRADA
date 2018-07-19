@@ -239,12 +239,12 @@ import { getRandomColor } from '../utils';
         );
     }
 
-    public getOdPairs(): OdPair[] {
-        return this.odPairs;
-    }
-
-    public setOdPairs(odPairs: OdPair[]): void {
-        this.odPairs = odPairs;
+    /**
+     * Calculates link flow for each edge.
+     * @param data Traffic data
+     */
+    public calcLinkFlows(data: any): Observable<any> {
+        return of(null);
     }
 
     /**
@@ -258,7 +258,15 @@ import { getRandomColor } from '../utils';
      * Gets the routes assignment matrix.
      */
     public getAssignmentMatrix(): number[][] {
-        return null;
+        return this.graph.getAssignmentMatrix();
+    }
+
+    public getOdPairs(): OdPair[] {
+        return this.odPairs;
+    }
+
+    public setOdPairs(odPairs: OdPair[]): void {
+        this.odPairs = odPairs;
     }
 
     /**
