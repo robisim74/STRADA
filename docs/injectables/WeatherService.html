@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -956,7 +974,8 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                <p>Provides reduction factors for graph values based on weather conditions.</p>
+                <p>Gets the weather data from the Weather or Forecast resources
+and provides reduction factors for graph values based on weather conditions.</p>
 
             </p>
 
@@ -965,6 +984,21 @@
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#weatherConditions">weatherConditions</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="col-md-4">
@@ -975,8 +1009,24 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#addWeatherConditions">addWeatherConditions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getWeatherConditions">getWeatherConditions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getWeatherData">getWeatherData</a>
+                            </li>
+                            <li>
                                     <span class="modifier">Public</span>
                                 <a href="#reset">reset</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#updateWeatherData">updateWeatherData</a>
                             </li>
                         </ul>
                     </td>
@@ -990,12 +1040,261 @@
     </table>
 </section>
 
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(http: <a href="https://angular.io/api/common/http/HttpClient" target="_blank">HttpClient</a>, location: <a href="../injectables/LocationService.html">LocationService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/network/weather/weather.service.ts:16</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>http</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="https://angular.io/api/common/http/HttpClient" target="_blank" >HttpClient</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>location</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/LocationService.html" target="_self" >LocationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
 
             <section>
     
         <h3 id="methods">
             Methods
         </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="addWeatherConditions"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            addWeatherConditions
+                            </b>
+                            <a href="#addWeatherConditions"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>addWeatherConditions(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="75" class="link-to-prism">src/app/network/weather/weather.service.ts:75</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>data</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getWeatherConditions"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getWeatherConditions
+                            </b>
+                            <a href="#getWeatherConditions"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getWeatherConditions()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/network/weather/weather.service.ts:24</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="../interfaces/WeatherConditions.html" target="_self" >WeatherConditions</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getWeatherData"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getWeatherData
+                            </b>
+                            <a href="#getWeatherData"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getWeatherData(time?: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank">Date</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/network/weather/weather.service.ts:32</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Gets weather data from the Weather resource. The Forecast resource is called only if the optional parameter &#39;time&#39; is evaluated.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                                    <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>time</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" >Date</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            yes
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Optional parameter for forecasting data</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
@@ -1020,7 +1319,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/app/network/weather/weather.service.ts:8</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/network/weather/weather.service.ts:20</a></div>
                             </td>
                         </tr>
 
@@ -1036,22 +1335,236 @@
                 </tr>
             </tbody>
         </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="updateWeatherData"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            updateWeatherData
+                            </b>
+                            <a href="#updateWeatherData"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>updateWeatherData(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, time?: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank">Date</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/network/weather/weather.service.ts:52</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Updates weather conditions with the data obtained from OpenWeatherMap.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                                    <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>data</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Weather data</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                                <tr>
+                                                        <td>time</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" >Date</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            yes
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Optional parameter for forecasting data</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 </section>
 
+            <section>
+    
+        <h3 id="inputs">
+            Properties
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="weatherConditions"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            weatherConditions
+                            </b>
+                            <a href="#weatherConditions"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>weatherConditions:     <code><a href="../interfaces/WeatherConditions.html" target="_self" >WeatherConditions</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="../interfaces/WeatherConditions.html" target="_self" >WeatherConditions</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/network/weather/weather.service.ts:16</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+</section>
 
     </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
+import { HttpClient, HttpHeaders, HttpParams } from &#x27;@angular/common/http&#x27;;
+import { Observable, throwError, of } from &#x27;rxjs&#x27;;
+import { map, catchError } from &#x27;rxjs/operators&#x27;;
+
+import { LocationService } from &#x27;../../location/location.service&#x27;;
+import { appConfig } from &#x27;../../app-config&#x27;;
+import { WeatherConditions } from &#x27;./weather&#x27;;
 
 /**
- * Provides reduction factors for graph values based on weather conditions.
+ * Gets the weather data from the Weather or Forecast resources
+ * and provides reduction factors for graph values based on weather conditions.
  */
 @Injectable() export class WeatherService {
 
+    private weatherConditions: WeatherConditions;
+
+    constructor(private http: HttpClient, private location: LocationService) { }
+
     public reset(): void {
-        //
+        this.weatherConditions &#x3D; null;
+    }
+
+    public getWeatherConditions(): WeatherConditions {
+        return this.weatherConditions;
+    }
+
+    /**
+     * Gets weather data from the Weather resource. The Forecast resource is called only if the optional parameter &#x27;time&#x27; is evaluated.
+     * @param time Optional parameter for forecasting data
+     */
+    public getWeatherData(time?: Date): Observable&lt;any&gt; {
+        const url: string &#x3D; time ? appConfig.apis.openWeatherMap.forecastUrl : appConfig.apis.openWeatherMap.weatherUrl;
+        const options &#x3D; {
+            params: new HttpParams()
+                .set(&#x27;lat&#x27;, this.location.getLatLng().lat.toString())
+                .set(&#x27;lon&#x27;, this.location.getLatLng().lng.toString())
+                .set(&#x27;appid&#x27;, appConfig.apis.openWeatherMap.apiKey)
+        };
+
+        return this.http.get(url, options).pipe(
+            map((response: any) &#x3D;&gt; response),
+            catchError((error: any) &#x3D;&gt; throwError(&#x27;getWeatherData&#x27;))
+        );
+    }
+
+    /**
+     * Updates weather conditions with the data obtained from OpenWeatherMap.
+     * @param data Weather data
+     * @param time Optional parameter for forecasting data
+     */
+    public updateWeatherData(data: any, time?: Date): Observable&lt;any&gt; {
+        if (time !&#x3D; null &amp;&amp; data.list.length &gt; 0) {
+            const timezoneOffset: number &#x3D; time.getTimezoneOffset() * 60 * 1000; // Timezone offset in milliseconds
+            const utcTime: number &#x3D; time.getTime() + timezoneOffset;
+
+            let preDt: number &#x3D; data.list[0].dt * 1000; // Converts Unix UTC in millisencods
+            let forecast: any &#x3D; data.list[0];
+            for (let i &#x3D; 1; i &lt; data.list.length; i++) {
+                const nextDt: number &#x3D; data.list[i].dt * 1000;
+                // Finds the closest value.
+                if (nextDt &gt;&#x3D; utcTime) {
+                    forecast &#x3D; nextDt - utcTime &lt; utcTime - preDt ? data.list[i] : data.list[i - 1];
+                    break;
+                }
+                preDt &#x3D; data.list[i].dt * 1000;
+            }
+            this.addWeatherConditions(forecast);
+        } else {
+            this.addWeatherConditions(data);
+        }
+        return of(null);
+    }
+
+    private addWeatherConditions(data: any): void {
+        // Gets the icon image.
+        const icon &#x3D; new Image();
+        if (data.weather[0]) {
+            icon.src &#x3D; appConfig.apis.openWeatherMap.iconUrl + &#x27;/&#x27; + data.weather[0].icon + &#x27;.png&#x27;;
+        }
+
+        this.weatherConditions &#x3D; {
+            description: data.weather[0] ? data.weather[0].description : &#x27;-&#x27;,
+            icon: icon,
+            visibility: data.visibility &amp;&amp; data.visibility &lt; 10000 ? data.visibility : null,
+            rainIntensity: data.rain ? data.rain[&#x27;3h&#x27;] : null,
+            snowIntensity: data.snow ? data.snow[&#x27;3h&#x27;] : null
+        };
     }
 
 }

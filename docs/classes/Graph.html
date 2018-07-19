@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -980,7 +998,15 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier">Private</span>
+                                <a href="#assignmentMatrix">assignmentMatrix</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
                                 <a href="#edges">edges</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#incidenceMatrix">incidenceMatrix</a>
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
@@ -989,6 +1015,10 @@
                             <li>
                                     <span class="modifier">Private</span>
                                 <a href="#relations">relations</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#shortestPaths">shortestPaths</a>
                             </li>
                         </ul>
                     </td>
@@ -1012,6 +1042,26 @@
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
+                                <a href="#calcAssignmentMatrix">calcAssignmentMatrix</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#calcIncidenceMatrix">calcIncidenceMatrix</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#calcShortestPaths">calcShortestPaths</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getAssignmentMatrix">getAssignmentMatrix</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getEdge">getEdge</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
                                 <a href="#getEdges">getEdges</a>
                             </li>
                             <li>
@@ -1028,11 +1078,39 @@
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
+                                <a href="#getOdNode">getOdNode</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getOdNodes">getOdNodes</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
                                 <a href="#getRelations">getRelations</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getShortestPath">getShortestPath</a>
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
                                 <a href="#getShortestPaths">getShortestPaths</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#isOneway">isOneway</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#isRoundabout">isRoundabout</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#removeDeadNodes">removeDeadNodes</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#removeInvalidatedEdges">removeInvalidatedEdges</a>
                             </li>
                         </ul>
                     </td>
@@ -1052,6 +1130,46 @@
         <h3 id="inputs">
             Properties
         </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="assignmentMatrix"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            assignmentMatrix
+                            </b>
+                            <a href="#assignmentMatrix"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>assignmentMatrix:     <code>number[][]</code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>number[][]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="152" class="link-to-prism">src/app/network/graph.ts:152</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
@@ -1085,7 +1203,47 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="120" class="link-to-prism">src/app/network/graph.ts:120</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="144" class="link-to-prism">src/app/network/graph.ts:144</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="incidenceMatrix"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            incidenceMatrix
+                            </b>
+                            <a href="#incidenceMatrix"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>incidenceMatrix:     <code>boolean[][]</code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>boolean[][]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="150" class="link-to-prism">src/app/network/graph.ts:150</a></div>
                             </td>
                         </tr>
 
@@ -1125,7 +1283,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="118" class="link-to-prism">src/app/network/graph.ts:118</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="142" class="link-to-prism">src/app/network/graph.ts:142</a></div>
                             </td>
                         </tr>
 
@@ -1165,7 +1323,47 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="122" class="link-to-prism">src/app/network/graph.ts:122</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="146" class="link-to-prism">src/app/network/graph.ts:146</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="shortestPaths"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            shortestPaths
+                            </b>
+                            <a href="#shortestPaths"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>shortestPaths:     <code><a href="../classes/Node.html" target="_self" >Node[][]</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="../classes/Node.html" target="_self" >Node[][]</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="148" class="link-to-prism">src/app/network/graph.ts:148</a></div>
                             </td>
                         </tr>
 
@@ -1203,7 +1401,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="153" class="link-to-prism">src/app/network/graph.ts:153</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="187" class="link-to-prism">src/app/network/graph.ts:187</a></div>
                             </td>
                         </tr>
 
@@ -1274,7 +1472,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="140" class="link-to-prism">src/app/network/graph.ts:140</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="170" class="link-to-prism">src/app/network/graph.ts:170</a></div>
                             </td>
                         </tr>
 
@@ -1325,6 +1523,279 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="calcAssignmentMatrix"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            calcAssignmentMatrix
+                            </b>
+                            <a href="#calcAssignmentMatrix"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>calcAssignmentMatrix()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="298" class="link-to-prism">src/app/network/graph.ts:298</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Calculates the assignment matrix.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="calcIncidenceMatrix"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            calcIncidenceMatrix
+                            </b>
+                            <a href="#calcIncidenceMatrix"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>calcIncidenceMatrix()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="287" class="link-to-prism">src/app/network/graph.ts:287</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Calculates the incidence matrix of paths for O/D pairs.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="calcShortestPaths"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            calcShortestPaths
+                            </b>
+                            <a href="#calcShortestPaths"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>calcShortestPaths(odPairs: <a href="../interfaces/OdPair.html">OdPair[]</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="276" class="link-to-prism">src/app/network/graph.ts:276</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Calculates the set of minimum paths.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                                    <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>odPairs</td>
+                                                        <td>
+                                                                    <code><a href="../interfaces/OdPair.html" target="_self" >OdPair[]</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>The O/D pairs</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getAssignmentMatrix"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getAssignmentMatrix
+                            </b>
+                            <a href="#getAssignmentMatrix"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getAssignmentMatrix()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="302" class="link-to-prism">src/app/network/graph.ts:302</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>[][]</code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getEdge"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getEdge
+                            </b>
+                            <a href="#getEdge"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getEdge(edgeId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="183" class="link-to-prism">src/app/network/graph.ts:183</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>edgeId</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="../classes/Edge.html" target="_self" >Edge</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="getEdges"></a>
                         <span class="name">
                             <b>
@@ -1345,7 +1816,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="128" class="link-to-prism">src/app/network/graph.ts:128</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="158" class="link-to-prism">src/app/network/graph.ts:158</a></div>
                             </td>
                         </tr>
 
@@ -1385,15 +1856,13 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="160" class="link-to-prism">src/app/network/graph.ts:160</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="291" class="link-to-prism">src/app/network/graph.ts:291</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>Gets the incidence matrix of paths for O/D pairs.</p>
-</div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code>[][]</code>
@@ -1427,7 +1896,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="136" class="link-to-prism">src/app/network/graph.ts:136</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="166" class="link-to-prism">src/app/network/graph.ts:166</a></div>
                             </td>
                         </tr>
 
@@ -1498,7 +1967,118 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="124" class="link-to-prism">src/app/network/graph.ts:124</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="154" class="link-to-prism">src/app/network/graph.ts:154</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="../classes/Node.html" target="_self" >Node[]</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getOdNode"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getOdNode
+                            </b>
+                            <a href="#getOdNode"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getOdNode(label: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="264" class="link-to-prism">src/app/network/graph.ts:264</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>label</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getOdNodes"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getOdNodes
+                            </b>
+                            <a href="#getOdNodes"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getOdNodes()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="268" class="link-to-prism">src/app/network/graph.ts:268</a></div>
                             </td>
                         </tr>
 
@@ -1538,7 +2118,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="132" class="link-to-prism">src/app/network/graph.ts:132</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="162" class="link-to-prism">src/app/network/graph.ts:162</a></div>
                             </td>
                         </tr>
 
@@ -1550,6 +2130,117 @@
                                 <b>Returns : </b>    <code><a href="../classes/Relation.html" target="_self" >Relation[]</a></code>
 
                             </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getShortestPath"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            getShortestPath
+                            </b>
+                            <a href="#getShortestPath"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getShortestPath(origin: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, destination: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, pathType: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank">String</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="313" class="link-to-prism">src/app/network/graph.ts:313</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Calculates the set of minimum paths between a source and destination node based on the link distance or duration attribute.
+k Shortest Paths algorithm in the Eppstein version.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                                    <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>origin</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Source node</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                                <tr>
+                                                        <td>destination</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Destination node</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                                <tr>
+                                                        <td>pathType</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank" >String</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Distance or duration</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="../classes/Node.html" target="_self" >Node[]</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
                     </td>
                 </tr>
             </tbody>
@@ -1571,22 +2262,61 @@
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>getShortestPaths(origin: <a href="../classes/Node.html">Node</a>, destination: <a href="../classes/Node.html">Node</a>)</code>
+                        <code>getShortestPaths()</code>
                     </td>
                 </tr>
 
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="170" class="link-to-prism">src/app/network/graph.ts:170</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="280" class="link-to-prism">src/app/network/graph.ts:280</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>Calculates the set of minimum paths between a source and destination node based on the link duration attribute.
-k Shortest Paths algorithm in the Eppstein version.</p>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>[][]</code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isOneway"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            isOneway
+                            </b>
+                            <a href="#isOneway"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>isOneway(edgeId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="195" class="link-to-prism">src/app/network/graph.ts:195</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p><a href="https://wiki.openstreetmap.org/wiki/Key:oneway">https://wiki.openstreetmap.org/wiki/Key:oneway</a></p>
 </div>
 
                             <div class="io-description">
@@ -1602,9 +2332,9 @@ k Shortest Paths algorithm in the Eppstein version.</p>
                                         </thead>
                                         <tbody>
                                                 <tr>
-                                                        <td>origin</td>
+                                                        <td>edgeId</td>
                                                         <td>
-                                                                    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
                                                         </td>
                                                     
                                                     <td>
@@ -1613,23 +2343,7 @@ k Shortest Paths algorithm in the Eppstein version.</p>
                                                     
 
                                                         <td>
-                                                                <code><p>Source node</p>
-</code>
-                                                        </td>
-                                                </tr>
-                                                <tr>
-                                                        <td>destination</td>
-                                                        <td>
-                                                                    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
-                                                        </td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                        <td>
-                                                                <code><p>Destination node</p>
+                                                                <code><p>Id of the edge</p>
 </code>
                                                         </td>
                                                 </tr>
@@ -1639,12 +2353,174 @@ k Shortest Paths algorithm in the Eppstein version.</p>
                             <div>
                             </div>
                             <div class="io-description">
-                                <b>Returns : </b>    <code>[][]</code>
+                                <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
 
                             </div>
                                 <div class="io-description">
                                     
                                 </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isRoundabout"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            isRoundabout
+                            </b>
+                            <a href="#isRoundabout"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>isRoundabout(edgeId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="204" class="link-to-prism">src/app/network/graph.ts:204</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p><a href="https://wiki.openstreetmap.org/wiki/Tag:junction%3Droundabout">https://wiki.openstreetmap.org/wiki/Tag:junction%3Droundabout</a></p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                                    <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>edgeId</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Id of the edge</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="removeDeadNodes"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            removeDeadNodes
+                            </b>
+                            <a href="#removeDeadNodes"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>removeDeadNodes()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="250" class="link-to-prism">src/app/network/graph.ts:250</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Removes the nodes with no outgoing edges and incoming edges.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="removeInvalidatedEdges"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            removeInvalidatedEdges
+                            </b>
+                            <a href="#removeInvalidatedEdges"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>removeInvalidatedEdges()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="213" class="link-to-prism">src/app/network/graph.ts:213</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Removes the edges with null distance.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
                     </td>
                 </tr>
             </tbody>
@@ -1660,7 +2536,25 @@ k Shortest Paths algorithm in the Eppstein version.</p>
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import * as combine from &#x27;mout/array/combine&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Observable, of } from &#x27;rxjs&#x27;;
+
+import * as combine from &#x27;mout/array/combine&#x27;;
+
+export enum PathType {
+    distance &#x3D; &#x27;distance&#x27;,
+    duration &#x3D; &#x27;duration&#x27;
+}
+
+/**
+ * An O/D pair is described by the origin and destination nodes and the type of path.
+ */
+export interface OdPair {
+
+    origin: number;
+    destination: number;
+    pathType: PathType;
+
+}
 
 /**
  * Tag describes the meaning of the particular element to which it is attached.
@@ -1690,6 +2584,8 @@ export class Node {
 
     public nodeId: number;
 
+    public label: number;
+
     public lat: number;
 
     public lon: number;
@@ -1699,6 +2595,8 @@ export class Node {
     public incomingEdges: Edge[] &#x3D; [];
 
     public outgoingEdges: Edge[] &#x3D; [];
+
+    public drawingOptions: { marker?: google.maps.Marker } &#x3D; {};
 
     constructor(nodeId: number) {
         this.nodeId &#x3D; nodeId;
@@ -1742,6 +2640,8 @@ export class Edge {
 
     public linkFlow: number;
 
+    public drawingOptions: { polyline?: google.maps.Polyline } &#x3D; {};
+
     constructor(edgeId: number) {
         this.edgeId &#x3D; edgeId;
     }
@@ -1783,6 +2683,12 @@ export class Graph {
 
     private relations: Relation[] &#x3D; [];
 
+    private shortestPaths: Node[][] &#x3D; [];
+
+    private incidenceMatrix: boolean[][] &#x3D; [];
+
+    private assignmentMatrix: number[][] &#x3D; [];
+
     public getNodes(): Node[] {
         return this.nodes;
     }
@@ -1812,24 +2718,137 @@ export class Graph {
         }
     }
 
+    public getEdge(edgeId: number): Edge {
+        return this.edges.find((edge: Edge) &#x3D;&gt; edge.edgeId &#x3D;&#x3D; edgeId);
+    }
+
     public addEdge(edge: Edge): void {
         this.edges.push(edge);
     }
 
     /**
-     * Gets the incidence matrix of paths for O/D pairs.
+     * https://wiki.openstreetmap.org/wiki/Key:oneway
+     * @param edgeId Id of the edge
      */
-    public getIncidenceMatrix(): boolean[][] {
-        return null;
+    public isOneway(edgeId: number): boolean {
+        return !!this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;oneway&#x27; &amp;&amp; tag.value !&#x3D; &#x27;no&#x27;) ||
+            this.isRoundabout(edgeId);
     }
 
     /**
-     * Calculates the set of minimum paths between a source and destination node based on the link duration attribute.
+     * https://wiki.openstreetmap.org/wiki/Tag:junction%3Droundabout
+     * @param edgeId Id of the edge
+     */
+    public isRoundabout(edgeId: number): boolean {
+        return this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;junction&#x27; &amp;&amp; tag.value &#x3D;&#x3D; &#x27;roundabout&#x27;) ||
+            this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;junction&#x27; &amp;&amp; tag.value &#x3D;&#x3D; &#x27;circular&#x27;) ?
+            true : false;
+    }
+
+    /**
+     * Removes the edges with null distance.
+     */
+    public removeInvalidatedEdges(): void {
+        try {
+            const removedEdges: number[] &#x3D; [];
+            if (this.edges.length &gt; 0) {
+                for (let i &#x3D; this.edges.length - 1; i &gt;&#x3D; 0; i--) {
+                    if (this.edges[i].distance &#x3D;&#x3D; null) {
+                        removedEdges.push(this.edges[i].edgeId);
+                        this.edges.splice(i, 1);
+                    }
+                }
+                for (const edgeId of removedEdges) {
+                    for (const node of this.nodes) {
+                        if (node.incomingEdges.length &gt; 0) {
+                            for (let i &#x3D; node.incomingEdges.length - 1; i &gt;&#x3D; 0; i--) {
+                                if (node.incomingEdges[i].edgeId &#x3D;&#x3D; edgeId) {
+                                    node.incomingEdges.splice(i, 1);
+                                }
+                            }
+                        }
+                        if (node.outgoingEdges.length &gt; 0) {
+                            for (let i &#x3D; node.outgoingEdges.length - 1; i &gt;&#x3D; 0; i--) {
+                                if (node.outgoingEdges[i].edgeId &#x3D;&#x3D; edgeId) {
+                                    node.outgoingEdges.splice(i, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Removes the nodes with no outgoing edges and incoming edges.
+     */
+    public removeDeadNodes(): void {
+        try {
+            if (this.nodes.length &gt; 0) {
+                for (let i &#x3D; this.nodes.length - 1; i &gt;&#x3D; 0; i--) {
+                    if (this.nodes[i].incomingEdges.length &#x3D;&#x3D; 0 &amp;&amp; this.nodes[i].outgoingEdges.length &#x3D;&#x3D; 0) {
+                        this.nodes.splice(i, 1);
+                    }
+                }
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public getOdNode(label: number): Node {
+        return this.nodes.find((node: Node) &#x3D;&gt; node.label &#x3D;&#x3D; label);
+    }
+
+    public getOdNodes(): Node[] {
+        return this.nodes.filter((node: Node) &#x3D;&gt; node.label);
+    }
+
+    /**
+     * Calculates the set of minimum paths.
+     * @param odPairs The O/D pairs
+     */
+    public calcShortestPaths(odPairs: OdPair[]): Observable&lt;any&gt; {
+        return of(null);
+    }
+
+    public getShortestPaths(): Node[][] {
+        return this.shortestPaths;
+    }
+
+    /**
+     * Calculates the incidence matrix of paths for O/D pairs.
+     */
+    public calcIncidenceMatrix(): Observable&lt;any&gt; {
+        return of(null);
+    }
+
+    public getIncidenceMatrix(): boolean[][] {
+        return this.incidenceMatrix;
+    }
+
+    /**
+     * Calculates the assignment matrix.
+     */
+    public calcAssignmentMatrix(): Observable&lt;any&gt; {
+        return of(null);
+    }
+
+    public getAssignmentMatrix(): number[][] {
+        return this.assignmentMatrix;
+    }
+
+    /**
+     * Calculates the set of minimum paths between a source and destination node based on the link distance or duration attribute.
      * k Shortest Paths algorithm in the Eppstein version.
      * @param origin Source node
      * @param destination Destination node
+     * @param pathType Distance or duration
      */
-    public getShortestPaths(origin: Node, destination: Node): Node[][] {
+    private getShortestPath(origin: number, destination: number, pathType: String): Node[] {
         return null;
     }
 

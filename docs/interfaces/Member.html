@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -1089,7 +1107,25 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import * as combine from &#x27;mout/array/combine&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Observable, of } from &#x27;rxjs&#x27;;
+
+import * as combine from &#x27;mout/array/combine&#x27;;
+
+export enum PathType {
+    distance &#x3D; &#x27;distance&#x27;,
+    duration &#x3D; &#x27;duration&#x27;
+}
+
+/**
+ * An O/D pair is described by the origin and destination nodes and the type of path.
+ */
+export interface OdPair {
+
+    origin: number;
+    destination: number;
+    pathType: PathType;
+
+}
 
 /**
  * Tag describes the meaning of the particular element to which it is attached.
@@ -1119,6 +1155,8 @@ export class Node {
 
     public nodeId: number;
 
+    public label: number;
+
     public lat: number;
 
     public lon: number;
@@ -1128,6 +1166,8 @@ export class Node {
     public incomingEdges: Edge[] &#x3D; [];
 
     public outgoingEdges: Edge[] &#x3D; [];
+
+    public drawingOptions: { marker?: google.maps.Marker } &#x3D; {};
 
     constructor(nodeId: number) {
         this.nodeId &#x3D; nodeId;
@@ -1171,6 +1211,8 @@ export class Edge {
 
     public linkFlow: number;
 
+    public drawingOptions: { polyline?: google.maps.Polyline } &#x3D; {};
+
     constructor(edgeId: number) {
         this.edgeId &#x3D; edgeId;
     }
@@ -1212,6 +1254,12 @@ export class Graph {
 
     private relations: Relation[] &#x3D; [];
 
+    private shortestPaths: Node[][] &#x3D; [];
+
+    private incidenceMatrix: boolean[][] &#x3D; [];
+
+    private assignmentMatrix: number[][] &#x3D; [];
+
     public getNodes(): Node[] {
         return this.nodes;
     }
@@ -1241,24 +1289,137 @@ export class Graph {
         }
     }
 
+    public getEdge(edgeId: number): Edge {
+        return this.edges.find((edge: Edge) &#x3D;&gt; edge.edgeId &#x3D;&#x3D; edgeId);
+    }
+
     public addEdge(edge: Edge): void {
         this.edges.push(edge);
     }
 
     /**
-     * Gets the incidence matrix of paths for O/D pairs.
+     * https://wiki.openstreetmap.org/wiki/Key:oneway
+     * @param edgeId Id of the edge
      */
-    public getIncidenceMatrix(): boolean[][] {
-        return null;
+    public isOneway(edgeId: number): boolean {
+        return !!this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;oneway&#x27; &amp;&amp; tag.value !&#x3D; &#x27;no&#x27;) ||
+            this.isRoundabout(edgeId);
     }
 
     /**
-     * Calculates the set of minimum paths between a source and destination node based on the link duration attribute.
+     * https://wiki.openstreetmap.org/wiki/Tag:junction%3Droundabout
+     * @param edgeId Id of the edge
+     */
+    public isRoundabout(edgeId: number): boolean {
+        return this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;junction&#x27; &amp;&amp; tag.value &#x3D;&#x3D; &#x27;roundabout&#x27;) ||
+            this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;junction&#x27; &amp;&amp; tag.value &#x3D;&#x3D; &#x27;circular&#x27;) ?
+            true : false;
+    }
+
+    /**
+     * Removes the edges with null distance.
+     */
+    public removeInvalidatedEdges(): void {
+        try {
+            const removedEdges: number[] &#x3D; [];
+            if (this.edges.length &gt; 0) {
+                for (let i &#x3D; this.edges.length - 1; i &gt;&#x3D; 0; i--) {
+                    if (this.edges[i].distance &#x3D;&#x3D; null) {
+                        removedEdges.push(this.edges[i].edgeId);
+                        this.edges.splice(i, 1);
+                    }
+                }
+                for (const edgeId of removedEdges) {
+                    for (const node of this.nodes) {
+                        if (node.incomingEdges.length &gt; 0) {
+                            for (let i &#x3D; node.incomingEdges.length - 1; i &gt;&#x3D; 0; i--) {
+                                if (node.incomingEdges[i].edgeId &#x3D;&#x3D; edgeId) {
+                                    node.incomingEdges.splice(i, 1);
+                                }
+                            }
+                        }
+                        if (node.outgoingEdges.length &gt; 0) {
+                            for (let i &#x3D; node.outgoingEdges.length - 1; i &gt;&#x3D; 0; i--) {
+                                if (node.outgoingEdges[i].edgeId &#x3D;&#x3D; edgeId) {
+                                    node.outgoingEdges.splice(i, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Removes the nodes with no outgoing edges and incoming edges.
+     */
+    public removeDeadNodes(): void {
+        try {
+            if (this.nodes.length &gt; 0) {
+                for (let i &#x3D; this.nodes.length - 1; i &gt;&#x3D; 0; i--) {
+                    if (this.nodes[i].incomingEdges.length &#x3D;&#x3D; 0 &amp;&amp; this.nodes[i].outgoingEdges.length &#x3D;&#x3D; 0) {
+                        this.nodes.splice(i, 1);
+                    }
+                }
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public getOdNode(label: number): Node {
+        return this.nodes.find((node: Node) &#x3D;&gt; node.label &#x3D;&#x3D; label);
+    }
+
+    public getOdNodes(): Node[] {
+        return this.nodes.filter((node: Node) &#x3D;&gt; node.label);
+    }
+
+    /**
+     * Calculates the set of minimum paths.
+     * @param odPairs The O/D pairs
+     */
+    public calcShortestPaths(odPairs: OdPair[]): Observable&lt;any&gt; {
+        return of(null);
+    }
+
+    public getShortestPaths(): Node[][] {
+        return this.shortestPaths;
+    }
+
+    /**
+     * Calculates the incidence matrix of paths for O/D pairs.
+     */
+    public calcIncidenceMatrix(): Observable&lt;any&gt; {
+        return of(null);
+    }
+
+    public getIncidenceMatrix(): boolean[][] {
+        return this.incidenceMatrix;
+    }
+
+    /**
+     * Calculates the assignment matrix.
+     */
+    public calcAssignmentMatrix(): Observable&lt;any&gt; {
+        return of(null);
+    }
+
+    public getAssignmentMatrix(): number[][] {
+        return this.assignmentMatrix;
+    }
+
+    /**
+     * Calculates the set of minimum paths between a source and destination node based on the link distance or duration attribute.
      * k Shortest Paths algorithm in the Eppstein version.
      * @param origin Source node
      * @param destination Destination node
+     * @param pathType Distance or duration
      */
-    public getShortestPaths(origin: Node, destination: Node): Node[][] {
+    private getShortestPath(origin: number, destination: number, pathType: String): Node[] {
         return null;
     }
 

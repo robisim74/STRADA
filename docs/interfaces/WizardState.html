@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -1068,7 +1086,7 @@
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>pending:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                        <code>pending:     <code>string | boolean</code>
 </code>
                                     </td>
                                 </tr>
@@ -1076,7 +1094,7 @@
 
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            <i>Type : </i>    <code>string | boolean</code>
 
                                         </td>
                                     </tr>
@@ -1134,7 +1152,7 @@ export interface WizardState {
     steps: Step[];
     currentStep: number;
     error: string | null;
-    pending: boolean;
+    pending: string | boolean;
 
 }
 
@@ -1180,9 +1198,7 @@ export function wizardReducer(state: WizardState &#x3D; deepClone(initialWizardS
             return {
                 ...state,
                 steps: deepClone(state.steps),
-                currentStep: action.payload.nextIndex,
-                error: null,
-                pending: false
+                currentStep: action.payload.nextIndex
             };
         }
         case WizardActionTypes.Reset: {
@@ -1200,7 +1216,7 @@ export const getCurrentStep: (state: WizardState) &#x3D;&gt; number &#x3D; (stat
 
 export const getError: (state: WizardState) &#x3D;&gt; string &#x3D; (state: WizardState) &#x3D;&gt; state.error;
 
-export const getPending: (state: WizardState) &#x3D;&gt; boolean &#x3D; (state: WizardState) &#x3D;&gt; state.pending;
+export const getPending: (state: WizardState) &#x3D;&gt; string | boolean &#x3D; (state: WizardState) &#x3D;&gt; state.pending;
 </code></pre>
     </div>
 </div>

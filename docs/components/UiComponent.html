@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -1645,7 +1663,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     }
 
     canDeactivate(): Observable&lt;boolean&gt; | boolean {
-        return this.openDialog(&#x27;Are you sure you want to quit the application?&#x27;).pipe(
+        return this.openDialog(&#x27;Are you sure you want to exit the simulation?&#x27;).pipe(
             tap((dialogResult: boolean) &#x3D;&gt; {
                 if (dialogResult) {
                     this.wizard.reset();
@@ -1655,7 +1673,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     }
 
     reset(): void {
-        this.openDialog(&#x27;Are you sure you want to reset the application?&#x27;).subscribe(
+        this.openDialog(&#x27;Are you sure you want to reset the simulation?&#x27;).subscribe(
             (dialogResult: boolean) &#x3D;&gt; {
                 if (dialogResult) {
                     this.wizard.reset();
@@ -1694,14 +1712,17 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;centered&quot; *ngIf&#x3D;&quot;pending&quot;&gt;
     &lt;mat-progress-spinner color&#x3D;&quot;accent&quot; mode&#x3D;&quot;indeterminate&quot;&gt;
     &lt;/mat-progress-spinner&gt;
+    &lt;div class&#x3D;&quot;message&quot;&gt;
+        {{ pending }}
+    &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;div class&#x3D;&quot;ui-content&quot; fxLayout&#x3D;&quot;row&quot; fxLayout.lt-md&#x3D;&quot;column&quot; fxLayoutGap&#x3D;&quot;8px&quot; [class.ops]&#x3D;&quot;pending&quot;&gt;
     &lt;div fxFlex&#x3D;&quot;1 1 60%&quot; fxFlex.lt-md&#x3D;&quot;1 1 auto&quot; fxFlexOrder&#x3D;&quot;1&quot; fxLayout&#x3D;&quot;column&quot; fxLayoutGap&#x3D;&quot;8px&quot;&gt;
-        &lt;div fxFlex&#x3D;&quot;1 1 10%&quot;&gt;
+        &lt;div fxFlex&#x3D;&quot;1 1 auto&quot;&gt;
             &lt;ui-weather&gt;&lt;/ui-weather&gt;
         &lt;/div&gt;
-        &lt;div fxFlex&#x3D;&quot;1 1 90%&quot;&gt;
+        &lt;div fxFlex&#x3D;&quot;1 1 auto&quot;&gt;
             &lt;ui-map&gt;&lt;/ui-map&gt;
         &lt;/div&gt;
     &lt;/div&gt;
@@ -1742,7 +1763,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><div class="centered" *ngIf="pending">    <mat-progress-spinner color="accent" mode="indeterminate">    </mat-progress-spinner></div><div class="ui-content" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px" [class.ops]="pending">    <div fxFlex="1 1 60%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">        <div fxFlex="1 1 10%">            <ui-weather></ui-weather>        </div>        <div fxFlex="1 1 90%">            <ui-map></ui-map>        </div>    </div>    <div fxFlex="1 1 40%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">        <ui-wizard></ui-wizard>        <div class="actions" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="8px">            <button type="button" mat-raised-button (click)="reset()" title="Reset the whole simulation">Reset</button>            <button type="button" mat-raised-button (click)="exit()" title="Exit the simulation">Exit</button>        </div>    </div></div><app-footer></app-footer></div>'
+        var COMPONENT_TEMPLATE = '<div><div class="centered" *ngIf="pending">    <mat-progress-spinner color="accent" mode="indeterminate">    </mat-progress-spinner>    <div class="message">        {{ pending }}    </div></div><div class="ui-content" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px" [class.ops]="pending">    <div fxFlex="1 1 60%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">        <div fxFlex="1 1 auto">            <ui-weather></ui-weather>        </div>        <div fxFlex="1 1 auto">            <ui-map></ui-map>        </div>    </div>    <div fxFlex="1 1 40%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">        <ui-wizard></ui-wizard>        <div class="actions" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="8px">            <button type="button" mat-raised-button (click)="reset()" title="Reset the whole simulation">Reset</button>            <button type="button" mat-raised-button (click)="exit()" title="Exit the simulation">Exit</button>        </div>    </div></div><app-footer></app-footer></div>'
     var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ChangeOfConditionsComponent', 'selector': 'wizard-change-of-conditions'},{'name': 'EstimateOfDemandComponent', 'selector': 'wizard-estimate-of-demand'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'GoogleMapComponent', 'selector': 'google-map'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'InfoDialogComponent', 'selector': 'info-dialog'},{'name': 'MapComponent', 'selector': 'ui-map'},{'name': 'MessageArchivedComponent', 'selector': 'snack-bar'},{'name': 'SearchForTheAreaComponent', 'selector': 'wizard-search-for-the-area'},{'name': 'SelectionOfTheAreaComponent', 'selector': 'wizard-selection-of-the-area'},{'name': 'SimulationComponent', 'selector': 'wizard-simulation'},{'name': 'StatisticsComponent', 'selector': 'wizard-statistics'},{'name': 'UiComponent', 'selector': 'app-ui'},{'name': 'WeatherComponent', 'selector': 'ui-weather'},{'name': 'WizardComponent', 'selector': 'ui-wizard'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'UiComponent'};

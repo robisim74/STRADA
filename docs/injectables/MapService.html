@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -979,6 +997,10 @@
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
+                                <a href="#centroid">centroid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
                                 <a href="#infoWindow">infoWindow</a>
                             </li>
                             <li>
@@ -1014,6 +1036,18 @@
                                 <a href="#checkRect">checkRect</a>
                             </li>
                             <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#deselectNode">deselectNode</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#drawBaseEdge">drawBaseEdge</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#drawGraph">drawGraph</a>
+                            </li>
+                            <li>
                                     <span class="modifier">Public</span>
                                 <a href="#getArea">getArea</a>
                             </li>
@@ -1023,7 +1057,15 @@
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
+                                <a href="#getCentroid">getCentroid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
                                 <a href="#initMap">initMap</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#removeRect">removeRect</a>
                             </li>
                             <li>
                                 <a href="#reset">reset</a>
@@ -1033,8 +1075,20 @@
                                 <a href="#resize">resize</a>
                             </li>
                             <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#selectNode">selectNode</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#sendNodeEvent">sendNodeEvent</a>
+                            </li>
+                            <li>
                                     <span class="modifier">Public</span>
                                 <a href="#setCenter">setCenter</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#setCentroid">setCentroid</a>
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
@@ -1045,8 +1099,16 @@
                                 <a href="#setZoom">setZoom</a>
                             </li>
                             <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#showNode">showNode</a>
+                            </li>
+                            <li>
                                     <span class="modifier">Public</span>
                                 <a href="#showRect">showRect</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#updateOdNodes">updateOdNodes</a>
                             </li>
                         </ul>
                     </td>
@@ -1066,12 +1128,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(zone: <a href="https://angular.io/api/core/NgZone" target="_blank">NgZone</a>)</code>
+<code>constructor(zone: <a href="https://angular.io/api/core/NgZone" target="_blank">NgZone</a>, network: <a href="../injectables/NetworkService.html">NetworkService</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/ui/map/map.service.ts:22</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/ui/map/map.service.ts:34</a></div>
                             </td>
                         </tr>
 
@@ -1093,6 +1155,18 @@
                                                   
                                                         <td>
                                                                     <code><a href="https://angular.io/api/core/NgZone" target="_blank" >NgZone</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>network</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/NetworkService.html" target="_self" >NetworkService</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -1131,14 +1205,14 @@
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>buildBounds(center: google.maps.LatLngLiteral)</code>
+                        <code>buildBounds(centerMap: google.maps.LatLngLiteral)</code>
                     </td>
                 </tr>
 
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/ui/map/map.service.ts:70</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="96" class="link-to-prism">src/app/ui/map/map.service.ts:96</a></div>
                             </td>
                         </tr>
 
@@ -1158,7 +1232,7 @@
                                         </thead>
                                         <tbody>
                                                 <tr>
-                                                        <td>center</td>
+                                                        <td>centerMap</td>
                                                         <td>
                                                                     <code>google.maps.LatLngLiteral</code>
                                                         </td>
@@ -1209,7 +1283,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="146" class="link-to-prism">src/app/ui/map/map.service.ts:146</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="273" class="link-to-prism">src/app/ui/map/map.service.ts:273</a></div>
                             </td>
                         </tr>
 
@@ -1303,13 +1377,197 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="110" class="link-to-prism">src/app/ui/map/map.service.ts:110</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="237" class="link-to-prism">src/app/ui/map/map.service.ts:237</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="deselectNode"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            deselectNode
+                            </b>
+                            <a href="#deselectNode"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>deselectNode(node: <a href="../classes/Node.html">Node</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="233" class="link-to-prism">src/app/ui/map/map.service.ts:233</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>node</td>
+                                                        <td>
+                                                                    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="drawBaseEdge"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            drawBaseEdge
+                            </b>
+                            <a href="#drawBaseEdge"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>drawBaseEdge(edge: <a href="../classes/Edge.html">Edge</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="204" class="link-to-prism">src/app/ui/map/map.service.ts:204</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>edge</td>
+                                                        <td>
+                                                                    <code><a href="../classes/Edge.html" target="_self" >Edge</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="drawGraph"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            drawGraph
+                            </b>
+                            <a href="#drawGraph"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>drawGraph()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="144" class="link-to-prism">src/app/ui/map/map.service.ts:144</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Draws the graph on the map.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -1343,7 +1601,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="96" class="link-to-prism">src/app/ui/map/map.service.ts:96</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="127" class="link-to-prism">src/app/ui/map/map.service.ts:127</a></div>
                             </td>
                         </tr>
 
@@ -1383,7 +1641,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="100" class="link-to-prism">src/app/ui/map/map.service.ts:100</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="131" class="link-to-prism">src/app/ui/map/map.service.ts:131</a></div>
                             </td>
                         </tr>
 
@@ -1393,6 +1651,46 @@
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code>google.maps.LatLngBoundsLiteral</code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getCentroid"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            getCentroid
+                            </b>
+                            <a href="#getCentroid"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getCentroid()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="161" class="link-to-prism">src/app/ui/map/map.service.ts:161</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>google.maps.LatLngLiteral</code>
 
                             </div>
                     </td>
@@ -1423,7 +1721,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/ui/map/map.service.ts:38</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/ui/map/map.service.ts:64</a></div>
                             </td>
                         </tr>
 
@@ -1497,6 +1795,46 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="removeRect"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            removeRect
+                            </b>
+                            <a href="#removeRect"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>removeRect()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="122" class="link-to-prism">src/app/ui/map/map.service.ts:122</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="reset"></a>
                         <span class="name">
                             <b>
@@ -1515,7 +1853,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/ui/map/map.service.ts:26</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/ui/map/map.service.ts:41</a></div>
                             </td>
                         </tr>
 
@@ -1555,7 +1893,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/ui/map/map.service.ts:59</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="85" class="link-to-prism">src/app/ui/map/map.service.ts:85</a></div>
                             </td>
                         </tr>
 
@@ -1567,6 +1905,155 @@
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
 
                             </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="selectNode"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            selectNode
+                            </b>
+                            <a href="#selectNode"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>selectNode(node: <a href="../classes/Node.html">Node</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="229" class="link-to-prism">src/app/ui/map/map.service.ts:229</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>node</td>
+                                                        <td>
+                                                                    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="sendNodeEvent"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            sendNodeEvent
+                            </b>
+                            <a href="#sendNodeEvent"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>sendNodeEvent(node: <a href="../classes/Node.html">Node</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="225" class="link-to-prism">src/app/ui/map/map.service.ts:225</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Sends an event with the selected node.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                                    <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>node</td>
+                                                        <td>
+                                                                    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>Selected node</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
                     </td>
                 </tr>
             </tbody>
@@ -1595,7 +2082,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/ui/map/map.service.ts:46</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="72" class="link-to-prism">src/app/ui/map/map.service.ts:72</a></div>
                             </td>
                         </tr>
 
@@ -1646,6 +2133,77 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="setCentroid"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            setCentroid
+                            </b>
+                            <a href="#setCentroid"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>setCentroid(odNodes: <a href="../classes/Node.html">Node[]</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="165" class="link-to-prism">src/app/ui/map/map.service.ts:165</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>odNodes</td>
+                                                        <td>
+                                                                    <code><a href="../classes/Node.html" target="_self" >Node[]</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="setInfoWindow"></a>
                         <span class="name">
                             <b>
@@ -1666,7 +2224,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="134" class="link-to-prism">src/app/ui/map/map.service.ts:134</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="261" class="link-to-prism">src/app/ui/map/map.service.ts:261</a></div>
                             </td>
                         </tr>
 
@@ -1760,7 +2318,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/ui/map/map.service.ts:53</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="79" class="link-to-prism">src/app/ui/map/map.service.ts:79</a></div>
                             </td>
                         </tr>
 
@@ -1811,6 +2369,77 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="showNode"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            showNode
+                            </b>
+                            <a href="#showNode"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>showNode(node: <a href="../classes/Node.html">Node</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="210" class="link-to-prism">src/app/ui/map/map.service.ts:210</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>node</td>
+                                                        <td>
+                                                                    <code><a href="../classes/Node.html" target="_self" >Node</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="showRect"></a>
                         <span class="name">
                             <b>
@@ -1831,7 +2460,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="79" class="link-to-prism">src/app/ui/map/map.service.ts:79</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="105" class="link-to-prism">src/app/ui/map/map.service.ts:105</a></div>
                             </td>
                         </tr>
 
@@ -1854,6 +2483,77 @@
                                                         <td>bounds</td>
                                                         <td>
                                                                     <code>google.maps.LatLngBoundsLiteral</code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="updateOdNodes"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            updateOdNodes
+                            </b>
+                            <a href="#updateOdNodes"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>updateOdNodes(odPairs: number[][])</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="190" class="link-to-prism">src/app/ui/map/map.service.ts:190</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>odPairs</td>
+                                                        <td>
+                                                                    <code>number[][]</code>
                                                         </td>
                                                     
                                                     <td>
@@ -1912,10 +2612,51 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/ui/map/map.service.ts:22</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/ui/map/map.service.ts:29</a></div>
                             </td>
                         </tr>
 
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="centroid"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            centroid
+                            </b>
+                            <a href="#centroid"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>centroid:     <code>google.maps.LatLngLiteral</code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>google.maps.LatLngLiteral</code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/ui/map/map.service.ts:34</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Centroid of the graph.</p>
+</div>
+                    </td>
+                </tr>
 
             </tbody>
         </table>
@@ -1947,7 +2688,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/ui/map/map.service.ts:20</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/ui/map/map.service.ts:27</a></div>
                             </td>
                         </tr>
 
@@ -1982,7 +2723,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/ui/map/map.service.ts:16</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/ui/map/map.service.ts:23</a></div>
                             </td>
                         </tr>
 
@@ -2017,7 +2758,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/ui/map/map.service.ts:18</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/ui/map/map.service.ts:25</a></div>
                             </td>
                         </tr>
 
@@ -2034,16 +2775,23 @@
 import { BehaviorSubject, Observable } from &#x27;rxjs&#x27;;
 
 import area from &#x27;@turf/area&#x27;;
-import { point, polygon } from &#x27;@turf/helpers&#x27;;
+import centroid from &#x27;@turf/centroid&#x27;;
+import center from &#x27;@turf/center&#x27;;
+import { polygon, point, featureCollection } from &#x27;@turf/helpers&#x27;;
+import { getCoord } from &#x27;@turf/invariant&#x27;;
 
+import { NetworkService } from &#x27;../../network/network.service&#x27;;
 import { uiConfig } from &#x27;../ui-config&#x27;;
+import { Edge, Node } from &#x27;../../network/graph&#x27;;
 
 /**
  * Instances the map.
  */
 @Injectable() export class MapService {
 
-    @Output() public resetMap: EventEmitter&lt;any&gt; &#x3D; new EventEmitter&lt;any&gt;();
+    @Output() public mapReset: EventEmitter&lt;any&gt; &#x3D; new EventEmitter&lt;any&gt;();
+
+    @Output() public nodeSelected: EventEmitter&lt;Node&gt; &#x3D; new EventEmitter&lt;Node&gt;();
 
     private map: google.maps.Map;
 
@@ -2053,13 +2801,32 @@ import { uiConfig } from &#x27;../ui-config&#x27;;
 
     private area &#x3D; new BehaviorSubject&lt;number | null&gt;(null);
 
-    constructor(private zone: NgZone) { }
+    /**
+     * Centroid of the graph.
+     */
+    private centroid: google.maps.LatLngLiteral;
+
+    constructor(
+        private zone: NgZone,
+        private network: NetworkService
+    ) { }
 
     reset(): void {
-        this.resetMap.emit(null);
-        this.rectangle.setMap(null);
-        this.infoWindow.close();
+        this.mapReset.emit(null);
+        if (this.rectangle) { this.rectangle.setMap(null); }
+        if (this.infoWindow) { this.infoWindow.close(); }
         this.area.next(null);
+        const graph &#x3D; this.network.getGraph();
+        if (graph) {
+            const edges &#x3D; graph.getEdges();
+            const nodes &#x3D; graph.getNodes();
+            for (const edge of edges) {
+                if (edge.drawingOptions.polyline) { edge.drawingOptions.polyline.setMap(null); }
+            }
+            for (const node of nodes) {
+                if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
+            }
+        }
     }
 
     /**
@@ -2099,12 +2866,12 @@ import { uiConfig } from &#x27;../ui-config&#x27;;
         });
     }
 
-    public buildBounds(center: google.maps.LatLngLiteral): google.maps.LatLngBoundsLiteral {
+    public buildBounds(centerMap: google.maps.LatLngLiteral): google.maps.LatLngBoundsLiteral {
         return {
-            north: center.lat + 0.0012,
-            south: center.lat - 0.0012,
-            east: center.lng + 0.003,
-            west: center.lng - 0.003
+            north: centerMap.lat + 0.0012,
+            south: centerMap.lat - 0.0012,
+            east: centerMap.lng + 0.003,
+            west: centerMap.lng - 0.003
         };
     }
 
@@ -2125,6 +2892,11 @@ import { uiConfig } from &#x27;../ui-config&#x27;;
         this.infoWindow &#x3D; new google.maps.InfoWindow();
     }
 
+    public removeRect(): void {
+        this.rectangle.setMap(null);
+        this.infoWindow.close();
+    }
+
     public getArea(): Observable&lt;number&gt; {
         return this.area.asObservable();
     }
@@ -2137,6 +2909,102 @@ import { uiConfig } from &#x27;../ui-config&#x27;;
             east: bounds.getNorthEast().lng(),
             west: bounds.getSouthWest().lng()
         };
+    }
+
+    /**
+     * Draws the graph on the map.
+     */
+    public drawGraph(): void {
+        const graph &#x3D; this.network.getGraph();
+        const edges &#x3D; graph.getEdges();
+        const nodes &#x3D; graph.getNodes();
+        for (const edge of edges) {
+            this.drawBaseEdge(edge);
+        }
+        let nodeId &#x3D; 1;
+        for (const node of nodes) {
+            // Shows only nodes at the end of the ways.
+            if (node.incomingEdges.length + node.outgoingEdges.length &lt;&#x3D; 2) {
+                node.label &#x3D; nodeId++;
+                this.showNode(node);
+            }
+        }
+    }
+
+    public getCentroid(): google.maps.LatLngLiteral {
+        return this.centroid;
+    }
+
+    public setCentroid(odNodes: Node[]): void {
+        if (odNodes.length &gt; 0) {
+            const positions &#x3D; odNodes.map((node: Node) &#x3D;&gt; {
+                return [node.lon, node.lat];
+            });
+            let geojsonCentroid: any;
+            if (positions.length &gt;&#x3D; 3) {
+                // First and last position must be equivalent.
+                positions.push([odNodes[0].lon, odNodes[0].lat]);
+                const poly &#x3D; polygon([positions]);
+                geojsonCentroid &#x3D; centroid(poly);
+            } else {
+                const points &#x3D; positions.map((value: number[]) &#x3D;&gt; {
+                    return point(value);
+                });
+                const collection &#x3D; featureCollection(points);
+                geojsonCentroid &#x3D; center(collection);
+            }
+            const coord &#x3D; getCoord(geojsonCentroid);
+            this.centroid &#x3D; { lat: coord[1], lng: coord[0] };
+        } else {
+            this.centroid &#x3D; null;
+        }
+    }
+
+    public updateOdNodes(odPairs: number[][]): void {
+        const graph &#x3D; this.network.getGraph();
+        const odNodes &#x3D; graph.getOdNodes();
+        for (const node of odNodes) {
+            if (odPairs.find(pair &#x3D;&gt; pair[0] &#x3D;&#x3D; node.label) ||
+                odPairs.find(pair &#x3D;&gt; pair[1] &amp;&amp; pair[1] &#x3D;&#x3D; node.label)
+            ) {
+                this.selectNode(node);
+            } else {
+                this.deselectNode(node);
+            }
+        }
+    }
+
+    private drawBaseEdge(edge: Edge): void {
+        if (edge.drawingOptions.polyline) {
+            edge.drawingOptions.polyline.setMap(this.map);
+        }
+    }
+
+    private showNode(node: Node): void {
+        node.drawingOptions.marker &#x3D; new google.maps.Marker({
+            position: { lat: node.lat, lng: node.lon },
+            icon: &#x27;../../assets/images/add_location.png&#x27;,
+            title: &#x27;Node: &#x27; + node.label,
+            map: this.map
+        });
+        // Adds listener.
+        node.drawingOptions.marker.addListener(&#x27;click&#x27;, () &#x3D;&gt; this.sendNodeEvent(node));
+    }
+
+    /**
+     * Sends an event with the selected node.
+     * @param node Selected node
+     */
+    private sendNodeEvent(node: Node): void {
+        this.nodeSelected.emit(node);
+    }
+
+    private selectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon(&#x27;../../assets/images/place.png&#x27;);
+    }
+
+    private deselectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon(&#x27;../../assets/images/add_location.png&#x27;);
     }
 
     private checkRect(): void {
@@ -2177,7 +3045,7 @@ import { uiConfig } from &#x27;../ui-config&#x27;;
      */
     private calcArea(ne: google.maps.LatLng, sw: google.maps.LatLng): number {
         const p &#x3D; polygon([[
-            [ne.lat(), ne.lng()], [sw.lat(), ne.lng()], [sw.lat(), sw.lng()], [ne.lat(), sw.lng()], [ne.lat(), ne.lng()]
+            [ne.lng(), ne.lat()], [sw.lng(), ne.lat()], [sw.lng(), sw.lat()], [ne.lng(), sw.lat()], [ne.lng(), ne.lat()]
         ]]);
         let a &#x3D; area(p) / 10000;
         a &#x3D; Math.round(a * 10) / 10;

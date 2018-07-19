@@ -324,6 +324,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -407,6 +410,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -414,6 +420,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -777,6 +786,9 @@
                         <a href="classes/Edge.html" data-type="entity-link">Edge</a>
                     </li>
                     <li class="link">
+                        <a href="classes/EnumValues.html" data-type="entity-link">EnumValues</a>
+                    </li>
+                    <li class="link">
                         <a href="classes/GoOn.html" data-type="entity-link">GoOn</a>
                     </li>
                     <li class="link">
@@ -860,6 +872,9 @@
                         <a href="interfaces/Member.html" data-type="entity-link">Member</a>
                     </li>
                     <li class="link">
+                        <a href="interfaces/OdPair.html" data-type="entity-link">OdPair</a>
+                    </li>
+                    <li class="link">
                         <a href="interfaces/Step.html" data-type="entity-link">Step</a>
                     </li>
                     <li class="link">
@@ -867,6 +882,9 @@
                     </li>
                     <li class="link">
                         <a href="interfaces/UiState.html" data-type="entity-link">UiState</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/WeatherConditions.html" data-type="entity-link">WeatherConditions</a>
                     </li>
                     <li class="link">
                         <a href="interfaces/WizardState.html" data-type="entity-link">WizardState</a>
@@ -1828,7 +1846,7 @@ export class SelectionOfTheAreaComponent extends BaseComponent implements OnInit
             &lt;button mat-icon-button matSuffix [owlDateTimeTrigger]&#x3D;&quot;t1&quot; title&#x3D;&quot;Open time picker&quot;&gt;
                 &lt;mat-icon&gt;calendar_today&lt;/mat-icon&gt;
             &lt;/button&gt;
-            &lt;mat-hint align&#x3D;&quot;start&quot;&gt;Opnional. Leave it empty for the current time&lt;/mat-hint&gt;
+            &lt;mat-hint align&#x3D;&quot;start&quot;&gt;Optional. Leave it empty for the current time&lt;/mat-hint&gt;
             &lt;mat-error&gt;
                 &lt;div *ngIf&#x3D;&quot;formGroup.get(&#x27;time&#x27;).hasError(&#x27;owlDateTimeMin&#x27;) || formGroup.get(&#x27;time&#x27;).hasError(&#x27;owlDateTimeMax&#x27;); then thenBlock else elseBlock&quot;&gt;&lt;/div&gt;
                 &lt;ng-template #thenBlock&gt;
@@ -1875,7 +1893,7 @@ export class SelectionOfTheAreaComponent extends BaseComponent implements OnInit
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><div [formGroup]="formGroup">    <div fxLayout="column" fxLayoutGap="8px">        <mat-form-field color="accent" class="full-width">            <input matInput formControlName="time" placeholder="Time" [min]="min" [max]="max" [owlDateTime]="t1">            <button mat-icon-button matSuffix [owlDateTimeTrigger]="t1" title="Open time picker">                <mat-icon>calendar_today</mat-icon>            </button>            <mat-hint align="start">Opnional. Leave it empty for the current time</mat-hint>            <mat-error>                <div *ngIf="formGroup.get(\'time\').hasError(\'owlDateTimeMin\') || formGroup.get(\'time\').hasError(\'owlDateTimeMax\'); then thenBlock else elseBlock"></div>                <ng-template #thenBlock>                    Please, enter a time between the current time and the next 24 hours                </ng-template>                <ng-template #elseBlock>                    Please, insert a valid time or select it                </ng-template>            </mat-error>        </mat-form-field>        <owl-date-time [pickerType]="\'timer\'" [pickerMode]="\'dialog\'" #t1></owl-date-time>    </div>    <div class="navigation">        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue            <mat-icon>navigate_next</mat-icon>        </button>    </div></div></div>'
+        var COMPONENT_TEMPLATE = '<div><div [formGroup]="formGroup">    <div fxLayout="column" fxLayoutGap="8px">        <mat-form-field color="accent" class="full-width">            <input matInput formControlName="time" placeholder="Time" [min]="min" [max]="max" [owlDateTime]="t1">            <button mat-icon-button matSuffix [owlDateTimeTrigger]="t1" title="Open time picker">                <mat-icon>calendar_today</mat-icon>            </button>            <mat-hint align="start">Optional. Leave it empty for the current time</mat-hint>            <mat-error>                <div *ngIf="formGroup.get(\'time\').hasError(\'owlDateTimeMin\') || formGroup.get(\'time\').hasError(\'owlDateTimeMax\'); then thenBlock else elseBlock"></div>                <ng-template #thenBlock>                    Please, enter a time between the current time and the next 24 hours                </ng-template>                <ng-template #elseBlock>                    Please, insert a valid time or select it                </ng-template>            </mat-error>        </mat-form-field>        <owl-date-time [pickerType]="\'timer\'" [pickerMode]="\'dialog\'" #t1></owl-date-time>    </div>    <div class="navigation">        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue            <mat-icon>navigate_next</mat-icon>        </button>    </div></div></div>'
     var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ChangeOfConditionsComponent', 'selector': 'wizard-change-of-conditions'},{'name': 'EstimateOfDemandComponent', 'selector': 'wizard-estimate-of-demand'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'GoogleMapComponent', 'selector': 'google-map'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'InfoDialogComponent', 'selector': 'info-dialog'},{'name': 'MapComponent', 'selector': 'ui-map'},{'name': 'MessageArchivedComponent', 'selector': 'snack-bar'},{'name': 'SearchForTheAreaComponent', 'selector': 'wizard-search-for-the-area'},{'name': 'SelectionOfTheAreaComponent', 'selector': 'wizard-selection-of-the-area'},{'name': 'SimulationComponent', 'selector': 'wizard-simulation'},{'name': 'StatisticsComponent', 'selector': 'wizard-statistics'},{'name': 'UiComponent', 'selector': 'app-ui'},{'name': 'WeatherComponent', 'selector': 'ui-weather'},{'name': 'WizardComponent', 'selector': 'ui-wizard'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SelectionOfTheAreaComponent'};
