@@ -23,5 +23,7 @@ export const uiConfig = {
         heavyTrafficColor: '#d2191a'
     },
     // Maximum number of O/D pairs that the user can select.
-    maxOdPairs: 5
+    maxOdPairs: 5,
+    // The number of shortest paths to compute.
+    k: 3
 };

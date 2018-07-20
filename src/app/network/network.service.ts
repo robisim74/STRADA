@@ -206,6 +206,8 @@ import { getRandomColor } from '../utils';
             this.graph.removeInvalidatedEdges();
             this.graph.removeDeadNodes();
             if (this.graph.getEdges().length == 0 || this.graph.getNodes().length == 0) { return throwError('cleanGraph'); }
+            // Creates O/D nodes.
+            this.createOdNodes();
         } catch (error) {
             return throwError('cleanGraph');
         }
@@ -521,6 +523,17 @@ import { getRandomColor } from '../utils';
         return coords.map((value: number[]) => {
             return new google.maps.LatLng(value[1], value[0]);
         });
+    }
+
+    private createOdNodes(): void {
+        const nodes = this.graph.getNodes();
+        let nodeId = 1;
+        for (const node of nodes) {
+            // Shows only nodes at the end of the ways.
+            if (node.incomingEdges.length + node.outgoingEdges.length <= 2) {
+                node.label = nodeId++;
+            }
+        }
     }
 
 }

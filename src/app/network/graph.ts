@@ -1,6 +1,9 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 import * as combine from 'mout/array/combine';
+
+import { uiConfig } from '../ui/ui-config';
+import { Heap, Path } from './k-shortest-path';
 
 export enum PathType {
     distance = 'distance',
@@ -59,6 +62,11 @@ export class Node {
     public outgoingEdges: Edge[] = [];
 
     public drawingOptions: { marker?: google.maps.Marker } = {};
+
+    /**
+     * Used by the k shortest path routing.
+     */
+    public count = 0;
 
     constructor(nodeId: number) {
         this.nodeId = nodeId;
@@ -145,11 +153,16 @@ export class Graph {
 
     private relations: Relation[] = [];
 
-    private shortestPaths: Node[][] = [];
+    /**
+     * Two arrays of paths for each O/D pair.
+     */
+    private shortestPaths: Edge[][] = [];
 
     private incidenceMatrix: boolean[][] = [];
 
     private assignmentMatrix: number[][] = [];
+
+    private heap: Heap;
 
     public getNodes(): Node[] {
         return this.nodes;
@@ -274,10 +287,23 @@ export class Graph {
      * @param odPairs The O/D pairs
      */
     public calcShortestPaths(odPairs: OdPair[]): Observable<any> {
+        try {
+            for (const pair of odPairs) {
+                this.ksp(pair.origin, pair.destination, pair.pathType, uiConfig.k);
+            }
+            // Checks empty paths.
+            let count = 0;
+            for (const path of this.shortestPaths) {
+                if (path.length > 0) { count++; }
+            }
+            if (count == 0) { return throwError('calcShortestPaths'); }
+        } catch (error) {
+            return throwError('calcShortestPaths');
+        }
         return of(null);
     }
 
-    public getShortestPaths(): Node[][] {
+    public getShortestPaths(): Edge[][] {
         return this.shortestPaths;
     }
 
@@ -309,9 +335,75 @@ export class Graph {
      * @param origin Source node
      * @param destination Destination node
      * @param pathType Distance or duration
+     * @param k The number of shortest paths to compute
      */
-    private getShortestPath(origin: number, destination: number, pathType: String): Node[] {
-        return null;
+    private ksp(origin: number, destination: number, pathType: String, k: number): void {
+        const o = this.getOdNode(origin);
+        const d = this.getOdNode(destination);
+        // Sets to zero the count property of the nodes.
+        this.resetCount();
+        // Instantiates the heap.
+        this.heap = new Heap();
+        // Inserts the path of origin into heap with cost 0.
+        this.heap.push({ node: o, edges: [], cost: 0 });
+        // Walks the graph.
+        const shortestPaths = this.walk(o, d, pathType, k);
+        // Extracts the paths.
+        for (let i = 0; i < k; i++) {
+            if (shortestPaths[i]) {
+                this.shortestPaths.push(shortestPaths[i].edges);
+            } else {
+                this.shortestPaths.push([]);
+            }
+        }
+    }
+
+    /**
+     * Breadth First Search (BFS) algorithm for traversing & searching tree data
+     * explores the neighbor nodes first, before moving to the next level neighbors.
+     */
+    private walk(o: Node, d: Node, pathType, k): Path[] {
+        // Set of shortest paths from origin to destination.
+        const shortestPaths: Path[] = [];
+
+        let node: Node;
+        while (this.heap.getPaths().length > 0 && d.count < k) {
+            // Lets nodePath be the shortest cost path in heap by cost.
+            const nodePath = this.heap.getShortestPath();
+            node = nodePath.node;
+            // Removes the path from the heap.
+            this.heap.pop(nodePath.pathId);
+            node.count++;
+
+            if (node.nodeId == d.nodeId) {
+                shortestPaths.push(nodePath);
+            }
+
+            if (node.count <= k) {
+                for (const edge of node.outgoingEdges) {
+                    // Checks that the node has not already been crossed.
+                    if (this.isValidNode(edge.destination, nodePath)) {
+                        const path: Path = {
+                            node: edge.destination,
+                            edges: nodePath.edges.concat([edge]),
+                            cost: nodePath.cost + edge[pathType]
+                        };
+                        this.heap.push(path);
+                    }
+                }
+            }
+        }
+        return shortestPaths;
+    }
+
+    private isValidNode(node: Node, path: Path): boolean {
+        return path.edges.find((edge: Edge) => edge.origin.nodeId == node.nodeId) ? false : true;
+    }
+
+    private resetCount(): void {
+        for (const node of this.nodes) {
+            node.count = 0;
+        }
     }
 
 }
