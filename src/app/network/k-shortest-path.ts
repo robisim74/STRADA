@@ -1,11 +1,11 @@
 import { Edge, Node } from "./graph";
 
+/**
+ * Path to generic node.
+ */
 export interface Path {
 
-    /**
-     * Self-generated.
-     */
-    pathId?: number;
+    pathId: number;
     node: Node;
     edges: Edge[];
     cost: number;
@@ -22,14 +22,12 @@ export class Heap {
      */
     private paths: Path[] = [];
 
-    private pathId = 0;
-
     /**
      * Inserts a path into the heap.
      * @param path The path to insert
      */
     public push(path: Path): void {
-        this.paths.push({ pathId: this.pathId++, node: path.node, edges: path.edges, cost: path.cost });
+        this.paths.push({ pathId: path.pathId, node: path.node, edges: path.edges, cost: path.cost });
     }
 
     /**

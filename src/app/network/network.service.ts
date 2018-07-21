@@ -8,6 +8,7 @@ import * as deepFillIn from 'mout/object/deepFillIn';
 import * as combine from 'mout/array/combine';
 import transformTranslate from '@turf/transform-translate';
 import bearing from '@turf/bearing';
+import distance from '@turf/distance';
 import { getCoords } from '@turf/invariant';
 import { point, lineString } from '@turf/helpers';
 
@@ -158,19 +159,9 @@ import { getRandomColor } from '../utils';
      * that reiterates the invocation of the Directions API to obtain all links network data.
      */
     public getNetworkData(): Observable<any> {
-        const url: string = environment.functions.networkData.url;
-        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const ways: any[][] = this.getWaypoints();
-        console.log(ways);
-        const body = JSON.stringify({
-            ways: ways
-        });
-
-        // To networkData function.
-        return this.http.post(url, body, { headers: headers }).pipe(
-            map((response: any) => response),
-            catchError((error: any) => throwError('getNetworkData'))
-        );
+        const ways: any[][] = this.getWay();
+        const mode = 'driving';
+        return this.toNetworkData(ways, mode);
     }
 
     /**
@@ -179,37 +170,41 @@ import { getRandomColor } from '../utils';
      */
     public updateGraph(data: any[]): Observable<any> {
         const edges = this.graph.getEdges();
-        try {
-            for (let i = 0; i < data.length; i++) {
-                const value: any = data[i];
-                edges[i].distance = value.distance;
-                edges[i].duration = value.duration;
-
-                // Decodes polyline paths.
-                if (value.polylines && value.polylines.length > 0) {
-                    const path = this.decodePolyline(value.polylines);
-                    // Updates drawing options.
-                    this.drawEdge(edges[i], path);
-                }
-            }
-        } catch (error) {
-            return throwError('updateGraph');
+        for (let i = 0; i < edges.length; i++) {
+            this.assignNetworkData(edges[i], data[i]);
         }
         return of(null);
     }
 
     /**
-     * Remove from the graph invalidated edges and dead nodes.
+     * Corrects the graph data and create O/D nodes.
      */
-    public cleanGraph(): Observable<any> {
+    public correctGraph(): Observable<any> {
         try {
-            this.graph.removeInvalidatedEdges();
-            this.graph.removeDeadNodes();
-            if (this.graph.getEdges().length == 0 || this.graph.getNodes().length == 0) { return throwError('cleanGraph'); }
+            const edges = this.graph.getEdges();
+            const nodes = this.graph.getNodes();
+            if (edges.length == 0 || nodes.length == 0) { return throwError('correctGraph'); }
+
+            for (const edge of edges) {
+                if (!edge.distance || !edge.drawingOptions.polyline) {
+                    // Assigns geodesic distance.
+                    edge.distance = this.calcGeodesicDistance(edge);
+                    edge.duration = 0;
+                    if (!environment.testing) {
+                        const path = [
+                            new google.maps.LatLng(edge.origin.lat, edge.origin.lon),
+                            new google.maps.LatLng(edge.destination.lat, edge.destination.lon)
+                        ];
+                        // Updates drawing options.
+                        this.drawEdge(edge, path);
+                    }
+                }
+            }
+
             // Creates O/D nodes.
             this.createOdNodes();
         } catch (error) {
-            return throwError('cleanGraph');
+            return throwError('correctGraph');
         }
         return of(null);
     }
@@ -415,7 +410,7 @@ import { getRandomColor } from '../utils';
         }) : [];
     }
 
-    private getWaypoints(): any[][] {
+    private getWay(): any[][] {
         const edges = this.graph.getEdges();
         const ways: any[][] = [];
         // Gets the ways.
@@ -441,12 +436,46 @@ import { getRandomColor } from '../utils';
         return ways;
     }
 
+    private toNetworkData(ways: any[][], mode: string): Observable<any> {
+        const url: string = environment.functions.networkData.url;
+        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const body = JSON.stringify({
+            ways: ways,
+            mode: mode
+        });
+        console.log({ n: ways.length, ways: ways, mode: mode });
+        // To networkData function.
+        return this.http.post(url, body, { headers: headers }).pipe(
+            map((response: any) => response),
+            catchError((error: any) => throwError('getNetworkData'))
+        );
+    }
+
+    private assignNetworkData(edge: Edge, value: any): void {
+        edge.distance = value.distance;
+        edge.duration = value.duration;
+
+        // Decodes polyline paths.
+        if (value.polylines && value.polylines.length > 0) {
+            const path = this.decodePolyline(value.polylines);
+            // Updates drawing options.
+            this.drawEdge(edge, path);
+        }
+    }
+
     private decodePolyline(polylines: any[]): google.maps.LatLng[] {
         let path: google.maps.LatLng[] = [];
         for (const polyline of polylines) {
             path = path.concat(google.maps.geometry.encoding.decodePath(polyline.points));
         }
         return this.cleanPath(path);
+    }
+
+    private calcGeodesicDistance(edge: Edge): number {
+        const origin = point([edge.origin.lon, edge.origin.lat]);
+        const destination = point([edge.destination.lon, edge.destination.lat]);
+        const geodesicDistance = Math.round(distance(origin, destination) * 1000);
+        return geodesicDistance;
     }
 
     /**
@@ -461,12 +490,11 @@ import { getRandomColor } from '../utils';
 
     private drawEdge(edge: Edge, path: google.maps.LatLng[]): void {
         if (edge.distance > 0) {
-            // Arrows only if greater than 10 meters.
             const lineSymbol = {
                 path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
                 scale: 2
             };
-            const icons = edge.distance > 10 ? [{
+            const icons = edge.distance > uiConfig.minDistance ? [{
                 icon: lineSymbol,
                 offset: '100%'
             }] : null;
@@ -529,7 +557,7 @@ import { getRandomColor } from '../utils';
         const nodes = this.graph.getNodes();
         let nodeId = 1;
         for (const node of nodes) {
-            // Shows only nodes at the end of the ways.
+            // Only nodes at the end of the ways.
             if (node.incomingEdges.length + node.outgoingEdges.length <= 2) {
                 node.label = nodeId++;
             }

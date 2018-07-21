@@ -6,6 +6,7 @@ import { appConfig } from "../app/app-config";
 
 export const environment = {
     production: false,
+    testing: false,
     functions: {
         networkData: {
             url: 'http://localhost:4201/' + appConfig.firebase.projectId + '/us-central1/networkData'

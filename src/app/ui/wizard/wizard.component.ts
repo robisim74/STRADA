@@ -65,6 +65,7 @@ export class WizardComponent implements OnInit {
         const index: number = event.previouslySelectedIndex;
         const nextIndex: number = event.selectedIndex;
         if (nextIndex > index) {
+            this.stepper.selected.completed = true;
             switch (nextIndex) {
                 case 2:
                     this.wizard.networkSchedule();

@@ -6,16 +6,17 @@ import { point } from '@turf/helpers';
  * Makes the request to Google Maps Directions API
  * to retrieve network data.
  */
-export function networkDirections(way: any[], googleMapsClient: any): Observable<any> {
+export function networkDirections(way: any[], mode: string, googleMapsClient: any): Observable<any> {
     return Observable.create((observer: Observer<any>) => {
-        googleMapsClient.directions(buildRequest(way))
+        googleMapsClient.directions(buildRequest(way, mode))
             .asPromise()
             .then((response) => {
                 if (response.json && response.json.routes[0] && response.json.routes[0].legs.length > 0) {
                     for (let i = 0; i < response.json.routes[0].legs.length; i++) {
                         const leg = response.json.routes[0].legs[i];
+
                         // To avoid inconsistencies between data in the OpenStreetMap network and data from Google Maps.
-                        if (!isInconsistency(leg)) {
+                        if (!isInconsistency(leg) && !isGreater(leg)) {
                             // Gets polyline for each step.
                             let polylines = [];
                             for (const step of leg.steps) {
@@ -23,7 +24,7 @@ export function networkDirections(way: any[], googleMapsClient: any): Observable
                             }
                             observer.next({
                                 distance: leg.distance.value,
-                                duration: leg.duration.value,
+                                duration: mode == 'driving' ? leg.duration.value : 0,
                                 polylines: polylines
                             });
                         } else {
@@ -47,15 +48,16 @@ export function networkDirections(way: any[], googleMapsClient: any): Observable
 /**
  * Builds a Directions Request object
  * @param way The current way with waypoints
+ * @param mode Mode of transport
  */
-export function buildRequest(way: any[]): any {
+export function buildRequest(way: any[], mode: string): any {
     const waypoints = way.filter((waypoint: any, i: number) => {
         return i != 0 && i != way.length - 1;
     });
     return {
         origin: way[0],
         destination: way[way.length - 1],
-        mode: 'driving',
+        mode: mode,
         units: 'metric',
         waypoints: waypoints
     };
@@ -68,9 +70,15 @@ export function buildRequest(way: any[]): any {
 export function isInconsistency(leg: any): boolean {
     // The number of indications is greater than expected.
     if (!leg.steps || leg.steps.length > 3) return true;
-    // The distance of the leg is much greater than the geodesic distance.
-    const from = point([leg.start_location.lat, leg.start_location.lng]);
-    const to = point([leg.end_location.lat, leg.end_location.lng]);
+}
+
+/**
+ * Checks if the distance of the leg is much greater than the geodesic distance.
+ * @param leg The current leg in the waypoints
+ */
+export function isGreater(leg: any): any {
+    const from = point([leg.start_location.lng, leg.start_location.lat]);
+    const to = point([leg.end_location.lng, leg.end_location.lat]);
     const geodesicDistance = distance(from, to) * 1000;
     if (geodesicDistance > 0 && leg.distance.value > geodesicDistance * 3) return true;
     return false;

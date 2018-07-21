@@ -59,12 +59,8 @@ describe('NetworkService', () => {
             networkService.updateGraph(networkDataForUpdateGraph).toPromise();
             tick();
 
-            networkService.cleanGraph().toPromise();
+            networkService.correctGraph().toPromise();
             tick();
-
-            expect(graph.getEdges().length).toBe(28);
-            expect(graph.getNodes().length).toBe(20);
-            expect(graph.getRelations().length).toBe(0);
 
             const edges = graph.getEdges();
             for (const edge of edges) {
@@ -72,9 +68,9 @@ describe('NetworkService', () => {
                 expect(edge.duration).not.toBeNull();
             }
             expect(edges[0].distance).toBe(14);
-            expect(edges[0].duration).toBe(2);
-            expect(edges[27].distance).toBe(290);
-            expect(edges[27].duration).toBe(44);
+            expect(edges[0].duration).toBe(0);
+            expect(edges[31].distance).toBe(291);
+            expect(edges[31].duration).toBe(0);
         }));
     });
 });

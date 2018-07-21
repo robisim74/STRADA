@@ -33,7 +33,7 @@ describe('Graph', () => {
             networkService.updateGraph(networkDataForCalcShortestPaths).toPromise();
             tick();
 
-            networkService.cleanGraph().toPromise();
+            networkService.correctGraph().toPromise();
             tick();
 
             const odPairs = [

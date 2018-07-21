@@ -13,6 +13,7 @@ const googleMaps = _googleMaps;
  */
 export function networkDataFunction(request, response): void {
     const ways: any = request.body.ways;
+    const mode: string = request.body.mode;
 
     try {
         // Instances Google Maps.
@@ -25,7 +26,7 @@ export function networkDataFunction(request, response): void {
         const stream = interval().pipe(
             take(ways.length),
             map((i: number) => ways[i]),
-            concatMap((way: any) => networkDirections(way, googleMapsClient))
+            concatMap((way: any) => networkDirections(way, mode, googleMapsClient))
         );
         // Executes the stream.
         stream.subscribe(

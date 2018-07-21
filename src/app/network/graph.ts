@@ -220,60 +220,6 @@ export class Graph {
             true : false;
     }
 
-    /**
-     * Removes the edges with null distance.
-     */
-    public removeInvalidatedEdges(): void {
-        try {
-            const removedEdges: number[] = [];
-            if (this.edges.length > 0) {
-                for (let i = this.edges.length - 1; i >= 0; i--) {
-                    if (this.edges[i].distance == null) {
-                        removedEdges.push(this.edges[i].edgeId);
-                        this.edges.splice(i, 1);
-                    }
-                }
-                for (const edgeId of removedEdges) {
-                    for (const node of this.nodes) {
-                        if (node.incomingEdges.length > 0) {
-                            for (let i = node.incomingEdges.length - 1; i >= 0; i--) {
-                                if (node.incomingEdges[i].edgeId == edgeId) {
-                                    node.incomingEdges.splice(i, 1);
-                                }
-                            }
-                        }
-                        if (node.outgoingEdges.length > 0) {
-                            for (let i = node.outgoingEdges.length - 1; i >= 0; i--) {
-                                if (node.outgoingEdges[i].edgeId == edgeId) {
-                                    node.outgoingEdges.splice(i, 1);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    /**
-     * Removes the nodes with no outgoing edges and incoming edges.
-     */
-    public removeDeadNodes(): void {
-        try {
-            if (this.nodes.length > 0) {
-                for (let i = this.nodes.length - 1; i >= 0; i--) {
-                    if (this.nodes[i].incomingEdges.length == 0 && this.nodes[i].outgoingEdges.length == 0) {
-                        this.nodes.splice(i, 1);
-                    }
-                }
-            }
-        } catch (error) {
-            throw error;
-        }
-    }
-
     public getOdNode(label: number): Node {
         return this.nodes.find((node: Node) => node.label == label);
     }
@@ -345,7 +291,7 @@ export class Graph {
         // Instantiates the heap.
         this.heap = new Heap();
         // Inserts the path of origin into heap with cost 0.
-        this.heap.push({ node: o, edges: [], cost: 0 });
+        this.heap.push({ pathId: 0, node: o, edges: [], cost: 0 });
         // Walks the graph.
         const shortestPaths = this.walk(o, d, pathType, k);
         // Extracts the paths.
@@ -359,13 +305,14 @@ export class Graph {
     }
 
     /**
-     * Breadth First Search (BFS) algorithm for traversing & searching tree data
+     * Breadth First Search (BFS) algorithm for traversing and searching tree data
      * explores the neighbor nodes first, before moving to the next level neighbors.
      */
     private walk(o: Node, d: Node, pathType, k): Path[] {
         // Set of shortest paths from origin to destination.
         const shortestPaths: Path[] = [];
 
+        let pathId = 1;
         let node: Node;
         while (this.heap.getPaths().length > 0 && d.count < k) {
             // Lets nodePath be the shortest cost path in heap by cost.
@@ -375,6 +322,7 @@ export class Graph {
             this.heap.pop(nodePath.pathId);
             node.count++;
 
+            // The path has been found.
             if (node.nodeId == d.nodeId) {
                 shortestPaths.push(nodePath);
             }
@@ -384,6 +332,7 @@ export class Graph {
                     // Checks that the node has not already been crossed.
                     if (this.isValidNode(edge.destination, nodePath)) {
                         const path: Path = {
+                            pathId: pathId++,
                             node: edge.destination,
                             edges: nodePath.edges.concat([edge]),
                             cost: nodePath.cost + edge[pathType]

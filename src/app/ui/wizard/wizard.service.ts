@@ -93,6 +93,7 @@ import { WizardState } from "../models/reducers/wizard.reducer";
      * - Creates the graph
      * - Gets network data
      * - Associates data to the graph
+     * - Corrects graph data
      * - Gets and updates weather data
      */
     networkSchedule(): void {
@@ -112,8 +113,8 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                 return this.network.updateGraph(response);
             }),
             switchMap(() => {
-                this.putOnHold('Cleaning the graph');
-                return this.network.cleanGraph();
+                this.putOnHold('Checking the data');
+                return this.network.correctGraph();
             }),
             switchMap(() => {
                 this.putOnHold('Getting weather data');
@@ -139,10 +140,7 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                         message = 'Network data cannot be retrieved. Past the quota limits traffic data become paid.' +
                             'This is an open source project: install your own version of it';
                         break;
-                    case 'updateGraph':
-                        message = 'Graph cannot be updated. Please, try with another area';
-                        break;
-                    case 'cleanGraph':
+                    case 'correctGraph':
                         message = 'Graph data is not available. Please, try with another area';
                         break;
                     case 'getWeatherData':

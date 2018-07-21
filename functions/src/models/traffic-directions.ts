@@ -30,6 +30,7 @@ export function trafficDirections(edge: any, time: Date, googleMapsClient: any):
 /**
  * Builds a Directions Request object
  * @param edge The current edge
+ * @param time Time of departure
  */
 export function buildRequest(edge: any, time: Date): any {
     return {
