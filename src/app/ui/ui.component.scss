@@ -57,3 +57,9 @@
         color: $secondary-color;
     }
 }
+
+.mat-accordion {
+    .mat-expansion-panel {
+        margin: 8px;
+    }
+}   

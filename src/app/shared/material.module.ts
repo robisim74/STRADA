@@ -14,7 +14,8 @@ import {
     MatTooltipModule,
     MatDialogModule,
     MatGridListModule,
-    MatSelectModule
+    MatSelectModule,
+    MatExpansionModule
 } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -32,7 +33,8 @@ const materialModules: any[] = [
     MatTooltipModule,
     MatDialogModule,
     MatGridListModule,
-    MatSelectModule
+    MatSelectModule,
+    MatExpansionModule
 ];
 
 @NgModule({

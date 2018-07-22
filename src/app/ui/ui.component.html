@@ -12,7 +12,16 @@
             <ui-weather></ui-weather>
         </div>
         <div fxFlex="1 1 auto">
-            <ui-map></ui-map>
+            <mat-accordion>
+                <mat-expansion-panel expanded="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Network
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ui-map></ui-map>
+                </mat-expansion-panel>
+            </mat-accordion>
         </div>
     </div>
     <div fxFlex="1 1 40%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" fxLayout="column" fxLayoutGap="8px">
