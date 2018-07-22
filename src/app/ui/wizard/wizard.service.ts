@@ -185,7 +185,7 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                 return graph.calcIncidenceMatrix();
             }),
             switchMap(() => {
-                return graph.calcAssignmentMatrix();
+                return graph.calcAssignmentMatrix(odPairs);
             }),
             switchMap(() => {
                 this.putOnHold('Getting traffic data');

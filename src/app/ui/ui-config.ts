@@ -39,5 +39,9 @@ export const uiConfig = {
     /**
      * The number of shortest paths to compute.
      */
-    k: 3
+    k: 3,
+    /**
+     * Multinomial logit parameter.
+     */
+    theta: 2
 };

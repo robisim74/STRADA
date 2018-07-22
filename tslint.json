@@ -101,6 +101,7 @@
       false
     ],
     "prefer-const": true,
+    "prefer-for-of": false,
     "quotemark": [
       false
     ],

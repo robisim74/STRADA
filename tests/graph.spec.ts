@@ -46,16 +46,16 @@ describe('Graph', () => {
             tick();
 
             const shortestPaths = graph.getShortestPaths();
-            expect(shortestPaths.length).toBe(9);
-            expect(shortestPaths[0].length).toBe(9);
-            expect(shortestPaths[1].length).toBe(10);
-            expect(shortestPaths[2].length).toBe(8);
-            expect(shortestPaths[3].length).toBe(4);
-            expect(shortestPaths[4].length).toBe(8);
-            expect(shortestPaths[5].length).toBe(0);
-            expect(shortestPaths[6].length).toBe(0);
-            expect(shortestPaths[7].length).toBe(0);
-            expect(shortestPaths[8].length).toBe(0);
+            expect(shortestPaths.length).toBe(3);
+            expect(shortestPaths[0].length).toBe(3);
+            expect(shortestPaths[1].length).toBe(2);
+            expect(shortestPaths[2].length).toBe(0);
+
+            expect(shortestPaths[0][0].length).toBe(9);
+            expect(shortestPaths[0][1].length).toBe(10);
+            expect(shortestPaths[0][2].length).toBe(8);
+            expect(shortestPaths[1][0].length).toBe(4);
+            expect(shortestPaths[1][1].length).toBe(8);
         }));
     });
 });

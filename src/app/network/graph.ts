@@ -1,6 +1,7 @@
 import { Observable, of, throwError } from 'rxjs';
 
 import * as combine from 'mout/array/combine';
+import * as math from 'mathjs';
 
 import { uiConfig } from '../ui/ui-config';
 import { Heap, Path } from './k-shortest-path';
@@ -156,13 +157,15 @@ export class Graph {
     /**
      * Arrays of paths for each O/D pair.
      */
-    private shortestPaths: Edge[][] = [];
+    private shortestPaths: Edge[][][] = [];
 
     private shortestPathsEdges: Edge[] = [];
 
-    private incidenceMatrix: boolean[][] = [];
+    private shortestPathsProbabilities: number[][] = [];
 
-    private assignmentMatrix: number[][] = [];
+    private incidenceMatrix: boolean[][][] = [];
+
+    private assignmentMatrix: number[][][] = [];
 
     private heap: Heap;
 
@@ -236,13 +239,14 @@ export class Graph {
      */
     public calcShortestPaths(odPairs: OdPair[]): Observable<any> {
         try {
-            for (const pair of odPairs) {
-                this.ksp(pair.origin, pair.destination, pair.pathType, uiConfig.k);
+            for (let i = 0; i < odPairs.length; i++) {
+                this.ksp(odPairs[i].origin, odPairs[i].destination, odPairs[i].pathType, uiConfig.k, i);
             }
+
             // Checks empty paths.
             let count = 0;
-            for (const path of this.shortestPaths) {
-                if (path.length > 0) { count++; }
+            for (const pair of this.shortestPaths) {
+                if (pair.length > 0) { count++; }
             }
             if (count == 0) { return throwError('calcShortestPaths'); }
         } catch (error) {
@@ -251,7 +255,7 @@ export class Graph {
         return of(null);
     }
 
-    public getShortestPaths(): Edge[][] {
+    public getShortestPaths(): Edge[][][] {
         return this.shortestPaths;
     }
 
@@ -262,34 +266,78 @@ export class Graph {
         // Gets the array of edges in the paths.
         this.shortestPathsEdges = this.getEdgesfromShortestPaths();
 
-        // Builds the matrix (n,m);
-        for (let n = 0; n < this.shortestPathsEdges.length; n++) {
-            this.incidenceMatrix[n] = [];
-            for (let m = 0; m < this.shortestPaths.length; m++) {
-                if (this.shortestPaths[m].find(value => value.edgeId == this.shortestPathsEdges[n].edgeId)) {
-                    // The path crosses the edge.
-                    this.incidenceMatrix[n][m] = true;
-                } else {
-                    // The path does not cross the edge.
-                    this.incidenceMatrix[n][m] = false;
+        // Builds the matrix (pairs,paths,edges);
+        for (let z = 0; z < this.shortestPaths.length; z++) {
+            this.incidenceMatrix[z] = [];
+            for (let n = 0; n < this.shortestPaths[z].length; n++) {
+                this.incidenceMatrix[z][n] = [];
+                for (let m = 0; m < this.shortestPathsEdges.length; m++) {
+                    if (this.shortestPaths[z][n].find(value => value.edgeId == this.shortestPathsEdges[m].edgeId)) {
+                        // The path crosses the edge.
+                        this.incidenceMatrix[z][n][m] = true;
+                    } else {
+                        // The path does not cross the edge.
+                        this.incidenceMatrix[z][n][m] = false;
+                    }
                 }
             }
         }
         return of(null);
     }
 
-    public getIncidenceMatrix(): boolean[][] {
+    public getIncidenceMatrix(): boolean[][][] {
         return this.incidenceMatrix;
     }
 
     /**
      * Calculates the assignment matrix.
+     * @param odPairs The O/D pairs
      */
-    public calcAssignmentMatrix(): Observable<any> {
+    public calcAssignmentMatrix(odPairs: OdPair[]): Observable<any> {
+        // Gets the array of the total cost of paths.
+        const pathCosts = this.calcPathCosts(odPairs);
+        // Theta parameter.
+        const parameter = uiConfig.theta;
+        // Calcs numerator.
+        const exps: number[][] = [];
+        for (let z = 0; z < pathCosts.length; z++) {
+            exps[z] = pathCosts[z].map((value: number) => {
+                return value > 0 ? math.exp(-value / parameter) : 0;
+            });
+        }
+        // Calcs denominator.
+        const sumExps: number[] = [];
+        for (let z = 0; z < exps.length; z++) {
+            const sum = exps[z].reduce((a, b) => a + b, 0);
+            sumExps.push(sum);
+        }
+        // Array of probabilities.
+        for (let z = 0; z < exps.length; z++) {
+            this.shortestPathsProbabilities[z] = [];
+            for (let n = 0; n < exps[z].length; n++) {
+                const p = sumExps[z] > 0 ? math.round(exps[z][n] / sumExps[z], 3) as number : 0;
+                this.shortestPathsProbabilities[z].push(p);
+            }
+        }
+        // Assignment matrix.
+        for (let z = 0; z < this.incidenceMatrix.length; z++) {
+            this.assignmentMatrix[z] = [];
+            for (let n = 0; n < this.incidenceMatrix[z].length; n++) {
+                this.assignmentMatrix[z][n] = [];
+                for (let m = 0; m < this.incidenceMatrix[z][n].length; m++) {
+                    if (this.incidenceMatrix[z][n][m]) {
+                        this.assignmentMatrix[z][n][m] = this.shortestPathsProbabilities[z][n];
+                    } else {
+                        this.assignmentMatrix[z][n][m] = 0;
+                    }
+                }
+            }
+        }
+        console.log(this.assignmentMatrix);
         return of(null);
     }
 
-    public getAssignmentMatrix(): number[][] {
+    public getAssignmentMatrix(): number[][][] {
         return this.assignmentMatrix;
     }
 
@@ -300,8 +348,9 @@ export class Graph {
      * @param destination Destination node
      * @param pathType Distance or duration
      * @param k The number of shortest paths to compute
+     * @param i Index of O/D pair
      */
-    private ksp(origin: number, destination: number, pathType: String, k: number): void {
+    private ksp(origin: number, destination: number, pathType: String, k: number, i: number): void {
         const o = this.getOdNode(origin);
         const d = this.getOdNode(destination);
         // Sets to zero the count property of the nodes.
@@ -313,11 +362,10 @@ export class Graph {
         // Walks the graph.
         const shortestPaths = this.walk(o, d, pathType, k);
         // Extracts the paths.
-        for (let i = 0; i < k; i++) {
-            if (shortestPaths[i]) {
-                this.shortestPaths.push(shortestPaths[i].edges);
-            } else {
-                this.shortestPaths.push([]);
+        this.shortestPaths[i] = [];
+        for (let n = 0; n < k; n++) {
+            if (shortestPaths[n]) {
+                this.shortestPaths[i].push(shortestPaths[n].edges);
             }
         }
     }
@@ -378,14 +426,31 @@ export class Graph {
      */
     private getEdgesfromShortestPaths(): Edge[] {
         const edges: Edge[] = [];
-        for (const path of this.shortestPaths) {
-            for (const edge of path) {
-                if (!edges.find(value => value.edgeId == edge.edgeId)) {
-                    edges.push(edge);
+        for (const pair of this.shortestPaths) {
+            for (const path of pair) {
+                for (const edge of path) {
+                    if (!edges.find(value => value.edgeId == edge.edgeId)) {
+                        edges.push(edge);
+                    }
                 }
             }
         }
         return edges;
+    }
+
+    private calcPathCosts(odPairs: OdPair[]): number[][] {
+        const pathCosts: number[][] = [];
+        for (let z = 0; z < this.shortestPaths.length; z++) {
+            pathCosts[z] = [];
+            for (let n = 0; n < this.shortestPaths[z].length; n++) {
+                let pathCost = 0;
+                for (let m = 0; m < this.shortestPaths[z][n].length; m++) {
+                    pathCost += this.shortestPaths[z][n][m][odPairs[z].pathType];
+                }
+                pathCosts[z].push(pathCost);
+            }
+        }
+        return pathCosts;
     }
 
 }

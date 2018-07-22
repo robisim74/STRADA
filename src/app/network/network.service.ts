@@ -49,6 +49,7 @@ import { getRandomColor } from '../utils';
         this.bounds = null;
         this.time = null;
         this.edgeId = 0;
+        this.odPairs = [];
     }
 
     public getGraph(): Graph {
@@ -214,7 +215,7 @@ import { getRandomColor } from '../utils';
      * that reiterates the invocation of the Directions API to obtain all links traffic data.
      */
     public getTrafficData(): Observable<any> {
-        const url: string = environment.functions.trafficData.url;
+        /* const url: string = environment.functions.trafficData.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
         const edges = this.graph.getEdges();
         const data = edges.map((v: Edge, i: number, arr: Edge[]) => {
@@ -233,7 +234,8 @@ import { getRandomColor } from '../utils';
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),
             catchError((error: any) => throwError('getTrafficData'))
-        );
+        ); */
+        return of(null);
     }
 
     /**
@@ -254,7 +256,7 @@ import { getRandomColor } from '../utils';
     /**
      * Gets the routes assignment matrix.
      */
-    public getAssignmentMatrix(): number[][] {
+    public getAssignmentMatrix(): number[][][] {
         return this.graph.getAssignmentMatrix();
     }
 
