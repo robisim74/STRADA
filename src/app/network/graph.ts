@@ -154,9 +154,11 @@ export class Graph {
     private relations: Relation[] = [];
 
     /**
-     * Two arrays of paths for each O/D pair.
+     * Arrays of paths for each O/D pair.
      */
     private shortestPaths: Edge[][] = [];
+
+    private shortestPathsEdges: Edge[] = [];
 
     private incidenceMatrix: boolean[][] = [];
 
@@ -257,6 +259,22 @@ export class Graph {
      * Calculates the incidence matrix of paths for O/D pairs.
      */
     public calcIncidenceMatrix(): Observable<any> {
+        // Gets the array of edges in the paths.
+        this.shortestPathsEdges = this.getEdgesfromShortestPaths();
+
+        // Builds the matrix (n,m);
+        for (let n = 0; n < this.shortestPathsEdges.length; n++) {
+            this.incidenceMatrix[n] = [];
+            for (let m = 0; m < this.shortestPaths.length; m++) {
+                if (this.shortestPaths[m].find(value => value.edgeId == this.shortestPathsEdges[n].edgeId)) {
+                    // The path crosses the edge.
+                    this.incidenceMatrix[n][m] = true;
+                } else {
+                    // The path does not cross the edge.
+                    this.incidenceMatrix[n][m] = false;
+                }
+            }
+        }
         return of(null);
     }
 
@@ -353,6 +371,21 @@ export class Graph {
         for (const node of this.nodes) {
             node.count = 0;
         }
+    }
+
+    /**
+     * Returns the edges without repetitions in the paths.
+     */
+    private getEdgesfromShortestPaths(): Edge[] {
+        const edges: Edge[] = [];
+        for (const path of this.shortestPaths) {
+            for (const edge of path) {
+                if (!edges.find(value => value.edgeId == edge.edgeId)) {
+                    edges.push(edge);
+                }
+            }
+        }
+        return edges;
     }
 
 }
