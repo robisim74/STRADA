@@ -5,6 +5,7 @@ import * as math from 'mathjs';
 
 import { uiConfig } from '../ui/ui-config';
 import { Heap, Path } from './k-shortest-path';
+import { link } from 'fs';
 
 export enum PathType {
     distance = 'distance',
@@ -103,6 +104,9 @@ export class Edge {
      */
     public durationInTraffic: number;
 
+    /**
+     * Free flow velocity (m/s).
+     */
     public velocity: number;
 
     public density: number;
@@ -111,6 +115,16 @@ export class Edge {
 
     public linkFlow: number;
 
+    /**
+     * Maximum capacity of the edge.
+     */
+    public capacity: number;
+
+    /**
+     * Simulation queue.
+     */
+    public queue = 0;
+
     public drawingOptions: { polyline?: google.maps.Polyline } = {};
 
     constructor(edgeId: number) {
@@ -118,10 +132,36 @@ export class Edge {
     }
 
     /**
-     * Calculates the value of the arc flow and assigns it to the linkFlow attribute.
+     * Calculates the value of the link flow.
      */
     public calcLinkFlow(): void {
+        if (this.duration > 0 && this.durationInTraffic > 0) {
+            // Calculates free flow velocity (m/s).
+            this.velocity = math.round(this.distance / this.duration, 2) as number;
+            // Calculates velocity (m/s).
+            const velocity = math.round(this.distance / this.durationInTraffic) as number;
+            // Calculates kjam.
+            const kjam = 1 / uiConfig.sp;
+            // Calculates density.
+            this.density = math.round(kjam * (this.velocity - velocity) / this.velocity, 2) as number;
+            // Calculates flow.
+            this.flow = math.round(this.density * velocity, 2) as number;
+            // Calculates link flow.
+            const linkFlow = math.round(this.density * this.distance) as number;
+            this.linkFlow = linkFlow >= 1 ? linkFlow : 1;
+        } else {
+            this.linkFlow = 0;
+        }
+    }
 
+    /**
+     * Calculates the max capacity of the edge.
+     * @param factor Weather Adjustment Factor
+     */
+    public calcCapacity(factor: number): void {
+        let capacity = math.round(this.distance / uiConfig.sp) as number;
+        capacity = capacity * factor;
+        this.capacity = capacity >= 1 ? capacity : 1;
     }
 
 }
@@ -155,7 +195,7 @@ export class Graph {
     private relations: Relation[] = [];
 
     /**
-     * Arrays of paths for each O/D pair.
+     * Paths for each O/D pair [pairs,paths,edges].
      */
     private shortestPaths: Edge[][][] = [];
 
@@ -246,7 +286,10 @@ export class Graph {
             // Checks empty paths.
             let count = 0;
             for (const pair of this.shortestPaths) {
-                if (pair.length > 0) { count++; }
+                if (pair.length > 0) {
+                    count++;
+                    break;
+                }
             }
             if (count == 0) { return throwError('calcShortestPaths'); }
         } catch (error) {
@@ -263,10 +306,10 @@ export class Graph {
      * Calculates the incidence matrix of paths for O/D pairs.
      */
     public calcIncidenceMatrix(): Observable<any> {
-        // Gets the array of edges in the paths.
+        // Gets the edges in the paths.
         this.shortestPathsEdges = this.getEdgesfromShortestPaths();
 
-        // Builds the matrix (pairs,paths,edges);
+        // Builds the matrix.
         for (let z = 0; z < this.shortestPaths.length; z++) {
             this.incidenceMatrix[z] = [];
             for (let n = 0; n < this.shortestPaths[z].length; n++) {
@@ -294,31 +337,9 @@ export class Graph {
      * @param odPairs The O/D pairs
      */
     public calcAssignmentMatrix(odPairs: OdPair[]): Observable<any> {
-        // Gets the array of the total cost of paths.
-        const pathCosts = this.calcPathCosts(odPairs);
-        // Theta parameter.
-        const parameter = uiConfig.theta;
-        // Calcs numerator.
-        const exps: number[][] = [];
-        for (let z = 0; z < pathCosts.length; z++) {
-            exps[z] = pathCosts[z].map((value: number) => {
-                return value > 0 ? math.exp(-value / parameter) : 0;
-            });
-        }
-        // Calcs denominator.
-        const sumExps: number[] = [];
-        for (let z = 0; z < exps.length; z++) {
-            const sum = exps[z].reduce((a, b) => a + b, 0);
-            sumExps.push(sum);
-        }
-        // Array of probabilities.
-        for (let z = 0; z < exps.length; z++) {
-            this.shortestPathsProbabilities[z] = [];
-            for (let n = 0; n < exps[z].length; n++) {
-                const p = sumExps[z] > 0 ? math.round(exps[z][n] / sumExps[z], 3) as number : 0;
-                this.shortestPathsProbabilities[z].push(p);
-            }
-        }
+        // Calculates the probabilities of shortest paths.
+        this.shortestPathsProbabilities = this.calcShortestPathsProbabilities(odPairs);
+
         // Assignment matrix.
         for (let z = 0; z < this.incidenceMatrix.length; z++) {
             this.assignmentMatrix[z] = [];
@@ -333,12 +354,15 @@ export class Graph {
                 }
             }
         }
-        console.log(this.assignmentMatrix);
         return of(null);
     }
 
     public getAssignmentMatrix(): number[][][] {
         return this.assignmentMatrix;
+    }
+
+    public getShortestPathsEgdes(): Edge[] {
+        return this.shortestPathsEdges;
     }
 
     /**
@@ -422,7 +446,7 @@ export class Graph {
     }
 
     /**
-     * Returns the edges without repetitions in the paths.
+     * Returns the edges without repetitions in the shortest paths.
      */
     private getEdgesfromShortestPaths(): Edge[] {
         const edges: Edge[] = [];
@@ -436,6 +460,40 @@ export class Graph {
             }
         }
         return edges;
+    }
+
+    /**
+     * Multinomial logit model.
+     * @param odPairs The O/D pairs
+     */
+    private calcShortestPathsProbabilities(odPairs: OdPair[]): number[][] {
+        // Gets the the total cost of paths.
+        const pathCosts = this.calcPathCosts(odPairs);
+        const shortestPathsProbabilities: number[][] = [];
+        // Theta parameter.
+        const parameter = uiConfig.theta;
+        // Calculates numerator.
+        const exps: number[][] = [];
+        for (let z = 0; z < pathCosts.length; z++) {
+            exps[z] = pathCosts[z].map((value: number) => {
+                return value > 0 ? math.exp(-value / parameter) : 0;
+            });
+        }
+        // Calculates denominator.
+        const sumExps: number[] = [];
+        for (let z = 0; z < exps.length; z++) {
+            const sum = exps[z].reduce((a, b) => a + b, 0);
+            sumExps.push(sum);
+        }
+        // Probabilities.
+        for (let z = 0; z < exps.length; z++) {
+            shortestPathsProbabilities[z] = [];
+            for (let n = 0; n < exps[z].length; n++) {
+                const p = sumExps[z] > 0 ? math.round(exps[z][n] / sumExps[z], 3) as number : 0;
+                shortestPathsProbabilities[z].push(p);
+            }
+        }
+        return shortestPathsProbabilities;
     }
 
     private calcPathCosts(odPairs: OdPair[]): number[][] {

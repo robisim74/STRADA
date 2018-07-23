@@ -32,6 +32,7 @@ export function trafficDataFunction(request, response): void {
         stream.subscribe(
             (edge: any) => {
                 data.push({
+                    edgeId: edge.edgeId,
                     durationInTraffic: edge.durationInTraffic
                 });
             },

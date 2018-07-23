@@ -3,9 +3,12 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import * as math from 'mathjs';
+
 import { LocationService } from '../../location/location.service';
-import { appConfig } from '../../app-config';
 import { WeatherConditions } from './weather';
+import { appConfig } from '../../app-config';
+import { uiConfig } from '../../ui/ui-config';
 
 /**
  * Gets the weather data from the Weather or Forecast resources
@@ -72,6 +75,26 @@ import { WeatherConditions } from './weather';
         return of(null);
     }
 
+    /**
+     * Calculates Weather Adjustment Factors.
+     * @param weather If absent, it uses the current meteorological conditions
+     * @returns The factor for sp parameter
+     */
+    public getFactors(weather?: WeatherConditions): number[] {
+        if (!weather) { weather = this.weatherConditions; }
+
+        const factors: number[] = [];
+        let capacityFactor = uiConfig.adjustmentFactorCoefficients[0] +
+            uiConfig.adjustmentFactorCoefficients[1] * (weather.visibility / 1000) +
+            uiConfig.adjustmentFactorCoefficients[2] * this.toInches(weather.rainIntensity) +
+            uiConfig.adjustmentFactorCoefficients[3] * this.toInches(weather.snowIntensity) +
+            uiConfig.adjustmentFactorCoefficients[4] * this.toInches(weather.visibility) * this.toInches(weather.rainIntensity) +
+            uiConfig.adjustmentFactorCoefficients[5] * this.toInches(weather.visibility) * this.toInches(weather.snowIntensity);
+        if (capacityFactor < 0.1) { capacityFactor = 0.1; }
+        factors.push(math.round(capacityFactor, 2) as number);
+        return factors;
+    }
+
     private addWeatherConditions(data: any): void {
         // Gets the icon image.
         const icon = new Image();
@@ -82,10 +105,14 @@ import { WeatherConditions } from './weather';
         this.weatherConditions = {
             description: data.weather[0] ? data.weather[0].description : '-',
             icon: icon,
-            visibility: data.visibility && data.visibility < 10000 ? data.visibility : null,
-            rainIntensity: data.rain ? data.rain['3h'] : null,
-            snowIntensity: data.snow ? data.snow['3h'] : null
+            visibility: data.visibility ? data.visibility : 10000, // 10000 is the default value
+            rainIntensity: data.rain ? data.rain['3h'] : 0,
+            snowIntensity: data.snow ? data.snow['3h'] : 0
         };
+    }
+
+    private toInches(value: number): number {
+        return value / 10 / 2.54;
     }
 
 }

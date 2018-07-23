@@ -2,6 +2,8 @@ import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
 
 import { NetworkService } from "src/app/network/network.service";
+import { WeatherService } from "src/app/network/weather/weather.service";
+import { LocationService } from "src/app/location/location.service";
 import { PathType } from "src/app/network/graph";
 import { responseForCalcShortestPaths } from "./mock-data/network";
 import { networkDataForCalcShortestPaths } from "./mock-data/network-data";
@@ -13,7 +15,7 @@ describe('Graph', () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
             providers: [
-                NetworkService
+                NetworkService, WeatherService, LocationService
             ]
         });
 

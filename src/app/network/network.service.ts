@@ -12,6 +12,7 @@ import distance from '@turf/distance';
 import { getCoords } from '@turf/invariant';
 import { point, lineString } from '@turf/helpers';
 
+import { WeatherService } from './weather/weather.service';
 import { Graph, Node, Edge, Tag, OdPair } from './graph';
 import { appConfig } from '../app-config';
 import { uiConfig } from '../ui/ui-config';
@@ -42,7 +43,7 @@ import { getRandomColor } from '../utils';
 
     private odPairs: OdPair[] = [];
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private weather: WeatherService) { }
 
     public reset(): void {
         this.graph = null;
@@ -157,7 +158,7 @@ import { getRandomColor } from '../utils';
 
     /**
      * Call the networkData cloud function,
-     * that reiterates the invocation of the Directions API to obtain all links network data.
+     * that reiterates the invocation of the Directions API to obtain links network data.
      */
     public getNetworkData(): Observable<any> {
         const ways: any[][] = this.getWay();
@@ -212,14 +213,18 @@ import { getRandomColor } from '../utils';
 
     /**
      * Call the trafficData cloud function,
-     * that reiterates the invocation of the Directions API to obtain all links traffic data.
+     * that reiterates the invocation of the Directions API to obtain links traffic data.
      */
     public getTrafficData(): Observable<any> {
-        /* const url: string = environment.functions.trafficData.url;
+        const url: string = environment.functions.trafficData.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const edges = this.graph.getEdges();
-        const data = edges.map((v: Edge, i: number, arr: Edge[]) => {
+        const shortestPathsEdges = this.graph.getShortestPathsEgdes();
+        const filteredShortestPathsEdges = shortestPathsEdges
+            .filter((edge: Edge) => edge.distance > uiConfig.minDistance && edge.duration > uiConfig.minDuration);
+
+        const data = filteredShortestPathsEdges.map((v: Edge, i: number, arr: Edge[]) => {
             return {
+                edgeId: v.edgeId,
                 origin: { lat: v.origin.lat, lon: v.origin.lon },
                 destination: { lat: v.destination.lat, lon: v.destination.lon },
                 durationInTraffic: null
@@ -229,27 +234,45 @@ import { getRandomColor } from '../utils';
             edges: data,
             time: this.time
         });
+        console.log({ edges: data, time: this.time });
 
         // To trafficData function.
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),
             catchError((error: any) => throwError('getTrafficData'))
-        ); */
-        return of(null);
+        );
     }
 
     /**
-     * Calculates link flow for each edge.
+     * Calculates link flow of paths.
      * @param data Traffic data
      */
-    public calcLinkFlows(data: any): Observable<any> {
+    public calcLinkFlows(data: any[]): Observable<any> {
+        const shortestPathsEdges = this.graph.getShortestPathsEgdes();
+        // Assigns traffic data.
+        for (const edge of shortestPathsEdges) {
+            edge.durationInTraffic = 0;
+            for (const value of data) {
+                if (value.edgeId == edge.edgeId) {
+                    edge.durationInTraffic = value.durationInTraffic;
+                    break;
+                }
+            }
+
+            const factors = this.weather.getFactors();
+            // Calculates capacity.
+            edge.calcCapacity(factors[0]);
+            // Calculates link flow.
+            edge.calcLinkFlow();
+        }
+        console.log(this.graph);
         return of(null);
     }
 
     /**
-     * Returns the values of the linkFlow attribute of the links.
+     * Returns the values of the linkFlow of the paths.
      */
-    public getLinkFlows(): number[] {
+    public getLinkFlows(): number[][] {
         return null;
     }
 
@@ -445,7 +468,7 @@ import { getRandomColor } from '../utils';
             ways: ways,
             mode: mode
         });
-        console.log({ n: ways.length, ways: ways, mode: mode });
+        console.log({ ways: ways, mode: mode });
         // To networkData function.
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),

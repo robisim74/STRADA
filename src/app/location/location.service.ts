@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 
+import { environment } from '../../environments/environment';
+
 /**
  * Responsible for identifying the geographic coordinates of the simulation area,
  * through geocoding or geolocation.
@@ -15,7 +17,9 @@ import { Observable, Observer } from 'rxjs';
     private geocoder: google.maps.Geocoder;
 
     constructor() {
-        this.geocoder = new google.maps.Geocoder();
+        if (!environment.testing) {
+            this.geocoder = new google.maps.Geocoder();
+        }
     }
 
     public reset(): void {

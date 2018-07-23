@@ -43,5 +43,28 @@ export const uiConfig = {
     /**
      * Multinomial logit parameter.
      */
-    theta: 2
+    theta: 2,
+    /**
+     * Minimum spacing between subsequent vehicles.
+     */
+    sp: 5,
+    /**
+     * Weather Adjustment Factor Coefficients for capacity.
+     * "Traffic Analysis Toolbox. Volume XI: Weather and Traffic Analysis, Modeling and Simulation"
+     */
+    adjustmentFactorCoefficients: [0.91, 0.009, -0.404, -1.455, 0, 0],
+    /**
+     * Rain rating in mm.
+     */
+    rainIntensity: {
+        min: 1,
+        max: 70
+    },
+    /**
+     * Snow rating in mm.
+     */
+    snowIntensity: {
+        min: 10,
+        max: 20
+    }
 };
