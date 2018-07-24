@@ -160,8 +160,6 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                 this.map.setCentroid(odNodes);
                 this.map.setCenter(this.map.getCentroid());
                 this.map.setZoom(17);
-
-                console.log(graph);
             }
         );
     }

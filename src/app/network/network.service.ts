@@ -265,15 +265,17 @@ import { getRandomColor } from '../utils';
             // Calculates link flow.
             edge.calcLinkFlow();
         }
-        console.log(this.graph);
         return of(null);
     }
 
     /**
-     * Returns the values of the linkFlow of the paths.
+     * Returns the values of the link flow and the corresponding density of the paths.
      */
-    public getLinkFlows(): number[][] {
-        return null;
+    public getLinkFlows(): Array<{ value: number, density: number }> {
+        const shortestPathsEdges = this.graph.getShortestPathsEgdes();
+        return shortestPathsEdges.map((edge: Edge) => {
+            return { value: edge.linkFlow, density: edge.density };
+        });
     }
 
     /**

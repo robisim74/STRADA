@@ -135,11 +135,11 @@ export class Edge {
      * Calculates the value of the link flow.
      */
     public calcLinkFlow(): void {
-        if (this.duration > 0 && this.durationInTraffic > 0) {
+        if (this.durationInTraffic > 0 && this.duration > 0 && this.durationInTraffic >= this.duration) {
             // Calculates free flow velocity (m/s).
             this.velocity = math.round(this.distance / this.duration, 2) as number;
             // Calculates velocity (m/s).
-            const velocity = math.round(this.distance / this.durationInTraffic) as number;
+            const velocity = math.round(this.distance / this.durationInTraffic, 2) as number;
             // Calculates kjam.
             const kjam = 1 / uiConfig.sp;
             // Calculates density.
@@ -147,9 +147,9 @@ export class Edge {
             // Calculates flow.
             this.flow = math.round(this.density * velocity, 2) as number;
             // Calculates link flow.
-            const linkFlow = math.round(this.density * this.distance) as number;
-            this.linkFlow = linkFlow >= 1 ? linkFlow : 1;
+            this.linkFlow = math.round(this.density * this.distance) as number;
         } else {
+            this.density = 0;
             this.linkFlow = 0;
         }
     }
@@ -200,8 +200,6 @@ export class Graph {
     private shortestPaths: Edge[][][] = [];
 
     private shortestPathsEdges: Edge[] = [];
-
-    private shortestPathsProbabilities: number[][] = [];
 
     private incidenceMatrix: boolean[][][] = [];
 
@@ -338,7 +336,7 @@ export class Graph {
      */
     public calcAssignmentMatrix(odPairs: OdPair[]): Observable<any> {
         // Calculates the probabilities of shortest paths.
-        this.shortestPathsProbabilities = this.calcShortestPathsProbabilities(odPairs);
+        const shortestPathsProbabilities = this.calcShortestPathsProbabilities(odPairs);
 
         // Assignment matrix.
         for (let z = 0; z < this.incidenceMatrix.length; z++) {
@@ -347,7 +345,7 @@ export class Graph {
                 this.assignmentMatrix[z][n] = [];
                 for (let m = 0; m < this.incidenceMatrix[z][n].length; m++) {
                     if (this.incidenceMatrix[z][n][m]) {
-                        this.assignmentMatrix[z][n][m] = this.shortestPathsProbabilities[z][n];
+                        this.assignmentMatrix[z][n][m] = shortestPathsProbabilities[z][n];
                     } else {
                         this.assignmentMatrix[z][n][m] = 0;
                     }
