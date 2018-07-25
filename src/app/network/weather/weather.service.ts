@@ -75,21 +75,33 @@ import { uiConfig } from '../../ui/ui-config';
         return of(null);
     }
 
+    public setWeatherConditions(weather: WeatherConditions, code: string): void {
+        // Gets the icon image.
+        const icon = this.getIcon(code);
+
+        this.weatherConditions = {
+            description: weather.description,
+            icon: icon,
+            visibility: weather.visibility,
+            rainIntensity: weather.rainIntensity,
+            snowIntensity: weather.snowIntensity
+        };
+    }
+
     /**
      * Calculates Weather Adjustment Factors.
-     * @param weather If absent, it uses the current meteorological conditions
      * @returns The factor for sp parameter
      */
-    public getFactors(weather?: WeatherConditions): number[] {
-        if (!weather) { weather = this.weatherConditions; }
-
+    public getFactors(): number[] {
         const factors: number[] = [];
         let capacityFactor = uiConfig.adjustmentFactorCoefficients[0] +
-            uiConfig.adjustmentFactorCoefficients[1] * (weather.visibility / 1000) +
-            uiConfig.adjustmentFactorCoefficients[2] * this.toInches(weather.rainIntensity) +
-            uiConfig.adjustmentFactorCoefficients[3] * this.toInches(weather.snowIntensity) +
-            uiConfig.adjustmentFactorCoefficients[4] * this.toInches(weather.visibility) * this.toInches(weather.rainIntensity) +
-            uiConfig.adjustmentFactorCoefficients[5] * this.toInches(weather.visibility) * this.toInches(weather.snowIntensity);
+            uiConfig.adjustmentFactorCoefficients[1] * (this.weatherConditions.visibility / 1000) +
+            uiConfig.adjustmentFactorCoefficients[2] * this.toInches(this.weatherConditions.rainIntensity) +
+            uiConfig.adjustmentFactorCoefficients[3] * this.toInches(this.weatherConditions.snowIntensity) +
+            uiConfig.adjustmentFactorCoefficients[4] *
+            this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.rainIntensity) +
+            uiConfig.adjustmentFactorCoefficients[5] *
+            this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.snowIntensity);
         if (capacityFactor < 0.1) { capacityFactor = 0.1; }
         factors.push(math.round(capacityFactor, 2) as number);
         return factors;
@@ -97,18 +109,23 @@ import { uiConfig } from '../../ui/ui-config';
 
     private addWeatherConditions(data: any): void {
         // Gets the icon image.
-        const icon = new Image();
-        if (data.weather[0]) {
-            icon.src = appConfig.apis.openWeatherMap.iconUrl + '/' + data.weather[0].icon + '.png';
-        }
+        const icon = this.getIcon(data.weather[0].icon);
 
         this.weatherConditions = {
             description: data.weather[0] ? data.weather[0].description : '-',
             icon: icon,
-            visibility: data.visibility ? data.visibility : 10000, // 10000 is the default value
+            visibility: data.visibility ? data.visibility : uiConfig.visibility.default,
             rainIntensity: data.rain ? data.rain['3h'] : 0,
             snowIntensity: data.snow ? data.snow['3h'] : 0
         };
+    }
+
+    private getIcon(code: string): HTMLImageElement {
+        const icon = new Image();
+        if (!!code) {
+            icon.src = appConfig.apis.openWeatherMap.iconUrl + '/' + code + '.png';
+        }
+        return icon;
     }
 
     private toInches(value: number): number {

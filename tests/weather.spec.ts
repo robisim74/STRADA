@@ -20,46 +20,50 @@ describe('WeatherService', () => {
 
     describe('getFactors', () => {
         it('should consider the clear sky', () => {
-            const factors = weatherService.getFactors({
+            weatherService.setWeatherConditions({
                 description: null,
                 icon: null,
                 visibility: 10000,
                 rainIntensity: 0,
                 snowIntensity: 0
-            });
+            }, '');
+            const factors = weatherService.getFactors();
             const factor = factors[0];
             expect(factor).toBe(1);
         });
         it('should consider rain intensity', () => {
-            const factors = weatherService.getFactors({
+            weatherService.setWeatherConditions({
                 description: null,
                 icon: null,
                 visibility: 1000,
                 rainIntensity: 5,
                 snowIntensity: 0
-            });
+            }, '');
+            const factors = weatherService.getFactors();
             const factor = factors[0];
             expect(factor).toBe(0.84);
         });
         it('should consider snow intensity', () => {
-            const factors = weatherService.getFactors({
+            weatherService.setWeatherConditions({
                 description: null,
                 icon: null,
                 visibility: 1000,
                 rainIntensity: 0,
                 snowIntensity: 10
-            });
+            }, '');
+            const factors = weatherService.getFactors();
             const factor = factors[0];
             expect(factor).toBe(0.35);
         });
         it('should return min value', () => {
-            const factors = weatherService.getFactors({
+            weatherService.setWeatherConditions({
                 description: null,
                 icon: null,
                 visibility: 1000,
                 rainIntensity: 70,
                 snowIntensity: 0
-            });
+            }, '');
+            const factors = weatherService.getFactors();
             const factor = factors[0];
             expect(factor).toBe(0.1);
         });

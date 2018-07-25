@@ -53,14 +53,12 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
         this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
             switch (this.wizard.state.currentStep) {
                 case 0:
-                    this.description = '-';
-                    if (this.icon) {
-                        this.renderer.removeChild(this.iconContainer, this.icon);
-                        this.icon = null;
-                        this.time = '';
-                    }
+                    this.reset();
                     break;
                 case 3:
+                    if (steps[3] && steps[3].data.weatherConditions) {
+                        this.reset();
+                    }
                     const weatherConditions = this.weather.getWeatherConditions();
                     this.description = weatherConditions.description;
                     this.icon = weatherConditions.icon;
@@ -73,6 +71,15 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
 
     sendActions(): void {
         //
+    }
+
+    reset(): void {
+        this.description = '-';
+        if (this.icon) {
+            this.renderer.removeChild(this.iconContainer, this.icon);
+            this.icon = null;
+            this.time = '';
+        }
     }
 
 }

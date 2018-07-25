@@ -188,7 +188,6 @@ import { getRandomColor } from '../utils';
         try {
             const edges = this.graph.getEdges();
             const nodes = this.graph.getNodes();
-            if (edges.length == 0 || nodes.length == 0) { return throwError('correctGraph'); }
 
             for (const edge of edges) {
                 if (!edge.distance || !edge.drawingOptions.polyline) {

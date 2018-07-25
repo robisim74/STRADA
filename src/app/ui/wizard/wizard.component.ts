@@ -5,6 +5,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { WizardService } from './wizard.service';
 import { pairsValidator } from '../directives/pairs.directive';
+import { uiConfig } from '../ui-config';
 
 @Component({
     selector: 'ui-wizard',
@@ -44,7 +45,31 @@ export class WizardComponent implements OnInit {
                 }),
                 this.formBuilder.group({
                     odPairs: this.formBuilder.array([]),
-                    weatherConditions: [null]
+                    weatherConditions: this.formBuilder.group({
+                        description: [null],
+                        icon: [null],
+                        visibility: [
+                            null,
+                            [Validators.required,
+                            Validators.min(0),
+                            Validators.max(uiConfig.visibility.max),
+                            Validators.pattern('^[0-9]*$')]
+                        ],
+                        rainIntensity: [
+                            null,
+                            [Validators.required,
+                            Validators.min(0),
+                            Validators.max(uiConfig.rainIntensity.max),
+                            Validators.pattern('^[0-9]*$')]
+                        ],
+                        snowIntensity: [
+                            null,
+                            [Validators.required,
+                            Validators.min(0),
+                            Validators.max(uiConfig.snowIntensity.max),
+                            Validators.pattern('^[0-9]*$')]
+                        ]
+                    })
                 }),
                 this.formBuilder.group({
 

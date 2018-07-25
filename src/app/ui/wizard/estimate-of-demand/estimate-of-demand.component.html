@@ -15,7 +15,7 @@
                     <span *ngIf="pair.value.destination">{{ pair.value.destination }}</span>
                 </div>
                 <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center">
-                    <mat-select *ngIf="pair.value.pathType" placeholder="Path type" formControlName="pathType" name="pathType">
+                    <mat-select *ngIf="pair.value.pathType" formControlName="pathType" name="pathType">
                         <mat-option *ngFor="let path of pathTypes" [value]="path">
                             {{ path }}
                         </mat-option>

@@ -70,7 +70,7 @@ export class MapComponent extends BaseComponent implements OnInit {
                 case 0:
                     if (steps[0]) {
                         // Updates center map.
-                        this.center = this.wizard.state.steps[0].data.center;
+                        this.center = steps[0].data.center;
                         this.zoom = 16;
                     }
                     break;
@@ -79,14 +79,14 @@ export class MapComponent extends BaseComponent implements OnInit {
                     this.map.removeRect();
                     if (steps[2]) {
                         // Updated O/D nodes.
-                        const odPairs: OdPair[] = this.wizard.state.steps[2].data.odPairs;
+                        const odPairs: OdPair[] = steps[2].data.odPairs;
                         this.map.updateOdNodes(odPairs);
                     }
                     break;
                 case 3:
-                    if (steps[3]) {
+                    if (steps[3] && steps[3].data.odPairs) {
                         // Updated O/D paths.
-                        const odPairs: OdPairShowing[] = this.wizard.state.steps[3].data.odPairs;
+                        const odPairs: OdPairShowing[] = steps[3].data.odPairs;
                         this.map.updateOdPaths(odPairs);
                         break;
                     }

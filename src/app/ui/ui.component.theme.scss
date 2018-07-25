@@ -5,6 +5,7 @@
 // Define a mixin that accepts a theme and outputs the color styles for the component.
 @mixin ui-component-theme($theme) {
     .mat-form-field-suffix {
-        font-size: 16px;
+        font-size: 12px;
+        font-weight: 500;
     }
 }

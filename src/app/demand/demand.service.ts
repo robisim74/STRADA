@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import * as math from 'mathjs';
 
 import { NetworkService } from '../network/network.service';
+import { uiConfig } from '../ui/ui-config';
 
 /**
  * Estimates the O/D matrix of the traffic demand.
@@ -88,7 +89,7 @@ import { NetworkService } from '../network/network.service';
         do {
             x++;
             estimations[x] = this.estimate(linkFlows, odMatrixAssignment, x);
-        } while (estimations[x] <= estimations[x - 1] && x <= 10000);
+        } while (estimations[x] <= estimations[x - 1] && x <= uiConfig.maxDemand);
         return x - 1;
     }
 

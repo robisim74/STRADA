@@ -4,7 +4,7 @@
 export interface WeatherConditions {
 
     description: string;
-    icon: HTMLImageElement;
+    icon?: HTMLImageElement;
     /**
      * Meters.
      */
@@ -18,4 +18,16 @@ export interface WeatherConditions {
      */
     snowIntensity?: number;
 
+}
+
+export enum WeatherDescription {
+    clearSky = 'clear sky',
+    fewClouds = 'few clouds',
+    scatteredClouds = 'scattered clouds',
+    brokenClouds = 'broken clouds',
+    showerRain = 'shower rain',
+    rain = 'rain',
+    thunderstorm = 'thunderstorm',
+    snow = 'snow',
+    mist = 'mist',
 }

@@ -36,19 +36,20 @@ import { WizardState } from "../models/reducers/wizard.reducer";
     }
 
     public reset(): void {
-        // UI.
-        this.map.reset();
-        // Stepper.
-        this.stepper.reset();
-        // App.
-        this.simulation.reset();
-        this.demand.reset();
-        this.network.reset();
-        this.weather.reset();
-        this.location.reset();
-        // UI state.
-        this.store.dispatch({
-            type: WizardActionTypes.Reset
+        setTimeout(() => {
+            // Stepper.
+            this.stepper.reset();
+            // UI state.
+            this.store.dispatch({
+                type: WizardActionTypes.Reset
+            });
+            // Services.
+            this.map.reset();
+            this.location.reset();
+            this.network.reset();
+            this.weather.reset();
+            this.demand.reset();
+            this.simulation.reset();
         });
     }
 
@@ -130,7 +131,7 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                 let message: string;
                 switch (error) {
                     case 'getNetwork':
-                        message = 'The request could not be processed. Check your Internet connection and try again';
+                        message = 'Network cannot be retrieved. Check your Internet connection and try again';
                         break;
                     case 'createGraph':
                         message = 'Graph cannnot be created. Please, try with another area';
@@ -150,9 +151,6 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                 this.reset();
             },
             () => {
-                // Removes from waiting.
-                this.removeFromWaiting();
-                this.goOn(data, index, nextIndex);
                 // Draws graph.
                 this.map.drawGraph();
                 // Sets map.
@@ -161,6 +159,9 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                 this.map.setCentroid(odNodes);
                 this.map.setCenter(this.map.getCentroid());
                 this.map.setZoom(17);
+                // Removes from waiting.
+                this.removeFromWaiting();
+                this.goOn(data, index, nextIndex);
             }
         );
     }
@@ -211,20 +212,17 @@ import { WizardState } from "../models/reducers/wizard.reducer";
                         message = 'Traffic data cannot be retrieved. Past the quota limits traffic data become paid.' +
                             'This is an open source project: install your own version of it';
                         break;
-                    case 'calcOdMatrix':
-                        message = 'The demand cannot be calculated. Please, try with another area';
-                        break;
                 }
                 this.putInError(message);
                 this.reset();
             },
             () => {
-                // Removes from waiting.
-                this.removeFromWaiting();
-                this.goOn(data, index, nextIndex);
                 // Builds paths.
                 const paths = graph.getShortestPaths();
                 this.map.buildPaths(paths);
+                // Removes from waiting.
+                this.removeFromWaiting();
+                this.goOn(data, index, nextIndex);
 
                 console.log(graph);
                 console.log(paths);

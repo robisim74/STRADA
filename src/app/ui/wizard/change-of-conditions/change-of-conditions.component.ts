@@ -5,10 +5,14 @@ import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
+import { WeatherService } from '../../../network/weather/weather.service';
 import { DemandService } from '../../../demand/demand.service';
 import * as fromUi from '../../models/reducers';
 import { Step } from '../../models/wizard';
 import { OdPairShowing } from '../../../network/graph';
+import { uiConfig } from '../../ui-config';
+import { WeatherDescription, WeatherConditions } from '../../../network/weather/weather';
+import { EnumValues } from '../../utils';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -23,6 +27,8 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
 
     @Input() index: number;
 
+    descriptions: WeatherDescription[] = [];
+
     get odPairs(): FormArray {
         return this.formGroup.get('odPairs') as FormArray;
     }
@@ -32,9 +38,12 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
         private network: NetworkService,
+        private weather: WeatherService,
         private demand: DemandService
     ) {
         super();
+
+        this.descriptions = EnumValues.getValues(WeatherDescription);
     }
 
     ngOnInit(): void {
@@ -50,21 +59,34 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                 const demand = odPairs.map((pair: OdPairShowing) => {
                     return pair.demand;
                 });
-                this.demand.changeDemand(demand);
+                if (demand && demand.length > 0) {
+                    this.demand.changeDemand(demand);
+                }
             }
         ));
-        //
+        // Updates weather service data on value changes.
+        this.subscriptions.push(this.formGroup.get('weatherConditions').valueChanges.subscribe(
+            (weatherConditions: WeatherConditions) => {
+                const index = this.descriptions.findIndex(description => description == weatherConditions.description);
+                const code = uiConfig.weatherIcons[index];
+                this.weather.setWeatherConditions(weatherConditions, code);
+
+                // Updates step state.
+                this.wizard.updateStep(this.formGroup.value, this.index);
+            }
+        ));
     }
 
     receiveActions(): void {
         this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
-            const control = this.formGroup.get('odPairs') as FormArray;
+            const odPairsControl = this.formGroup.get('odPairs') as FormArray;
+            const weatherConditionsControl = this.formGroup.get('weatherConditions');
             switch (currentStep) {
                 // Resets control.
                 case 0:
-                    if (control.length > 0) {
-                        for (let i = control.length - 1; i >= 0; i--) {
-                            control.removeAt(i);
+                    if (odPairsControl.length > 0) {
+                        for (let i = odPairsControl.length - 1; i >= 0; i--) {
+                            odPairsControl.removeAt(i);
                         }
                     }
                     break;
@@ -72,8 +94,10 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                     const odPairs = this.network.getOdPairs();
                     const demand = this.demand.getDemand();
                     for (let i = 0; i < odPairs.length; i++) {
-                        control.push(this.buildOdPair(odPairs[i], demand[i]));
+                        odPairsControl.push(this.buildOdPair(odPairs[i], demand[i]));
                     }
+                    const weatherConditions = this.weather.getWeatherConditions();
+                    weatherConditionsControl.patchValue(weatherConditions, { emitEvent: false });
                     break;
             }
         }));
@@ -101,7 +125,7 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
             pathType: odPair.pathType,
             demand: [
                 { value: demand, disabled: demand == null },
-                [Validators.required, Validators.min(0), Validators.max(10000), Validators.pattern('^[0-9]*$')]
+                [Validators.required, Validators.min(0), Validators.max(uiConfig.maxDemand), Validators.pattern('^[0-9]*$')]
             ],
             showPaths: false
         });
