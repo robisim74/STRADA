@@ -58,10 +58,14 @@ export class SelectionOfTheAreaComponent extends BaseComponent implements OnInit
 
     valueChanges(): void {
         // Updates network service data on value changes.
-        this.subscriptions.push(this.formGroup.valueChanges.subscribe(
-            () => {
-                this.network.setBounds(this.formGroup.get('bounds').value);
-                this.network.setTime(this.formGroup.get('time').value);
+        this.subscriptions.push(this.formGroup.get('bounds').valueChanges.subscribe(
+            (bounds: google.maps.LatLngBoundsLiteral) => {
+                this.network.setBounds(bounds);
+            }
+        ));
+        this.subscriptions.push(this.formGroup.get('time').valueChanges.subscribe(
+            (time: Date) => {
+                this.network.setTime(time);
             }
         ));
     }

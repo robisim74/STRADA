@@ -28,8 +28,8 @@ describe('Graph', () => {
             tick();
 
             const graph = networkService.getGraph();
-            expect(graph.getEdges().length).toBe(31);
-            expect(graph.getNodes().length).toBe(19);
+            expect(graph.getEdges().length).toBe(29);
+            expect(graph.getNodes().length).toBe(18);
             expect(graph.getRelations().length).toBe(0);
 
             networkService.updateGraph(networkDataForCalcShortestPaths).toPromise();
@@ -55,8 +55,8 @@ describe('Graph', () => {
 
             expect(shortestPaths[0][0].length).toBe(9);
             expect(shortestPaths[0][1].length).toBe(10);
-            expect(shortestPaths[0][2].length).toBe(8);
-            expect(shortestPaths[1][0].length).toBe(4);
+            expect(shortestPaths[0][2].length).toBe(7);
+            expect(shortestPaths[1][0].length).toBe(3);
             expect(shortestPaths[1][1].length).toBe(8);
         }));
     });

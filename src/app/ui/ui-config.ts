@@ -66,5 +66,18 @@ export const uiConfig = {
     snowIntensity: {
         min: 10,
         max: 20
+    },
+    /**
+     * Shortest paths.
+     */
+    paths: {
+        /**
+         * Highly, Medium, Poorly
+         */
+        colors: [
+            '#004ba0',
+            '#1976d2',
+            '#63a4ff'
+        ]
     }
 };

@@ -27,7 +27,7 @@ describe('DemandService', () => {
             expect(demand.length).toBe(4);
             expect(demand[0]).toBe(1);
             expect(demand[1]).toBe(1);
-            expect(demand[2]).toBe(0);
+            expect(demand[2]).toBe(null);
             expect(demand[3]).toBe(33);
         }));
     });

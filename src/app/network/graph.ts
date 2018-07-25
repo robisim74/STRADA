@@ -13,14 +13,19 @@ export enum PathType {
 }
 
 /**
- * An O/D pair is described by the origin and destination nodes and the type of path.
+ * An O/D pair is described by the origin and destination nodes, the type of path and the domand.
  */
 export interface OdPair {
 
     origin: number;
     destination: number;
     pathType: PathType;
+    demand?: number;
 
+}
+
+export interface OdPairShowing extends OdPair {
+    showPaths: boolean;
 }
 
 /**
@@ -125,7 +130,10 @@ export class Edge {
      */
     public queue = 0;
 
-    public drawingOptions: { polyline?: google.maps.Polyline } = {};
+    public drawingOptions: {
+        path?: google.maps.LatLng[],
+        polyline?: google.maps.Polyline
+    } = {};
 
     constructor(edgeId: number) {
         this.edgeId = edgeId;
@@ -469,7 +477,7 @@ export class Graph {
         const pathCosts = this.calcPathCosts(odPairs);
         const shortestPathsProbabilities: number[][] = [];
         // Theta parameter.
-        const parameter = uiConfig.theta;
+        const parameter = uiConfig.theta * 1000;
         // Calculates numerator.
         const exps: number[][] = [];
         for (let z = 0; z < pathCosts.length; z++) {

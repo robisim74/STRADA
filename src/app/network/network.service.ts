@@ -39,9 +39,12 @@ import { getRandomColor } from '../utils';
      */
     private time: Date | null;
 
-    private edgeId = 0;
-
+    /**
+     * The O/D pairs.
+     */
     private odPairs: OdPair[] = [];
+
+    private edgeId = 0;
 
     constructor(private http: HttpClient, private weather: WeatherService) { }
 
@@ -378,7 +381,7 @@ import { getRandomColor } from '../utils';
                         if (wayNodes[wayNodes.length - 1] == nextWayNodes[0]) {
                             this.fillWays(ways[i], ways[n]);
                             ways.splice(n, 1);
-                            n = i + 1;
+                            n = i;
                         }
                         if (wayNodes[0] == nextWayNodes[nextWayNodes.length - 1]) {
                             this.fillWays(ways[n], ways[i]);
@@ -539,14 +542,15 @@ import { getRandomColor } from '../utils';
                 path = this.toLatLng(translatedPoly);
             }
 
+            edge.drawingOptions.path = path;
             edge.drawingOptions.polyline = new google.maps.Polyline(
                 {
                     path: path,
                     icons: icons,
                     strokeColor: uiConfig.edges.baseColor,
-                    /* strokeColor: getRandomColor(), */
                     strokeOpacity: 1,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    zIndex: 5
                 }
             );
         }

@@ -7,7 +7,7 @@ import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
 import * as fromUi from '../../models/reducers';
 import { Step } from '../../models/wizard';
-import { PathType } from '../../../network/graph';
+import { PathType, OdPair } from '../../../network/graph';
 import { EnumValues } from '../../utils';
 
 import { BaseComponent } from '../../models/base.component';
@@ -46,21 +46,11 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
         this.sendActions();
     }
 
-    deletePair(i: number): void {
-        // Updates control.
-        const control = this.formGroup.get('odPairs') as FormArray;
-        control.removeAt(i);
-        // Updates step state.
-        const odPairs: number[][] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
-        odPairs.pop();
-        this.wizard.updateStep({ odPairs: odPairs }, 2);
-    }
-
     valueChanges(): void {
         // Updates network service data on value changes.
-        this.subscriptions.push(this.formGroup.valueChanges.subscribe(
-            () => {
-                this.network.setOdPairs(this.formGroup.get('odPairs').value);
+        this.subscriptions.push(this.formGroup.get('odPairs').valueChanges.subscribe(
+            (odPairs: OdPair[]) => {
+                this.network.setOdPairs(odPairs);
             }
         ));
     }
@@ -68,30 +58,51 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
     receiveActions(): void {
         this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
             if (steps[this.index]) {
-                const odPairs: number[][] = steps[this.index]['data']['odPairs'];
+                const odPairs: OdPair[] = steps[this.index]['data']['odPairs'];
                 if (odPairs.length > 0) {
                     const control = this.formGroup.get('odPairs') as FormArray;
                     // Adds new O/D pair.
                     if (control.length < odPairs.length) {
                         control.push(this.formBuilder.group({
-                            origin: odPairs[odPairs.length - 1][0],
+                            origin: odPairs[odPairs.length - 1].origin,
                             destination: null,
                             pathType: null
                         }));
                     } else {
                         control.get([control.length - 1]).patchValue({
-                            origin: odPairs[odPairs.length - 1][0],
-                            destination: odPairs[odPairs.length - 1][1] ? odPairs[odPairs.length - 1][1] : null,
+                            origin: odPairs[odPairs.length - 1].origin,
+                            destination: odPairs[odPairs.length - 1].destination,
                             pathType: PathType.distance
                         });
                     }
                 }
             }
         }));
+        this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
+            switch (currentStep) {
+                // Resets control.
+                case 0:
+                    const control = this.formGroup.get('odPairs') as FormArray;
+                    if (control.length > 0) {
+                        for (let i = control.length - 1; i >= 0; i--) {
+                            control.removeAt(i);
+                        }
+                    }
+                    break;
+            }
+        }));
     }
 
     sendActions(): void {
         //
+    }
+
+    deletePair(i: number): void {
+        // Updates control.
+        const control = this.formGroup.get('odPairs') as FormArray;
+        control.removeAt(i);
+        // Updates step state.
+        this.wizard.updateStep(this.formGroup.value, this.index);
     }
 
 }

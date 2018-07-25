@@ -32,9 +32,9 @@ export class SearchForTheAreaComponent extends BaseComponent implements OnInit {
 
     valueChanges(): void {
         // Updates location service data on value changes.
-        this.subscriptions.push(this.formGroup.valueChanges.subscribe(
-            () => {
-                this.location.setLatLng(this.formGroup.get('center').value);
+        this.subscriptions.push(this.formGroup.get('center').valueChanges.subscribe(
+            (center: google.maps.LatLngLiteral) => {
+                this.location.setLatLng(center);
             }
         ));
     }

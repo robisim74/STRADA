@@ -43,7 +43,8 @@ export class WizardComponent implements OnInit {
                     odPairs: this.formBuilder.array([], pairsValidator())
                 }),
                 this.formBuilder.group({
-
+                    odPairs: this.formBuilder.array([]),
+                    weatherConditions: [null]
                 }),
                 this.formBuilder.group({
 
@@ -68,18 +69,18 @@ export class WizardComponent implements OnInit {
             this.stepper.selected.completed = true;
             switch (nextIndex) {
                 case 2:
-                    this.wizard.networkSchedule();
+                    this.wizard.networkSchedule(this.wizardForm.get('formSteps').get([index]).value, index, nextIndex);
                     break;
                 case 3:
-                    this.wizard.demandSchedule();
+                    this.wizard.demandSchedule(this.wizardForm.get('formSteps').get([index]).value, index, nextIndex);
                     break;
-
+                default:
+                    this.wizard.goOn(
+                        this.wizardForm.get('formSteps').get([index]).value,
+                        index,
+                        nextIndex
+                    );
             }
-            this.wizard.goOn(
-                this.wizardForm.get('formSteps').get([index]).value,
-                index,
-                nextIndex
-            );
         }
     }
 

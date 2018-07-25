@@ -38,18 +38,18 @@ import { WizardState } from "../models/reducers/wizard.reducer";
     public reset(): void {
         // UI.
         this.map.reset();
+        // Stepper.
+        this.stepper.reset();
+        // App.
+        this.simulation.reset();
+        this.demand.reset();
+        this.network.reset();
+        this.weather.reset();
+        this.location.reset();
         // UI state.
         this.store.dispatch({
             type: WizardActionTypes.Reset
         });
-        // Stepper.
-        this.stepper.reset();
-        // App.
-        this.location.reset();
-        this.network.reset();
-        this.weather.reset();
-        this.demand.reset();
-        this.simulation.reset();
     }
 
     public updateStep(data: any, index: number): void {
@@ -96,9 +96,8 @@ import { WizardState } from "../models/reducers/wizard.reducer";
      * - Corrects graph data
      * - Gets and updates weather data
      */
-    networkSchedule(): void {
+    networkSchedule(data: any, index: number, nextIndex: number): void {
         this.putOnHold('Getting the network');
-
         const stream = this.network.getNetwork().pipe(
             switchMap((response: any) => {
                 this.putOnHold('Creating the graph');
@@ -153,8 +152,10 @@ import { WizardState } from "../models/reducers/wizard.reducer";
             () => {
                 // Removes from waiting.
                 this.removeFromWaiting();
+                this.goOn(data, index, nextIndex);
                 // Draws graph.
                 this.map.drawGraph();
+                // Sets map.
                 const graph = this.network.getGraph();
                 const odNodes = graph.getOdNodes();
                 this.map.setCentroid(odNodes);
@@ -173,11 +174,11 @@ import { WizardState } from "../models/reducers/wizard.reducer";
      * - Calcs link flows
      * - Calcs O/D matrix
      */
-    demandSchedule(): void {
-        this.putOnHold('Computing shortest paths');
+    demandSchedule(data: any, index: number, nextIndex: number): void {
         const graph = this.network.getGraph();
         const odPairs = this.network.getOdPairs();
 
+        this.putOnHold('Computing shortest paths');
         const stream = graph.calcShortestPaths(odPairs).pipe(
             switchMap(() => {
                 return graph.calcIncidenceMatrix();
@@ -220,6 +221,15 @@ import { WizardState } from "../models/reducers/wizard.reducer";
             () => {
                 // Removes from waiting.
                 this.removeFromWaiting();
+                this.goOn(data, index, nextIndex);
+                // Builds paths.
+                const paths = graph.getShortestPaths();
+                this.map.buildPaths(paths);
+
+                console.log(graph);
+                console.log(paths);
+                console.log(graph.getAssignmentMatrix());
+                console.log(this.demand.getOdMatrix());
             }
         );
     }

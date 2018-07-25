@@ -1,0 +1,43 @@
+<div [formGroup]="formGroup">
+    <div formArrayName="odPairs" fxLayout="column" fxLayoutGap="8px">
+        <div fxLayout="column" fxLayoutGap="3px">
+            <div fxLayout="row" fxLayoutGap="3px">
+                <div fxFlex="1 1 15%" class="header">O</div>
+                <div fxFlex="1 1 15%" class="header">D</div>
+                <div fxFlex="1 1 30%" class="header">Path</div>
+                <div fxFlex="1 1 20%" class="header">Demand</div>
+                <div fxFlex="1 1 20%" class="header"></div>
+            </div>
+            <div *ngFor="let pair of odPairs.controls; let i=index" [formGroupName]="i" fxLayout="row" fxLayoutGap="3px">
+                <div fxFlex="1 1 15%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <span>{{ pair.value.origin }}</span>
+                </div>
+                <div fxFlex="1 1 15%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <span>{{ pair.value.destination }}</span>
+                </div>
+                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <span>{{ pair.value.pathType }}</span>
+                </div>
+                <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                    <mat-form-field color="accent" class="full-width">
+                        <input matInput type="number" min="0" step="1" formControlName="demand" placeholder="No. vehicles">
+                        <mat-error *ngIf="pair.get('demand').hasError('required') || pair.get('demand').hasError('min') || pair.get('demand').hasError('max') || pair.get('demand').hasError('pattern')">
+                            Not valid
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="toggleValue(pair)" title="Show paths" aria-label="Show paths">
+                        <mat-icon>{{ getVisibility(pair) }}</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue
+            <mat-icon>navigate_next</mat-icon>
+        </button>
+    </div>
+</div>

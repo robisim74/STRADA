@@ -23,6 +23,7 @@ import { NetworkService } from '../network/network.service';
     constructor(private network: NetworkService) { }
 
     public reset(): void {
+        this.demand = [];
         this.odMatrix = [];
     }
 
@@ -34,16 +35,10 @@ import { NetworkService } from '../network/network.service';
         const linkFlows = this.network.getLinkFlows();
         // Gets assignment matrix from network.
         const assignmentMatrix = this.network.getAssignmentMatrix();
-
+        // Calculates demand.
         this.demand = this.gls(linkFlows, assignmentMatrix);
         // Shares the demand on each path.
-        for (let z = 0; z < assignmentMatrix.length; z++) {
-            this.odMatrix[z] = [];
-            for (let n = 0; n < assignmentMatrix[z].length; n++) {
-                const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
-                this.odMatrix[z][n] = math.round(p * this.demand[z]) as number;
-            }
-        }
+        this.shareDemand(assignmentMatrix);
         return of(null);
     }
 
@@ -55,17 +50,25 @@ import { NetworkService } from '../network/network.service';
         return this.odMatrix;
     }
 
+    public changeDemand(demand: number[]): void {
+        // Gets assignment matrix from network.
+        const assignmentMatrix = this.network.getAssignmentMatrix();
+
+        this.demand = demand;
+        this.shareDemand(assignmentMatrix);
+    }
+
     /**
-     * Generalized least squares (GLS).
+     * Generalized Least Squares (GLS).
      * @param linkFlows The link flows
      * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
      * @returns The array of the demand
      */
-    public gls(linkFlows: Array<{ value: number, density: number }>, assignmentMatrix: number[][][]): number[] {
+    public gls(linkFlows: Array<{ value: number, density: number }>, assignmentMatrix: number[][][]): number[] | null {
         const demand: number[] = [];
         // Calculates argument of the minimum for each O/D pair.
         for (let z = 0; z < assignmentMatrix.length; z++) {
-            demand[z] = assignmentMatrix[z].length > 0 ? this.argmin(linkFlows, assignmentMatrix[z]) : 0;
+            demand[z] = assignmentMatrix[z].length > 0 ? this.argmin(linkFlows, assignmentMatrix[z]) : null;
         }
         return demand;
     }
@@ -81,6 +84,7 @@ import { NetworkService } from '../network/network.service';
         // The unknown demand.
         let x = 0;
         estimations[x] = this.estimate(linkFlows, odMatrixAssignment, x);
+        if (estimations[x] == 0) { return 0; }
         do {
             x++;
             estimations[x] = this.estimate(linkFlows, odMatrixAssignment, x);
@@ -142,6 +146,25 @@ import { NetworkService } from '../network/network.service';
      */
     private calcVariance(density: number): number {
         return density > 0 ? math.round(1 / density, 2) as number : 1;
+    }
+
+    /**
+     * Shares the demand on each path.
+     * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
+     */
+    private shareDemand(assignmentMatrix: number[][][]): void {
+        for (let z = 0; z < assignmentMatrix.length; z++) {
+            this.odMatrix[z] = [];
+            if (this.demand[z]) {
+                let sum = 0;
+                for (let n = 0; n < assignmentMatrix[z].length; n++) {
+                    const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
+                    this.odMatrix[z][n] = math.round(p * this.demand[z]) as number;
+                    sum += this.odMatrix[z][n];
+                }
+                if (this.demand[z] - sum > 0) { this.odMatrix[z][0] = this.demand[z] - sum; }
+            }
+        }
     }
 
 }

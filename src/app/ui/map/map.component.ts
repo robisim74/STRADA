@@ -1,15 +1,15 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { Store, select } from '@ngrx/store';
-import * as equals from 'mout/array/equals';
 
 import { WizardService } from '../wizard/wizard.service';
 import { MapService } from './map.service';
+import { NetworkService } from '../../network/network.service';
 import { MapStyle } from './map.style';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
 import { uiConfig } from '../ui-config';
-import { Node } from '../../network/graph';
+import { Node, OdPair, OdPairShowing } from '../../network/graph';
 
 import { BaseComponent } from '../models/base.component';
 
@@ -38,7 +38,8 @@ export class MapComponent extends BaseComponent implements OnInit {
     constructor(
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
-        private map: MapService
+        private map: MapService,
+        private network: NetworkService
     ) {
         super();
         // Map options.
@@ -78,10 +79,17 @@ export class MapComponent extends BaseComponent implements OnInit {
                     this.map.removeRect();
                     if (steps[2]) {
                         // Updated O/D nodes.
-                        const odPairs: number[][] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
+                        const odPairs: OdPair[] = this.wizard.state.steps[2].data.odPairs;
                         this.map.updateOdNodes(odPairs);
                     }
                     break;
+                case 3:
+                    if (steps[3]) {
+                        // Updated O/D paths.
+                        const odPairs: OdPairShowing[] = this.wizard.state.steps[3].data.odPairs;
+                        this.map.updateOdPaths(odPairs);
+                        break;
+                    }
             }
         }));
 
@@ -123,39 +131,47 @@ export class MapComponent extends BaseComponent implements OnInit {
     }
 
     updateOdPairs(node: Node): void {
-        const odPairs: number[][] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
+        const odPairs: OdPair[] = this.wizard.state.steps[2] ? this.wizard.state.steps[2].data.odPairs : [];
 
         let error = null;
 
         if (odPairs.length > 0) {
             const lastOdPair = odPairs[odPairs.length - 1];
             // Checks limit.
-            if (odPairs.length == uiConfig.maxOdPairs && odPairs[uiConfig.maxOdPairs - 1].length == 2) {
+            if (odPairs.length == uiConfig.maxOdPairs && odPairs[uiConfig.maxOdPairs - 1].destination) {
                 error = `The maximum number of O/D pairs is ${uiConfig.maxOdPairs}`;
                 // Checks if valid node.
-            } else if (lastOdPair.length == 1 && node.incomingEdges.length == 0) {
+            } else if (lastOdPair.destination == null && node.incomingEdges.length == 0) {
                 error = `The node cannot be a destination`;
-            } else if (lastOdPair.length == 2 && node.outgoingEdges.length == 0) {
+            } else if (lastOdPair.destination && node.outgoingEdges.length == 0) {
                 error = `The node cannot be an origin`;
                 // Checks if last O/D pair is completed.
-            } else if (lastOdPair.length == 2) {
-                odPairs.push([node.label]);
+            } else if (lastOdPair.destination) {
+                odPairs.push({
+                    origin: node.label,
+                    destination: null,
+                    pathType: null
+                });
                 // Checks if same node.
-            } else if (lastOdPair[0] == node.label) {
+            } else if (lastOdPair.origin == node.label) {
                 error = `The origin and destination nodes can not be the same`;
             } else {
-                lastOdPair.push(node.label);
                 // Checks if the pair is valid.
-                if (odPairs.filter(pair => equals(pair, lastOdPair)).length == 2) {
-                    lastOdPair.pop();
+                if (odPairs.filter(pair => pair.origin == lastOdPair.origin && pair.destination == node.label).length > 0) {
                     error = `O/D pair already selected`;
+                } else {
+                    lastOdPair.destination = node.label;
                 }
             }
         } else {
             if (node.outgoingEdges.length == 0) {
                 error = `The node cannot be an origin`;
             } else {
-                odPairs.push([node.label]);
+                odPairs.push({
+                    origin: node.label,
+                    destination: null,
+                    pathType: null
+                });
             }
         }
         // Sends events.

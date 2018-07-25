@@ -9,7 +9,7 @@ import { getCoord } from '@turf/invariant';
 
 import { NetworkService } from '../../network/network.service';
 import { uiConfig } from '../ui-config';
-import { Edge, Node } from '../../network/graph';
+import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
 
 /**
  * Instances the map.
@@ -24,9 +24,11 @@ import { Edge, Node } from '../../network/graph';
 
     private rectangle: google.maps.Rectangle;
 
-    private infoWindow: google.maps.InfoWindow;
+    private rectangleInfoWindow: google.maps.InfoWindow;
 
     private area = new BehaviorSubject<number | null>(null);
+
+    private paths: google.maps.Polyline[][] = [];
 
     /**
      * Centroid of the graph.
@@ -38,11 +40,13 @@ import { Edge, Node } from '../../network/graph';
         private network: NetworkService
     ) { }
 
-    reset(): void {
+    public reset(): void {
         this.mapReset.emit(null);
         if (this.rectangle) { this.rectangle.setMap(null); }
-        if (this.infoWindow) { this.infoWindow.close(); }
+        if (this.rectangleInfoWindow) { this.rectangleInfoWindow.close(); }
         this.area.next(null);
+
+        // Markers and Polylines.
         const graph = this.network.getGraph();
         if (graph) {
             const edges = graph.getEdges();
@@ -52,6 +56,12 @@ import { Edge, Node } from '../../network/graph';
             }
             for (const node of nodes) {
                 if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
+            }
+        }
+        for (let z = 0; z < this.paths.length; z++) {
+            for (let n = 0; n < this.paths[z].length; n++) {
+                const polyline = this.paths[z][n];
+                polyline.setMap(null);
             }
         }
     }
@@ -109,19 +119,18 @@ import { Edge, Node } from '../../network/graph';
             editable: true,
             draggable: true
         });
-
         this.rectangle.setMap(this.map);
 
         // Adds an event listener on the rectangle.
         this.rectangle.addListener('bounds_changed', () => this.checkRect());
 
         // Defines an info window on the map.
-        this.infoWindow = new google.maps.InfoWindow();
+        this.rectangleInfoWindow = new google.maps.InfoWindow();
     }
 
     public removeRect(): void {
         this.rectangle.setMap(null);
-        this.infoWindow.close();
+        this.rectangleInfoWindow.close();
     }
 
     public getArea(): Observable<number> {
@@ -185,16 +194,70 @@ import { Edge, Node } from '../../network/graph';
         }
     }
 
-    public updateOdNodes(odPairs: number[][]): void {
+    /**
+     * Updates nodes of O/D pairs.
+     * @param odPairs The O/D pairs
+     */
+    public updateOdNodes(odPairs: OdPair[]): void {
         const graph = this.network.getGraph();
         const odNodes = graph.getOdNodes();
         for (const node of odNodes) {
-            if (odPairs.find(pair => pair[0] == node.label) ||
-                odPairs.find(pair => pair[1] && pair[1] == node.label)
+            if (odPairs.find(pair => pair.origin == node.label) ||
+                odPairs.find(pair => pair.destination && pair.destination == node.label)
             ) {
                 this.selectNode(node);
             } else {
                 this.deselectNode(node);
+            }
+        }
+    }
+
+    /**
+     * Builds the polyline for each shortest path.
+     * @param paths Shortest paths
+     */
+    public buildPaths(paths: Edge[][][]): void {
+        for (let z = 0; z < paths.length; z++) {
+            this.paths[z] = [];
+
+            for (let n = 0; n < paths[z].length; n++) {
+                let path: google.maps.LatLng[] = [];
+                let distance = 0;
+                let duration = 0;
+                for (let m = 0; m < paths[z][n].length; m++) {
+                    const edge = paths[z][n][m];
+                    path = path.concat(edge.drawingOptions.path);
+                    distance += edge.distance;
+                    duration += edge.duration;
+                }
+                const polyline = new google.maps.Polyline(
+                    {
+                        path: path,
+                        strokeColor: uiConfig.paths.colors[n],
+                        strokeOpacity: 1,
+                        strokeWeight: 3,
+                        zIndex: 10 - n
+                    });
+                this.paths[z][n] = polyline;
+            }
+        }
+    }
+
+    /**
+     * Updates shortest paths of O/D pairs.
+     * @param odPairs The O/D pairs
+     */
+    public updateOdPaths(odPairs: OdPairShowing[]): void {
+        for (let i = 0; i < odPairs.length; i++) {
+            if (this.paths[i].length > 0) {
+                for (let n = 0; n < this.paths[i].length; n++) {
+                    const polyline = this.paths[i][n];
+                    if (odPairs[i].showPaths) {
+                        polyline.setMap(this.map);
+                    } else {
+                        polyline.setMap(null);
+                    }
+                }
             }
         }
     }
@@ -244,7 +307,7 @@ import { Edge, Node } from '../../network/graph';
             // Info window.
             const content: string = '<b>Area</b><br>' +
                 a + ' ha';
-            this.setInfoWindow(content, ne);
+            this.setRectangleInfoWindow(content, ne);
 
             // Sends the area to subscribers.
             this.area.next(a);
@@ -252,15 +315,15 @@ import { Edge, Node } from '../../network/graph';
     }
 
     /**
-     * Sets the info window's content and position.
+     * Sets the rectangle info window's content and position.
      * @param content Window's content
      * @param position LatLng
      */
-    private setInfoWindow(content: string, position: google.maps.LatLng): void {
-        this.infoWindow.setContent(content);
-        this.infoWindow.setPosition(position);
+    private setRectangleInfoWindow(content: string, position: google.maps.LatLng): void {
+        this.rectangleInfoWindow.setContent(content);
+        this.rectangleInfoWindow.setPosition(position);
 
-        this.infoWindow.open(this.map);
+        this.rectangleInfoWindow.open(this.map);
     }
 
     /**
