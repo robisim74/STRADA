@@ -248,6 +248,16 @@ import { uiConfig } from '../ui-config';
         }
     }
 
+    public clearNodesActions(): void {
+        const graph = this.network.getGraph();
+        if (graph) {
+            const nodes = graph.getNodes();
+            for (const node of nodes) {
+                if (node.drawingOptions.marker) { google.maps.event.clearInstanceListeners(node.drawingOptions.marker); }
+            }
+        }
+    }
+
     /**
      * Shows/hides the paths of O/D pairs.
      * @param odPairs The O/D pairs

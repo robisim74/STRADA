@@ -66,8 +66,10 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
         this.subscriptions.push(this.formGroup.get('weatherConditions').valueChanges.subscribe(
             (weatherConditions: WeatherConditions) => {
                 const index = this.descriptions.findIndex(description => description == weatherConditions.description);
-                const icon = uiConfig.weatherIcons[index];
-                weatherConditions.icon = icon;
+                if (index != -1) {
+                    const icon = uiConfig.weatherIcons[index];
+                    weatherConditions.icon = icon;
+                }
                 this.weather.changeWeather(weatherConditions);
             }
         ));

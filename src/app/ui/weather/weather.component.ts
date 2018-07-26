@@ -59,7 +59,6 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
                     this.resetConditions();
                     break;
                 case 3:
-                    this.resetConditions();
                     this.setConditions(weatherConditions);
                     break;
                 case 4:

@@ -40,9 +40,12 @@ export function wizardReducer(state: WizardState = deepClone(initialWizardState)
             };
         }
         case WizardActionTypes.MapChanged: {
+            state.map = action.payload.map;
             return {
                 ...state,
-                map: action.payload.map
+                map: deepClone(state.map),
+                error: null,
+                pending: false
             };
         }
         case WizardActionTypes.StepError: {

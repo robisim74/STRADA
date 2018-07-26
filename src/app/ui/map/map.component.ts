@@ -77,6 +77,10 @@ export class MapComponent extends BaseComponent implements OnInit {
                     // Hides the rectangle.
                     this.map.hideRect();
                     break;
+                case 3:
+                    // Clears nodes actions.
+                    this.map.clearNodesActions();
+                    break;
                 case 4:
                     // Hides paths.
                     this.map.hidePaths();

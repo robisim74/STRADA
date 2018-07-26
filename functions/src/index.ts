@@ -14,14 +14,14 @@ const options: _cors.CorsOptions = {
 const cors = _cors;
 
 /**
- * Get network data.
+ * Gets network data.
  */
 export const networkData = functions.https.onRequest((request, response) => {
     cors(options)(request, response, () => networkDataFunction(request, response));
 });
 
 /**
- * Get traffic data.
+ * Gets traffic data.
  */
 export const trafficData = functions.https.onRequest((request, response) => {
     cors(options)(request, response, () => trafficDataFunction(request, response));
