@@ -1,12 +1,13 @@
 @import '../../styles/variables';
 
 .app-home {
-    background: url(../../assets/images/city-skyline.svg) no-repeat bottom left;
-    background-size: contain;
+    //background: url(../../assets/images/**.svg);
+    background-size: cover;
 }
 
 header {
     text-align: center;
+    color: $primary-color-text;
 }
 
 .headline {
