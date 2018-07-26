@@ -993,7 +993,7 @@
 </nav>
                </div>
                <!-- START CONTENT -->
-               <div class="content miscellaneous-typealiases">
+               <div class="content injectable">
                    <div class="content-data">
 
 
@@ -1001,76 +1001,774 @@
 
 
 
-
-
-
-
-
-
-
 <ol class="breadcrumb">
-  <li>Miscellaneous</li>
-  <li>Type aliases</li>
+  <li>Injectables</li>
+  <li>SchedulerService</li>
 </ol>
 
-<section>
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/ui/wizard/scheduler.service.ts</code>
+        </p>
+
+
+
+            <section>
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                        <li>
-                            <a href="#EnumValueType" title="src/app/ui/utils.ts"><b>EnumValueType</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
-                        </li>
-                        <li>
-                            <a href="#WizardActions" title="src/app/ui/models/actions/wizard.actions.ts"><b>WizardActions</b>&nbsp;&nbsp;&nbsp;(src/.../wizard.actions.ts)</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#reset">reset</a>
+                            </li>
+                            <li>
+                                <a href="#scheduleDemand">scheduleDemand</a>
+                            </li>
+                            <li>
+                                <a href="#scheduleNetwork">scheduleNetwork</a>
+                            </li>
+                            <li>
+                                <a href="#scheduleSimulation">scheduleSimulation</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
         </tbody>
     </table>
 </section>
 
-    <h3>src/app/ui/utils.ts</h3>
-    <section>
+            <section>
+    <h3 id="constructor">Constructor</h3>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="EnumValueType"></a>
-                        <span class="name"><b>EnumValueType</b><a href="#EnumValueType"><span class="fa fa-link"></span></a></span>
+<code>constructor(wizard: <a href="../injectables/WizardService.html">WizardService</a>, map: <a href="../injectables/MapService.html">MapService</a>, location: <a href="../injectables/LocationService.html">LocationService</a>, network: <a href="../injectables/NetworkService.html">NetworkService</a>, weather: <a href="../injectables/WeatherService.html">WeatherService</a>, demand: <a href="../injectables/DemandService.html">DemandService</a>, simulation: <a href="../injectables/SimulationService.html">SimulationService</a>)</code>
                     </td>
                 </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/ui/wizard/scheduler.service.ts:12</a></div>
+                            </td>
+                        </tr>
+
                 <tr>
                     <td class="col-md-4">
-                        <code>EnumValueType:     <code>string | number</code>
-</code>
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>wizard</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/WizardService.html" target="_self" >WizardService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>map</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/MapService.html" target="_self" >MapService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>location</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/LocationService.html" target="_self" >LocationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>network</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/NetworkService.html" target="_self" >NetworkService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>weather</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/WeatherService.html" target="_self" >WeatherService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>demand</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/DemandService.html" target="_self" >DemandService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>simulation</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../injectables/SimulationService.html" target="_self" >SimulationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 </section>
-    <h3>src/app/ui/models/actions/wizard.actions.ts</h3>
-    <section>
+
+            <section>
+    
+        <h3 id="methods">
+            Methods
+        </h3>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="WizardActions"></a>
-                        <span class="name"><b>WizardActions</b><a href="#WizardActions"><span class="fa fa-link"></span></a></span>
+                        <a name="reset"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            reset
+                            </b>
+                            <a href="#reset"><span class="fa fa-link"></span></a>
+                        </span>
                     </td>
                 </tr>
                 <tr>
                     <td class="col-md-4">
-                        <code>WizardActions:     <code><a href="../interfaces/Step.html" target="_self" >StepChanged | MapChanged | StepError | StepPending | GoOn | Reset</a></code>
-</code>
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>reset()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/ui/wizard/scheduler.service.ts:27</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Resets the whole application.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="scheduleDemand"></a>
+                        <span class="name">
+                            <b>
+                            scheduleDemand
+                            </b>
+                            <a href="#scheduleDemand"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+<code>scheduleDemand(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, nextIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="128" class="link-to-prism">src/app/ui/wizard/scheduler.service.ts:128</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Performs in sequence the following operations:</p>
+<ul>
+<li>Calcs shortest paths</li>
+<li>Calcs incidence matrix</li>
+<li>Calcs assignment matrix</li>
+<li>Gets and updates traffic data</li>
+<li>Calcs link flows</li>
+<li>Calcs O/D matrix</li>
+<li>Draws the polyline for each shortest path</li>
+</ul>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>data</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>index</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>nextIndex</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="scheduleNetwork"></a>
+                        <span class="name">
+                            <b>
+                            scheduleNetwork
+                            </b>
+                            <a href="#scheduleNetwork"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+<code>scheduleNetwork(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, nextIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/ui/wizard/scheduler.service.ts:51</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Performs in sequence the following operations:</p>
+<ul>
+<li>Gets network</li>
+<li>Creates the graph</li>
+<li>Gets network data</li>
+<li>Associates data to the graph</li>
+<li>Corrects graph data</li>
+<li>Gets and updates weather data</li>
+<li>Updates map</li>
+</ul>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>data</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>index</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>nextIndex</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="scheduleSimulation"></a>
+                        <span class="name">
+                            <b>
+                            scheduleSimulation
+                            </b>
+                            <a href="#scheduleSimulation"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+<code>scheduleSimulation(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, nextIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="187" class="link-to-prism">src/app/ui/wizard/scheduler.service.ts:187</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Performs in sequence the following operations:</p>
+<ul>
+<li>Calcs capacity for each edge.</li>
+</ul>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>data</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>index</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>nextIndex</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 </section>
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &quot;@angular/core&quot;;
+import { switchMap } from &quot;rxjs/operators&quot;;
+
+import { WizardService } from &quot;./wizard.service&quot;;
+import { MapService } from &quot;../map/map.service&quot;;
+import { LocationService } from &quot;../../location/location.service&quot;;
+import { NetworkService } from &quot;../../network/network.service&quot;;
+import { WeatherService } from &quot;../../network/weather/weather.service&quot;;
+import { DemandService } from &quot;../../demand/demand.service&quot;;
+import { SimulationService } from &quot;../../simulation/simulation.service&quot;;
+
+@Injectable() export class SchedulerService {
+
+    constructor(
+        private wizard: WizardService,
+        private map: MapService,
+        private location: LocationService,
+        private network: NetworkService,
+        private weather: WeatherService,
+        private demand: DemandService,
+        private simulation: SimulationService
+    ) { }
+
+    /**
+     * Resets the whole application.
+     */
+    public reset(): void {
+        setTimeout(() &#x3D;&gt; {
+            // Wizard.
+            this.wizard.reset();
+            // Services.
+            this.map.reset();
+            this.location.reset();
+            this.network.reset();
+            this.weather.reset();
+            this.demand.reset();
+            this.simulation.reset();
+        });
+    }
+
+    /**
+     * Performs in sequence the following operations:
+     * - Gets network
+     * - Creates the graph
+     * - Gets network data
+     * - Associates data to the graph
+     * - Corrects graph data
+     * - Gets and updates weather data
+     * - Updates map
+     */
+    scheduleNetwork(data: any, index: number, nextIndex: number): void {
+        this.wizard.putOnHold(&#x27;Getting the network&#x27;);
+        const stream &#x3D; this.network.getNetwork().pipe(
+            switchMap((response: any) &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Creating the graph&#x27;);
+                return this.network.createGraph(response);
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Getting network data&#x27;);
+                return this.network.getNetworkData();
+            }),
+            switchMap((response: any) &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Updating the graph&#x27;);
+                return this.network.updateGraph(response);
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Checking the data&#x27;);
+                return this.network.correctGraph();
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Getting weather data&#x27;);
+                return this.weather.getWeatherData(this.network.getTime());
+            }),
+            switchMap((response: any) &#x3D;&gt; {
+                return this.weather.updateWeatherData(response, this.network.getTime());
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Updating map&#x27;);
+                return this.map.updateMap();
+            })
+        );
+
+        stream.subscribe(
+            () &#x3D;&gt; { },
+            (error: any) &#x3D;&gt; {
+                let message: string;
+                switch (error) {
+                    case &#x27;getNetwork&#x27;:
+                        message &#x3D; &#x27;Network cannot be retrieved. Check your Internet connection and try again&#x27;;
+                        break;
+                    case &#x27;createGraph&#x27;:
+                        message &#x3D; &#x27;Graph cannnot be created. Please, try with another area&#x27;;
+                        break;
+                    case &#x27;getNetworkData&#x27;:
+                        message &#x3D; &#x27;Network data cannot be retrieved. Past the quota limits traffic data become paid.&#x27; +
+                            &#x27;This is an open source project: install your own version of it&#x27;;
+                        break;
+                    case &#x27;correctGraph&#x27;:
+                        message &#x3D; &#x27;Graph data is not available. Please, try with another area&#x27;;
+                        break;
+                    case &#x27;getWeatherData&#x27;:
+                        message &#x3D; &#x27;Weather data cannot be retrieved. Please, try at another time&#x27;;
+                        break;
+                    default:
+                        message &#x3D; &#x27;Unexpected error&#x27;;
+                }
+                this.wizard.putInError(message);
+                this.reset();
+            },
+            () &#x3D;&gt; {
+                // Removes from waiting.
+                this.wizard.removeFromWaiting();
+                this.wizard.goOn(data, index, nextIndex);
+            }
+        );
+    }
+
+    /**
+     * Performs in sequence the following operations:
+     * - Calcs shortest paths
+     * - Calcs incidence matrix
+     * - Calcs assignment matrix
+     * - Gets and updates traffic data
+     * - Calcs link flows
+     * - Calcs O/D matrix
+     * - Draws the polyline for each shortest path
+     */
+    scheduleDemand(data: any, index: number, nextIndex: number): void {
+        const graph &#x3D; this.network.getGraph();
+        const odPairs &#x3D; this.network.getOdPairs();
+
+        this.wizard.putOnHold(&#x27;Computing shortest paths&#x27;);
+        const stream &#x3D; graph.calcShortestPaths(odPairs).pipe(
+            switchMap(() &#x3D;&gt; {
+                return graph.calcIncidenceMatrix();
+            }),
+            switchMap(() &#x3D;&gt; {
+                return graph.calcAssignmentMatrix(odPairs);
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Getting traffic data&#x27;);
+                return this.network.getTrafficData();
+            }),
+            switchMap((response: any) &#x3D;&gt; {
+                return this.network.calcLinkFlows(response);
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Computing demand&#x27;);
+                return this.demand.calcOdMatrix();
+            }),
+            switchMap(() &#x3D;&gt; {
+                this.wizard.putOnHold(&#x27;Drawing paths&#x27;);
+                return this.map.drawPaths();
+            })
+        );
+
+        stream.subscribe(
+            () &#x3D;&gt; { },
+            (error: any) &#x3D;&gt; {
+                let message: string;
+                switch (error) {
+                    case &#x27;calcShortestPaths&#x27;:
+                        message &#x3D; &#x27;There are no routes. Please, try with another area&#x27;;
+                        break;
+                    case &#x27;getTrafficData&#x27;:
+                        message &#x3D; &#x27;Traffic data cannot be retrieved. Past the quota limits traffic data become paid.&#x27; +
+                            &#x27;This is an open source project: install your own version of it&#x27;;
+                        break;
+                    default:
+                        message &#x3D; &#x27;Unexpected error&#x27;;
+                }
+                this.wizard.putInError(message);
+                this.reset();
+            },
+            () &#x3D;&gt; {
+                // Removes from waiting.
+                this.wizard.removeFromWaiting();
+                this.wizard.goOn(data, index, nextIndex);
+            }
+        );
+    }
+
+    /**
+     * Performs in sequence the following operations:
+     * - Calcs capacity for each edge.
+     */
+    scheduleSimulation(data: any, index: number, nextIndex: number): void {
+        const graph &#x3D; this.network.getGraph();
+        const factors &#x3D; this.weather.getFactors();
+
+        this.wizard.putOnHold(&#x27;Computing capacities&#x27;);
+        const stream &#x3D; graph.calcCapacities(factors[0]).pipe();
+
+        stream.subscribe(
+            () &#x3D;&gt; { },
+            (error: any) &#x3D;&gt; {
+                let message: string;
+                switch (error) {
+                    default:
+                        message &#x3D; &#x27;Unexpected error&#x27;;
+                }
+                this.wizard.putInError(message);
+                this.reset();
+            },
+            () &#x3D;&gt; {
+                // Removes from waiting.
+                this.wizard.removeFromWaiting();
+                this.wizard.goOn(data, index, nextIndex);
+            }
+        );
+    }
+
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
 
 
                    </div><div class="search-results">
@@ -1098,8 +1796,8 @@
 
         <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-typealiases';
-            var COMPODOC_CURRENT_PAGE_URL = 'typealiases.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'SchedulerService.html';
         </script>
 
        <script src="../js/search/search.js"></script>
