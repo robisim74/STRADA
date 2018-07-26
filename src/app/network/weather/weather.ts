@@ -4,7 +4,10 @@
 export interface WeatherConditions {
 
     description: string;
-    icon?: HTMLImageElement;
+    /**
+     * The code of the icon.
+     */
+    icon?: string;
     /**
      * Meters.
      */

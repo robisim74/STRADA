@@ -11,6 +11,18 @@ export interface Step {
 }
 
 /**
+ * Map model.
+ */
+export interface Map {
+
+    /**
+     * Map data.
+     */
+    data: any;
+
+}
+
+/**
  * Initial steps.
  */
 export const STEPS: Step[] = [];

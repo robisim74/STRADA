@@ -7,6 +7,8 @@ import { WeatherService } from '../../network/weather/weather.service';
 import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
+import { WeatherConditions } from '../../network/weather/weather';
+import { appConfig } from '../../app-config';
 
 import { BaseComponent } from '../models/base.component';
 
@@ -50,20 +52,19 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
     }
 
     receiveActions(): void {
-        this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
-            switch (this.wizard.state.currentStep) {
+        this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
+            const weatherConditions = this.weather.getWeatherConditions();
+            switch (currentStep) {
                 case 0:
-                    this.reset();
+                    this.resetConditions();
                     break;
                 case 3:
-                    if (steps[3] && steps[3].data.weatherConditions) {
-                        this.reset();
-                    }
-                    const weatherConditions = this.weather.getWeatherConditions();
-                    this.description = weatherConditions.description;
-                    this.icon = weatherConditions.icon;
-                    this.renderer.appendChild(this.iconContainer, this.icon);
-                    this.time = this.network.getTimeString();
+                    this.resetConditions();
+                    this.setConditions(weatherConditions);
+                    break;
+                case 4:
+                    this.resetConditions();
+                    this.setConditions(weatherConditions);
                     break;
             }
         }));
@@ -73,13 +74,28 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
         //
     }
 
-    reset(): void {
+    setConditions(weather: WeatherConditions): void {
+        this.description = weather.description;
+        this.icon = this.getIcon(weather.icon);
+        this.renderer.appendChild(this.iconContainer, this.icon);
+        this.time = this.network.getTimeString();
+    }
+
+    resetConditions(): void {
         this.description = '-';
         if (this.icon) {
             this.renderer.removeChild(this.iconContainer, this.icon);
             this.icon = null;
             this.time = '';
         }
+    }
+
+    getIcon(code: string): HTMLImageElement {
+        const icon = new Image();
+        if (!!code) {
+            icon.src = appConfig.apis.openWeatherMap.iconUrl + '/' + code + '.png';
+        }
+        return icon;
     }
 
 }

@@ -20,17 +20,17 @@
                     </ng-template>
                     <wizard-estimate-of-demand [formGroup]="formSteps.get([2])" [index]="2"></wizard-estimate-of-demand>
                 </mat-step>
-                <mat-step formGroupName="3" [stepControl]="formSteps.get([3])" editable="true">
+                <mat-step formGroupName="3" [stepControl]="formSteps.get([3])" editable="false">
                     <ng-template matStepLabel>
                         <div matTooltip="You can change the demand and weather conditions">Change of conditions</div>
                     </ng-template>
                     <wizard-change-of-conditions [formGroup]="formSteps.get([3])" [index]="3"></wizard-change-of-conditions>
                 </mat-step>
-                <mat-step formGroupName="4" [stepControl]="formSteps.get([4])" editable="true">
+                <mat-step formGroupName="4" [stepControl]="formSteps.get([4])" editable="false">
                     <ng-template matStepLabel>Simulation</ng-template>
                     <wizard-simulation [formGroup]="formSteps.get([4])" [index]="4"></wizard-simulation>
                 </mat-step>
-                <mat-step formGroupName="5" [stepControl]="formSteps.get([5])" editable="true">
+                <mat-step formGroupName="5" [stepControl]="formSteps.get([5])" editable="false">
                     <ng-template matStepLabel>Statistics</ng-template>
                     <wizard-statistics [formGroup]="formSteps.get([5])" [index]="5"></wizard-statistics>
                 </mat-step>

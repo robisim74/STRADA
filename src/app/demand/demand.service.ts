@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import * as math from 'mathjs';
 
 import { NetworkService } from '../network/network.service';
+import { LinkFlow } from '../network/graph';
 import { uiConfig } from '../ui/ui-config';
 
 /**
@@ -52,11 +53,13 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     public changeDemand(demand: number[]): void {
-        // Gets assignment matrix from network.
-        const assignmentMatrix = this.network.getAssignmentMatrix();
+        if (demand.length > 0) {
+            // Gets assignment matrix from network.
+            const assignmentMatrix = this.network.getAssignmentMatrix();
 
-        this.demand = demand;
-        this.shareDemand(assignmentMatrix);
+            this.demand = demand;
+            this.shareDemand(assignmentMatrix);
+        }
     }
 
     /**
@@ -65,7 +68,7 @@ import { uiConfig } from '../ui/ui-config';
      * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
      * @returns The array of the demand
      */
-    public gls(linkFlows: Array<{ value: number, density: number }>, assignmentMatrix: number[][][]): number[] | null {
+    public gls(linkFlows: LinkFlow[], assignmentMatrix: number[][][]): number[] | null {
         const demand: number[] = [];
         // Calculates argument of the minimum for each O/D pair.
         for (let z = 0; z < assignmentMatrix.length; z++) {
@@ -79,7 +82,7 @@ import { uiConfig } from '../ui/ui-config';
      * @param linkFlows The link flows
      * @param odMatrixAssignment Assignment matrix of the O/D pair
      */
-    private argmin(linkFlows: Array<{ value: number, density: number }>, odMatrixAssignment: number[][]): number {
+    private argmin(linkFlows: LinkFlow[], odMatrixAssignment: number[][]): number {
         const estimations: number[] = [];
 
         // The unknown demand.
@@ -99,13 +102,13 @@ import { uiConfig } from '../ui/ui-config';
      * @param odMatrixAssignment Assignment matrix of the O/D pair
      * @param x The unknown demand
      */
-    private estimate(linkFlows: Array<{ value: number, density: number }>, odMatrixAssignment: number[][], x: number): number {
+    private estimate(linkFlows: LinkFlow[], odMatrixAssignment: number[][], x: number): number {
         let sum = 0;
         for (let i = 0; i < linkFlows.length; i++) {
             if (linkFlows[i].value > 0 && this.isOnPath(odMatrixAssignment, i)) {
                 const base = linkFlows[i].value - this.sum(odMatrixAssignment, i, x);
-                sum += math.pow(base, 2) as number /
-                    this.calcVariance(linkFlows[i].density);
+                sum += math.pow(base, 2) as number
+                    / linkFlows[i].variance;
             }
         }
         return math.round(sum, 2) as number;
@@ -142,21 +145,13 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Calculates the variance of measurement errors of link flows.
-     * @param density The edge density
-     */
-    private calcVariance(density: number): number {
-        return density > 0 ? math.round(1 / density, 2) as number : 1;
-    }
-
-    /**
      * Shares the demand on each path.
      * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
      */
     private shareDemand(assignmentMatrix: number[][][]): void {
         for (let z = 0; z < assignmentMatrix.length; z++) {
             this.odMatrix[z] = [];
-            if (this.demand[z]) {
+            if (this.demand[z] != null) {
                 let sum = 0;
                 for (let n = 0; n < assignmentMatrix[z].length; n++) {
                     const p = assignmentMatrix[z][n].find(value => value > 0) || 0;

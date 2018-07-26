@@ -4,6 +4,7 @@ import { MatStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { WizardService } from './wizard.service';
+import { SchedulerService } from './scheduler.service';
 import { pairsValidator } from '../directives/pairs.directive';
 import { uiConfig } from '../ui-config';
 
@@ -25,7 +26,8 @@ export class WizardComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private wizard: WizardService
+        private wizard: WizardService,
+        private scheduler: SchedulerService
     ) { }
 
     ngOnInit(): void {
@@ -90,18 +92,23 @@ export class WizardComponent implements OnInit {
     stepClick(event: StepperSelectionEvent): void {
         const index: number = event.previouslySelectedIndex;
         const nextIndex: number = event.selectedIndex;
+        const data = this.wizardForm.get('formSteps').get([index]).value;
+
         if (nextIndex > index) {
             this.stepper.selected.completed = true;
             switch (nextIndex) {
                 case 2:
-                    this.wizard.networkSchedule(this.wizardForm.get('formSteps').get([index]).value, index, nextIndex);
+                    this.scheduler.scheduleNetwork(data, index, nextIndex);
                     break;
                 case 3:
-                    this.wizard.demandSchedule(this.wizardForm.get('formSteps').get([index]).value, index, nextIndex);
+                    this.scheduler.scheduleDemand(data, index, nextIndex);
+                    break;
+                case 4:
+                    this.scheduler.scheduleSimulation(data, index, nextIndex);
                     break;
                 default:
                     this.wizard.goOn(
-                        this.wizardForm.get('formSteps').get([index]).value,
+                        data,
                         index,
                         nextIndex
                     );

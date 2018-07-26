@@ -5,9 +5,9 @@ import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
-import { uiConfig } from '../../ui-config';
 import * as fromUi from '../../models/reducers';
-import { Step } from '../../models/wizard';
+import { Map } from '../../models/wizard';
+import { uiConfig } from '../../ui-config';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -71,9 +71,9 @@ export class SelectionOfTheAreaComponent extends BaseComponent implements OnInit
     }
 
     receiveActions(): void {
-        this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
-            if (steps[this.index]) {
-                this.formGroup.get('bounds').setValue(steps[this.index]['data']['bounds']);
+        this.subscriptions.push(this.store.pipe(select(fromUi.map)).subscribe((map: Map) => {
+            if (map && map.data.bounds) {
+                this.formGroup.get('bounds').setValue(map.data.bounds);
             }
         }));
     }

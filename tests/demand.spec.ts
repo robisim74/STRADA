@@ -25,8 +25,8 @@ describe('DemandService', () => {
         it('should calc the O/D matrix', fakeAsync(() => {
             const demand = demandService.gls(linkFlows, assignmentMatrix);
             expect(demand.length).toBe(4);
-            expect(demand[0]).toBe(1);
-            expect(demand[1]).toBe(1);
+            expect(demand[0]).toBe(3);
+            expect(demand[1]).toBe(0);
             expect(demand[2]).toBe(null);
             expect(demand[3]).toBe(33);
         }));

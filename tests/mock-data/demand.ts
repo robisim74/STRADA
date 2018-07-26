@@ -1,18 +1,4 @@
 /* tslint:disable */
-export const assignmentMatrix = [
-    [
-        [0.622, 0.622, 0.622, 0.622, 0.622, 0.622, 0.622, 0.622, 0.622, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0.378, 0.378, 0.378, 0, 0.378, 0.378, 0.378, 0.378, 0.378, 0.378, 0.378, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ],
-    [
-        [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    [],
-    [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
-    ]
-];
+export const assignmentMatrix = [[[0.387, 0.387, 0.387, 0.387, 0.387, 0.387, 0.387, 0.387, 0.387, 0, 0, 0, 0, 0, 0, 0, 0], [0.385, 0.385, 0.385, 0, 0.385, 0.385, 0.385, 0.385, 0.385, 0.385, 0.385, 0, 0, 0, 0, 0, 0], [0.228, 0.228, 0.228, 0, 0, 0, 0, 0, 0.228, 0.228, 0, 0.228, 0.228, 0, 0, 0, 0]], [[0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0]], [], [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]]];
 
-export const linkFlows = [{ "value": 1, "density": 0.01 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 0, "density": 0 }, { "value": 33, "density": 0.09 }];
+export const linkFlows = [{ "value": 3, "variance": 50 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 0, "variance": 1 }, { "value": 33, "variance": 11.11 }];

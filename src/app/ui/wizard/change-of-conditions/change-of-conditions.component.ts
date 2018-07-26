@@ -10,9 +10,9 @@ import { DemandService } from '../../../demand/demand.service';
 import * as fromUi from '../../models/reducers';
 import { Step } from '../../models/wizard';
 import { OdPairShowing } from '../../../network/graph';
-import { uiConfig } from '../../ui-config';
 import { WeatherDescription, WeatherConditions } from '../../../network/weather/weather';
 import { EnumValues } from '../../utils';
+import { uiConfig } from '../../ui-config';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -59,20 +59,16 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                 const demand = odPairs.map((pair: OdPairShowing) => {
                     return pair.demand;
                 });
-                if (demand && demand.length > 0) {
-                    this.demand.changeDemand(demand);
-                }
+                this.demand.changeDemand(demand);
             }
         ));
         // Updates weather service data on value changes.
         this.subscriptions.push(this.formGroup.get('weatherConditions').valueChanges.subscribe(
             (weatherConditions: WeatherConditions) => {
                 const index = this.descriptions.findIndex(description => description == weatherConditions.description);
-                const code = uiConfig.weatherIcons[index];
-                this.weather.setWeatherConditions(weatherConditions, code);
-
-                // Updates step state.
-                this.wizard.updateStep(this.formGroup.value, this.index);
+                const icon = uiConfig.weatherIcons[index];
+                weatherConditions.icon = icon;
+                this.weather.changeWeather(weatherConditions);
             }
         ));
     }
@@ -82,8 +78,8 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
             const odPairsControl = this.formGroup.get('odPairs') as FormArray;
             const weatherConditionsControl = this.formGroup.get('weatherConditions');
             switch (currentStep) {
-                // Resets control.
                 case 0:
+                    // Resets control.
                     if (odPairsControl.length > 0) {
                         for (let i = odPairsControl.length - 1; i >= 0; i--) {
                             odPairsControl.removeAt(i);

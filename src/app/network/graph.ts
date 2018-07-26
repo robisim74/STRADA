@@ -3,9 +3,8 @@ import { Observable, of, throwError } from 'rxjs';
 import * as combine from 'mout/array/combine';
 import * as math from 'mathjs';
 
-import { uiConfig } from '../ui/ui-config';
 import { Heap, Path } from './k-shortest-path';
-import { link } from 'fs';
+import { uiConfig } from '../ui/ui-config';
 
 export enum PathType {
     distance = 'distance',
@@ -25,7 +24,22 @@ export interface OdPair {
 }
 
 export interface OdPairShowing extends OdPair {
+
     showPaths: boolean;
+
+}
+
+export interface LinkFlow {
+
+    /**
+     * linkFlow attribute.
+     */
+    value: number;
+    /**
+     * Variance is the inverse of density.
+     */
+    variance: number;
+
 }
 
 /**
@@ -170,6 +184,13 @@ export class Edge {
         let capacity = math.round(this.distance / uiConfig.sp) as number;
         capacity = capacity * factor;
         this.capacity = capacity >= 1 ? capacity : 1;
+    }
+
+    /**
+     * Gets the variance of measurement error of link flow.
+     */
+    public getVariance(): number {
+        return this.density > 0 ? math.round(1 / this.density, 2) as number : 1;
     }
 
 }
@@ -372,6 +393,17 @@ export class Graph {
     }
 
     /**
+     * Calculates the max capacity for each edge.
+     * @param factor Weather Adjustment Factor
+     */
+    public calcCapacities(factor: number): Observable<any> {
+        for (const edge of this.edges) {
+            edge.calcCapacity(factor);
+        }
+        return of(null);
+    }
+
+    /**
      * Calculates the set of minimum paths between a source and destination node based on the link distance or duration attribute.
      * k Shortest Paths algorithm in the Eppstein version.
      * @param origin Source node
@@ -477,7 +509,7 @@ export class Graph {
         const pathCosts = this.calcPathCosts(odPairs);
         const shortestPathsProbabilities: number[][] = [];
         // Theta parameter.
-        const parameter = uiConfig.theta * 1000;
+        const parameter = uiConfig.theta * 100;
         // Calculates numerator.
         const exps: number[][] = [];
         for (let z = 0; z < pathCosts.length; z++) {

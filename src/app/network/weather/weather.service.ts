@@ -75,13 +75,14 @@ import { uiConfig } from '../../ui/ui-config';
         return of(null);
     }
 
-    public setWeatherConditions(weather: WeatherConditions, code: string): void {
-        // Gets the icon image.
-        const icon = this.getIcon(code);
-
+    /**
+     * Changes the current weather conditions.
+     * @param weather The weather conditions
+     */
+    public changeWeather(weather: WeatherConditions): void {
         this.weatherConditions = {
             description: weather.description,
-            icon: icon,
+            icon: weather.icon,
             visibility: weather.visibility,
             rainIntensity: weather.rainIntensity,
             snowIntensity: weather.snowIntensity
@@ -108,24 +109,13 @@ import { uiConfig } from '../../ui/ui-config';
     }
 
     private addWeatherConditions(data: any): void {
-        // Gets the icon image.
-        const icon = this.getIcon(data.weather[0].icon);
-
         this.weatherConditions = {
             description: data.weather[0] ? data.weather[0].description : '-',
-            icon: icon,
+            icon: data.weather[0] ? data.weather[0].icon : null,
             visibility: data.visibility ? data.visibility : uiConfig.visibility.default,
             rainIntensity: data.rain ? data.rain['3h'] : 0,
             snowIntensity: data.snow ? data.snow['3h'] : 0
         };
-    }
-
-    private getIcon(code: string): HTMLImageElement {
-        const icon = new Image();
-        if (!!code) {
-            icon.src = appConfig.apis.openWeatherMap.iconUrl + '/' + code + '.png';
-        }
-        return icon;
     }
 
     private toInches(value: number): number {

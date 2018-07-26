@@ -1,5 +1,5 @@
-import { Injectable, NgZone, EventEmitter, Output } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import area from '@turf/area';
 import centroid from '@turf/centroid';
@@ -7,18 +7,15 @@ import center from '@turf/center';
 import { polygon, point, featureCollection } from '@turf/helpers';
 import { getCoord } from '@turf/invariant';
 
+import { WizardService } from '../wizard/wizard.service';
 import { NetworkService } from '../../network/network.service';
-import { uiConfig } from '../ui-config';
 import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
+import { uiConfig } from '../ui-config';
 
 /**
  * Instances the map.
  */
 @Injectable() export class MapService {
-
-    @Output() public mapReset: EventEmitter<any> = new EventEmitter<any>();
-
-    @Output() public nodeSelected: EventEmitter<Node> = new EventEmitter<Node>();
 
     private map: google.maps.Map;
 
@@ -26,8 +23,9 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
 
     private rectangleInfoWindow: google.maps.InfoWindow;
 
-    private area = new BehaviorSubject<number | null>(null);
-
+    /**
+     * Shortest paths polylines.
+     */
     private paths: google.maps.Polyline[][] = [];
 
     /**
@@ -37,33 +35,63 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
 
     constructor(
         private zone: NgZone,
+        private wizard: WizardService,
         private network: NetworkService
     ) { }
 
     public reset(): void {
-        this.mapReset.emit(null);
-        if (this.rectangle) { this.rectangle.setMap(null); }
-        if (this.rectangleInfoWindow) { this.rectangleInfoWindow.close(); }
-        this.area.next(null);
+        this.hideGraph();
+        this.hidePaths();
+        this.hideRect();
+        this.paths = [];
+        this.centroid = null;
+    }
 
-        // Markers and Polylines.
+    /**
+     * Update the map after obtaining network data.
+     */
+    public updateMap(): Observable<any> {
+        // Shows graph.
+        this.showGraph();
+        // Sets centroid.
+        this.setCentroid();
+        // Sets map.
+        this.setCenter(this.getCentroid());
+        this.setZoom(17);
+        return of(null);
+    }
+
+    /**
+     * Draws the polyline for each shortest path.
+     */
+    public drawPaths(): Observable<any> {
         const graph = this.network.getGraph();
-        if (graph) {
-            const edges = graph.getEdges();
-            const nodes = graph.getNodes();
-            for (const edge of edges) {
-                if (edge.drawingOptions.polyline) { edge.drawingOptions.polyline.setMap(null); }
-            }
-            for (const node of nodes) {
-                if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
+        const paths = graph.getShortestPaths();
+        for (let z = 0; z < paths.length; z++) {
+            this.paths[z] = [];
+
+            for (let n = 0; n < paths[z].length; n++) {
+                let path: google.maps.LatLng[] = [];
+                let distance = 0;
+                let duration = 0;
+                for (let m = 0; m < paths[z][n].length; m++) {
+                    const edge = paths[z][n][m];
+                    path = path.concat(edge.drawingOptions.path);
+                    distance += edge.distance;
+                    duration += edge.duration;
+                }
+                const polyline = new google.maps.Polyline(
+                    {
+                        path: path,
+                        strokeColor: uiConfig.paths.colors[n],
+                        strokeOpacity: 1,
+                        strokeWeight: 3,
+                        zIndex: 10 - n
+                    });
+                this.paths[z][n] = polyline;
             }
         }
-        for (let z = 0; z < this.paths.length; z++) {
-            for (let n = 0; n < this.paths[z].length; n++) {
-                const polyline = this.paths[z][n];
-                polyline.setMap(null);
-            }
-        }
+        return of(null);
     }
 
     /**
@@ -73,10 +101,6 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
      */
     public initMap(el: HTMLElement, mapOptions: any): void {
         this.map = new google.maps.Map(el, mapOptions);
-
-        this.resize();
-        // Adds event listener resize when the window changes size.
-        google.maps.event.addDomListener(window, 'resize', () => this.resize());
     }
 
     public setCenter(latLng: google.maps.LatLngLiteral): void {
@@ -92,23 +116,22 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
         }
     }
 
-    public resize(): void {
-        // Saves the center.
-        const latLng: google.maps.LatLng = this.map.getCenter();
-        // Triggers resize event.
-        setTimeout(() => {
-            google.maps.event.trigger(this.map, 'resize');
-            // Restores the center.
-            this.map.setCenter(latLng);
-        });
-    }
-
     public buildBounds(centerMap: google.maps.LatLngLiteral): google.maps.LatLngBoundsLiteral {
         return {
             north: centerMap.lat + 0.0012,
             south: centerMap.lat - 0.0012,
             east: centerMap.lng + 0.003,
             west: centerMap.lng - 0.003
+        };
+    }
+
+    public getBounds(): google.maps.LatLngBoundsLiteral {
+        const bounds: google.maps.LatLngBounds = this.rectangle.getBounds();
+        return {
+            north: bounds.getNorthEast().lat(),
+            south: bounds.getSouthWest().lat(),
+            east: bounds.getNorthEast().lng(),
+            west: bounds.getSouthWest().lng()
         };
     }
 
@@ -128,40 +151,12 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
         this.rectangleInfoWindow = new google.maps.InfoWindow();
     }
 
-    public removeRect(): void {
-        this.rectangle.setMap(null);
-        this.rectangleInfoWindow.close();
-    }
-
-    public getArea(): Observable<number> {
-        return this.area.asObservable();
-    }
-
-    public getBounds(): google.maps.LatLngBoundsLiteral {
-        const bounds: google.maps.LatLngBounds = this.rectangle.getBounds();
-        return {
-            north: bounds.getNorthEast().lat(),
-            south: bounds.getSouthWest().lat(),
-            east: bounds.getNorthEast().lng(),
-            west: bounds.getSouthWest().lng()
-        };
-    }
-
-    /**
-     * Draws the graph on the map.
-     */
-    public drawGraph(): void {
-        const graph = this.network.getGraph();
-        const edges = graph.getEdges();
-        const nodes = graph.getNodes();
-        for (const edge of edges) {
-            this.drawBaseEdge(edge);
-        }
-        for (const node of nodes) {
-            // Shows only O/D nodes.
-            if (node.label) {
-                this.showNode(node);
-            }
+    public hideRect(): void {
+        if (this.rectangle) {
+            this.rectangle.setMap(null);
+            this.rectangleInfoWindow.close();
+            this.rectangle = null;
+            this.rectangleInfoWindow = null;
         }
     }
 
@@ -169,7 +164,9 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
         return this.centroid;
     }
 
-    public setCentroid(odNodes: Node[]): void {
+    public setCentroid(): void {
+        const graph = this.network.getGraph();
+        const odNodes = graph.getOdNodes();
         if (odNodes.length > 0) {
             const positions = odNodes.map((node: Node) => {
                 return [node.lon, node.lat];
@@ -195,10 +192,39 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
     }
 
     /**
-     * Updates nodes of O/D pairs.
+     * Shows the graph on the map.
+     */
+    public showGraph(): void {
+        const graph = this.network.getGraph();
+        const edges = graph.getEdges();
+        const nodes = graph.getNodes();
+        for (const edge of edges) {
+            this.showEdge(edge);
+        }
+        for (const node of nodes) {
+            // Shows only O/D nodes.
+            if (node.label) {
+                this.showNode(node);
+            }
+        }
+    }
+
+    public hideGraph(): void {
+        const graph = this.network.getGraph();
+        if (graph) {
+            const edges = graph.getEdges();
+            for (const edge of edges) {
+                if (edge.drawingOptions.polyline) { edge.drawingOptions.polyline.setMap(null); }
+            }
+            this.hideNodes();
+        }
+    }
+
+    /**
+     * Shows/hides nodes of O/D pairs.
      * @param odPairs The O/D pairs
      */
-    public updateOdNodes(odPairs: OdPair[]): void {
+    public showNodes(odPairs: OdPair[]): void {
         const graph = this.network.getGraph();
         const odNodes = graph.getOdNodes();
         for (const node of odNodes) {
@@ -212,42 +238,21 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
         }
     }
 
-    /**
-     * Builds the polyline for each shortest path.
-     * @param paths Shortest paths
-     */
-    public buildPaths(paths: Edge[][][]): void {
-        for (let z = 0; z < paths.length; z++) {
-            this.paths[z] = [];
-
-            for (let n = 0; n < paths[z].length; n++) {
-                let path: google.maps.LatLng[] = [];
-                let distance = 0;
-                let duration = 0;
-                for (let m = 0; m < paths[z][n].length; m++) {
-                    const edge = paths[z][n][m];
-                    path = path.concat(edge.drawingOptions.path);
-                    distance += edge.distance;
-                    duration += edge.duration;
-                }
-                const polyline = new google.maps.Polyline(
-                    {
-                        path: path,
-                        strokeColor: uiConfig.paths.colors[n],
-                        strokeOpacity: 1,
-                        strokeWeight: 3,
-                        zIndex: 10 - n
-                    });
-                this.paths[z][n] = polyline;
+    public hideNodes(): void {
+        const graph = this.network.getGraph();
+        if (graph) {
+            const nodes = graph.getNodes();
+            for (const node of nodes) {
+                if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
             }
         }
     }
 
     /**
-     * Updates shortest paths of O/D pairs.
+     * Shows/hides the paths of O/D pairs.
      * @param odPairs The O/D pairs
      */
-    public updateOdPaths(odPairs: OdPairShowing[]): void {
+    public showPaths(odPairs: OdPairShowing[]): void {
         for (let i = 0; i < odPairs.length; i++) {
             if (this.paths[i].length > 0) {
                 for (let n = 0; n < this.paths[i].length; n++) {
@@ -262,7 +267,16 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
         }
     }
 
-    private drawBaseEdge(edge: Edge): void {
+    public hidePaths(): void {
+        for (let z = 0; z < this.paths.length; z++) {
+            for (let n = 0; n < this.paths[z].length; n++) {
+                const polyline = this.paths[z][n];
+                polyline.setMap(null);
+            }
+        }
+    }
+
+    private showEdge(edge: Edge): void {
         if (edge.drawingOptions.polyline) {
             edge.drawingOptions.polyline.setMap(this.map);
         }
@@ -276,15 +290,10 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
             map: this.map
         });
         // Adds listener.
-        node.drawingOptions.marker.addListener('click', () => this.sendNodeEvent(node));
-    }
-
-    /**
-     * Sends an event with the selected node.
-     * @param node Selected node
-     */
-    private sendNodeEvent(node: Node): void {
-        this.nodeSelected.emit(node);
+        node.drawingOptions.marker.addListener('click', () =>
+            // Updates map state.
+            this.wizard.updateMap({ selectedNode: node })
+        );
     }
 
     private selectNode(node: Node): void {
@@ -309,8 +318,14 @@ import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
                 a + ' ha';
             this.setRectangleInfoWindow(content, ne);
 
-            // Sends the area to subscribers.
-            this.area.next(a);
+            // Checks area limits.
+            if (a >= uiConfig.areaMinLimit && a <= uiConfig.areaMaxLimit) {
+                // Updates map state.
+                this.wizard.updateMap({ bounds: this.getBounds() });
+            } else {
+                this.wizard.putInError(`The area must be between ${uiConfig.areaMinLimit} and ${uiConfig.areaMaxLimit} hectares`);
+                this.wizard.updateMap({ bounds: null });
+            }
         });
     }
 

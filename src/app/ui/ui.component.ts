@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import { CanComponentDeactivate } from '../shared/can-deactivate-guard.service';
-import { WizardService } from './wizard/wizard.service';
+import { SchedulerService } from './wizard/scheduler.service';
 import * as fromUi from './models/reducers';
 
 import { MessageArchivedComponent } from '../shared/message-archived.component';
@@ -30,7 +30,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         private snackBar: MatSnackBar,
         private dialog: MatDialog,
         private store: Store<fromUi.UiState>,
-        private wizard: WizardService
+        private scheduler: SchedulerService
     ) { }
 
     ngOnInit(): void {
@@ -56,7 +56,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         return this.openDialog('Are you sure you want to exit the simulation?').pipe(
             tap((dialogResult: boolean) => {
                 if (dialogResult) {
-                    this.wizard.reset();
+                    this.scheduler.reset();
                 }
             })
         );
@@ -66,7 +66,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         this.openDialog('Are you sure you want to reset the simulation?').subscribe(
             (dialogResult: boolean) => {
                 if (dialogResult) {
-                    this.wizard.reset();
+                    this.scheduler.reset();
                 }
             });
     }

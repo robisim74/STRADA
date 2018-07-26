@@ -1,5 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
+
+import { Store, select } from '@ngrx/store';
+
+import { WizardService } from '../wizard.service';
+import * as fromUi from '../../models/reducers';
 
 @Component({
     selector: 'wizard-simulation',
@@ -12,9 +17,27 @@ export class SimulationComponent implements OnInit {
 
     @Input() index: number;
 
-    constructor() { }
+    constructor(
+        private formBuilder: FormBuilder,
+        private store: Store<fromUi.UiState>,
+        private wizard: WizardService
+    ) { }
 
     ngOnInit(): void {
+        this.valueChanges();
+        this.receiveActions();
+        this.sendActions();
+    }
+
+    valueChanges(): void {
+        //
+    }
+
+    receiveActions(): void {
+        //
+    }
+
+    sendActions(): void {
         //
     }
 

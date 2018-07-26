@@ -50,7 +50,7 @@ export class SearchForTheAreaComponent extends BaseComponent implements OnInit {
     search(address: string): void {
         if (!!address) {
             // Updates pending state.
-            this.wizard.putOnHold();
+            this.wizard.putOnHold('Searching address');
             // Converts the address into geographic coordinates.
             this.location.codeAddress(address).forEach(
                 (results: google.maps.GeocoderResult[]) => {
@@ -78,7 +78,7 @@ export class SearchForTheAreaComponent extends BaseComponent implements OnInit {
     getCurrentPosition(): void {
         if (navigator.geolocation) {
             // Updates pending state.
-            this.wizard.putOnHold();
+            this.wizard.putOnHold('Getting position');
             this.location.getCurrentPosition().subscribe(
                 (position: Position) => {
                     this.formGroup.get('center').setValue({ lat: position.coords.latitude, lng: position.coords.longitude });

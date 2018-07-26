@@ -6,9 +6,10 @@ import { Store, select } from '@ngrx/store';
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
 import * as fromUi from '../../models/reducers';
-import { Step } from '../../models/wizard';
-import { PathType, OdPair } from '../../../network/graph';
+import { Map } from '../../models/wizard';
+import { PathType, OdPair, Node } from '../../../network/graph';
 import { EnumValues } from '../../utils';
+import { uiConfig } from '../../ui-config';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -56,32 +57,10 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
     }
 
     receiveActions(): void {
-        this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
-            if (steps[this.index]) {
-                const odPairs: OdPair[] = steps[this.index]['data']['odPairs'];
-                if (odPairs.length > 0) {
-                    const control = this.formGroup.get('odPairs') as FormArray;
-                    // Adds new O/D pair.
-                    if (control.length < odPairs.length) {
-                        control.push(this.formBuilder.group({
-                            origin: odPairs[odPairs.length - 1].origin,
-                            destination: null,
-                            pathType: null
-                        }));
-                    } else {
-                        control.get([control.length - 1]).patchValue({
-                            origin: odPairs[odPairs.length - 1].origin,
-                            destination: odPairs[odPairs.length - 1].destination,
-                            pathType: PathType.distance
-                        });
-                    }
-                }
-            }
-        }));
         this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
             switch (currentStep) {
-                // Resets control.
                 case 0:
+                    // Resets control.
                     const control = this.formGroup.get('odPairs') as FormArray;
                     if (control.length > 0) {
                         for (let i = control.length - 1; i >= 0; i--) {
@@ -91,18 +70,89 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
                     break;
             }
         }));
+        this.subscriptions.push(this.store.pipe(select(fromUi.map)).subscribe((map: Map) => {
+            if (map && map.data.selectedNode) {
+                this.updateOdPairs(map.data.selectedNode);
+
+            }
+        }));
     }
 
     sendActions(): void {
         //
     }
 
-    deletePair(i: number): void {
+    deleteOdPair(i: number): void {
         // Updates control.
         const control = this.formGroup.get('odPairs') as FormArray;
         control.removeAt(i);
         // Updates step state.
         this.wizard.updateStep(this.formGroup.value, this.index);
+    }
+
+    updateOdPairs(node: Node): void {
+        const control = this.formGroup.get('odPairs') as FormArray;
+        const odPairs = control.value;
+
+        let error = null;
+
+        if (odPairs.length > 0) {
+            const odPair = odPairs[odPairs.length - 1];
+            // Checks limit.
+            if (odPairs.length == uiConfig.maxOdPairs && odPairs[uiConfig.maxOdPairs - 1].destination) {
+                error = `The maximum number of O/D pairs is ${uiConfig.maxOdPairs}`;
+                // Checks if valid node.
+            } else if (odPair.destination == null && node.incomingEdges.length == 0) {
+                error = `The node cannot be a destination`;
+            } else if (odPair.destination && node.outgoingEdges.length == 0) {
+                error = `The node cannot be an origin`;
+                // Checks if last O/D pair is completed.
+            } else if (odPair.destination) {
+                // Adds origin.
+                this.addOrigin(control, node.label);
+                // Checks if same node.
+            } else if (odPair.origin == node.label) {
+                error = `The origin and destination nodes can not be the same`;
+            } else {
+                // Checks if the pair is valid.
+                if (odPairs.filter(pair => pair.origin == odPair.origin && pair.destination == node.label).length > 0) {
+                    error = `O/D pair already selected`;
+                } else {
+                    // Adds destination.
+                    this.addDestination(control, odPair.origin, node.label);
+                }
+            }
+        } else {
+            if (node.outgoingEdges.length == 0) {
+                error = `The node cannot be an origin`;
+            } else {
+                // Adds origin.
+                this.addOrigin(control, node.label);
+            }
+        }
+
+        if (error) {
+            this.wizard.putInError(error);
+        } else {
+            // Updates step state.
+            this.wizard.updateStep({ odPairs: control.value }, 2);
+        }
+    }
+
+    addOrigin(control: FormArray, origin: number): void {
+        control.push(this.formBuilder.group({
+            origin: origin,
+            destination: null,
+            pathType: null
+        }));
+    }
+
+    addDestination(control: FormArray, origin: number, destination: number): void {
+        control.get([control.length - 1]).patchValue({
+            origin: origin,
+            destination: destination,
+            pathType: PathType.distance
+        });
     }
 
 }

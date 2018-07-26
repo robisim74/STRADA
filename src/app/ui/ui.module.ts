@@ -20,6 +20,7 @@ import { GoogleMapComponent } from './map/google-map.component';
 import { WeatherComponent } from './weather/weather.component';
 
 import { WizardService } from './wizard/wizard.service';
+import { SchedulerService } from './wizard/scheduler.service';
 import { MapService } from './map/map.service';
 import { reducers } from './models/reducers';
 
@@ -47,6 +48,7 @@ import { reducers } from './models/reducers';
     ],
     providers: [
         WizardService,
+        SchedulerService,
         MapService
     ]
 })

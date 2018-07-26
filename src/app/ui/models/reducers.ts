@@ -1,7 +1,7 @@
 import { ActionReducerMap, createFeatureSelector, createSelector, MemoizedSelector } from "@ngrx/store";
 
 import * as fromWizard from './reducers/wizard.reducer';
-import { Step } from "./wizard";
+import { Step, Map } from "./wizard";
 
 /**
  * User interface state management.
@@ -32,6 +32,14 @@ export const wizardState: MemoizedSelector<object, fromWizard.WizardState> = cre
 export const steps: MemoizedSelector<object, Step[]> = createSelector(
     wizardState,
     fromWizard.getSteps
+);
+
+/**
+ * Exports the map state.
+ */
+export const map: MemoizedSelector<object, Map> = createSelector(
+    wizardState,
+    fromWizard.getMap
 );
 
 /**

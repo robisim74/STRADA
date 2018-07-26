@@ -1,6 +1,6 @@
 import deepClone from 'mout/lang/deepClone';
 
-import { Step, STEPS } from "../wizard";
+import { Step, STEPS, Map } from "../wizard";
 import { WizardActions, WizardActionTypes } from '../actions/wizard.actions';
 
 /**
@@ -9,6 +9,7 @@ import { WizardActions, WizardActionTypes } from '../actions/wizard.actions';
 export interface WizardState {
 
     steps: Step[];
+    map: Map;
     currentStep: number;
     error: string | null;
     pending: string | boolean;
@@ -17,6 +18,7 @@ export interface WizardState {
 
 export const initialWizardState: WizardState = {
     steps: STEPS,
+    map: null,
     currentStep: 0,
     error: null,
     pending: false
@@ -35,6 +37,12 @@ export function wizardReducer(state: WizardState = deepClone(initialWizardState)
                 steps: deepClone(state.steps),
                 error: null,
                 pending: false
+            };
+        }
+        case WizardActionTypes.MapChanged: {
+            return {
+                ...state,
+                map: action.payload.map
             };
         }
         case WizardActionTypes.StepError: {
@@ -70,6 +78,8 @@ export function wizardReducer(state: WizardState = deepClone(initialWizardState)
 }
 
 export const getSteps: (state: WizardState) => Step[] = (state: WizardState) => state.steps;
+
+export const getMap: (state: WizardState) => Map = (state: WizardState) => state.map;
 
 export const getCurrentStep: (state: WizardState) => number = (state: WizardState) => state.currentStep;
 

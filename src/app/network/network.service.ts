@@ -13,11 +13,10 @@ import { getCoords } from '@turf/invariant';
 import { point, lineString } from '@turf/helpers';
 
 import { WeatherService } from './weather/weather.service';
-import { Graph, Node, Edge, Tag, OdPair } from './graph';
+import { Graph, Node, Edge, Tag, OdPair, LinkFlow } from './graph';
+import { environment } from '../../environments/environment';
 import { appConfig } from '../app-config';
 import { uiConfig } from '../ui/ui-config';
-import { environment } from '../../environments/environment';
-import { getRandomColor } from '../utils';
 
 /**
  * Creates and develops the graph of the transport network in the selected area.
@@ -236,7 +235,6 @@ import { getRandomColor } from '../utils';
             edges: data,
             time: this.time
         });
-        console.log({ edges: data, time: this.time });
 
         // To trafficData function.
         return this.http.post(url, body, { headers: headers }).pipe(
@@ -260,10 +258,6 @@ import { getRandomColor } from '../utils';
                     break;
                 }
             }
-
-            const factors = this.weather.getFactors();
-            // Calculates capacity.
-            edge.calcCapacity(factors[0]);
             // Calculates link flow.
             edge.calcLinkFlow();
         }
@@ -271,12 +265,12 @@ import { getRandomColor } from '../utils';
     }
 
     /**
-     * Returns the values of the link flow and the corresponding density of the paths.
+     * Returns the values of the link flow and the corresponding variance of the paths.
      */
-    public getLinkFlows(): Array<{ value: number, density: number }> {
+    public getLinkFlows(): LinkFlow[] {
         const shortestPathsEdges = this.graph.getShortestPathsEgdes();
         return shortestPathsEdges.map((edge: Edge) => {
-            return { value: edge.linkFlow, density: edge.density };
+            return { value: edge.linkFlow, variance: edge.getVariance() };
         });
     }
 
@@ -472,7 +466,6 @@ import { getRandomColor } from '../utils';
             ways: ways,
             mode: mode
         });
-        console.log({ ways: ways, mode: mode });
         // To networkData function.
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),
