@@ -51,8 +51,8 @@ import { uiConfig } from '../ui/ui-config';
         this.graph = null;
         this.bounds = null;
         this.time = null;
-        this.edgeId = 0;
         this.odPairs = [];
+        this.edgeId = 0;
     }
 
     public getGraph(): Graph {

@@ -183,13 +183,19 @@ import { SimulationService } from "../../simulation/simulation.service";
     /**
      * Performs in sequence the following operations:
      * - Calcs max flow for each edge.
+     * - Inits the simulation.
      */
     scheduleSimulation(data: any, index: number, nextIndex: number): void {
         const graph = this.network.getGraph();
         const factors = this.weather.getFactors();
 
         this.wizard.putOnHold('Computing max flows');
-        const stream = graph.calcMaxflows(factors[0]).pipe();
+        const stream = graph.calcMaxflows(factors[0]).pipe(
+            switchMap(() => {
+                this.wizard.putOnHold('Initializing simulation');
+                return this.simulation.init();
+            })
+        );
 
         stream.subscribe(
             () => { },

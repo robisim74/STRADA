@@ -12,20 +12,13 @@ export enum PathType {
 }
 
 /**
- * An O/D pair is described by the origin and destination nodes, the type of path and the domand.
+ * An O/D pair is described by the origin and destination nodes, and the type of path.
  */
 export interface OdPair {
 
     origin: number;
     destination: number;
     pathType: PathType;
-    demand?: number;
-
-}
-
-export interface OdPairShowing extends OdPair {
-
-    showPaths: boolean;
 
 }
 
@@ -81,30 +74,6 @@ export class Node {
     public incomingEdges: Edge[] = [];
 
     public outgoingEdges: Edge[] = [];
-
-    /**
-     * Simulation (LTM): origin node.
-     */
-    public origin: {
-        /**
-         * Number of vehicles that would like to enter the network.
-         */
-        sendingFlow?: number;
-    } = {};
-
-    /**
-     * Simulation (LTM): destination node.
-     */
-    public destination: {
-        /**
-         * Number of vehicles that leaves the network.
-         */
-        receivingFlow?: number;
-        /**
-         * Traffic fraction.
-         */
-        p?: number;
-    } = {};
 
     public drawingOptions: { marker?: google.maps.Marker } = {};
 
@@ -163,41 +132,6 @@ export class Edge {
      */
     public maxFlow: number;
 
-    /**
-     * Simulation (LTM): traffic fraction.
-     */
-    public p: number;
-
-    /**
-     * Simulation (LTM): the vehicle numbers of the link.
-     */
-    public trafficVolume = 0;
-
-    /**
-     * Simulation (LTM): the cumulative vehicle numbers at the upstream link end.
-     */
-    public upstreamCount = 0;
-
-    /**
-     * Simulation (LTM): the cumulative vehicle numbers at the downstream link end.
-     */
-    public downstreamCount = 0;
-
-    /**
-     * Statistics: number of vehicles crossing the link during the simulation.
-     */
-    public totalCount = 0;
-
-    /**
-     * Statistics: count of how many times the link reaches a level of moderate traffic.
-     */
-    public moderateTrafficCount = 0;
-
-    /**
-     * Statistics: count of how many times the link reaches a level of heavy traffic.
-     */
-    public heavyTrafficCount = 0;
-
     public drawingOptions: {
         path?: google.maps.LatLng[],
         polyline?: google.maps.Polyline
@@ -246,55 +180,16 @@ export class Edge {
         return this.density > 0 ? round(1 / this.density, 2) : 1;
     }
 
-    /**
-     * Updates the cumulative vehicle numbers at the upstream link end.
-     * @param transitionFlows The sum of transition flows from incoming links.
-     */
-    public updateUpstream(transitionFlows: number): void {
-        this.upstreamCount += transitionFlows;
-    }
-
-    /**
-     * Updates the cumulative vehicle numbers at the downstream link end.
-     * @param transitionFlows The sum of transition flows to outgoing links.
-     */
-    public updateDownstream(transitionFlows: number): void {
-        this.downstreamCount += transitionFlows;
-    }
-
-    /**
-     * Calculates the vehicle numbers of the link.
-     */
-    public calTrafficVolume(): void {
-        this.trafficVolume = this.upstreamCount - this.downstreamCount;
-    }
-
-    private getKjam(): number {
+    protected getKjam(): number {
         return round(1 / uiConfig.sp, 2);
     }
 
-    private getCapacity(timeInterval: number): number {
+    protected getCapacity(timeInterval: number): number {
         const capacity = round(this.maxFlow * timeInterval);
         return capacity >= 1 ? capacity : 1;
     }
 
-    private updateStatistics(): void {
-        this.totalCount = this.upstreamCount;
-        // Heavy traffic.
-        if (this.trafficVolume > round(this.getCapacity(this.duration) * uiConfig.heavyTraffic)) {
-            this.heavyTrafficCount++;
-            this.draw(uiConfig.links.heavyTrafficColor);
-            // Moderate traffic.
-        } else if (this.trafficVolume > round(this.getCapacity(this.duration) * uiConfig.moderateTraffic)) {
-            this.moderateTrafficCount++;
-            this.draw(uiConfig.links.moderateTrafficColor);
-            // No traffic.
-        } else {
-            this.draw(uiConfig.links.noTrafficColor);
-        }
-    }
-
-    private draw(color: string): void {
+    protected draw(color: string): void {
         this.drawingOptions.polyline.set('strokeColor', color);
     }
 
@@ -322,18 +217,18 @@ export class Relation {
  */
 export class Graph {
 
-    private nodes: Node[] = [];
+    protected nodes: Node[] = [];
 
-    private edges: Edge[] = [];
+    protected edges: Edge[] = [];
 
-    private relations: Relation[] = [];
+    protected relations: Relation[] = [];
 
     /**
      * Paths for each O/D pair [pairs,paths,edges].
      */
-    private shortestPaths: Edge[][][] = [];
+    protected shortestPaths: Edge[][][] = [];
 
-    private shortestPathsEdges: Edge[] = [];
+    protected shortestPathsEdges: Edge[] = [];
 
     private incidenceMatrix: boolean[][][] = [];
 
@@ -412,18 +307,18 @@ export class Graph {
     public calcShortestPaths(odPairs: OdPair[]): Observable<any> {
         try {
             for (let i = 0; i < odPairs.length; i++) {
-                this.ksp(odPairs[i].origin, odPairs[i].destination, odPairs[i].pathType, uiConfig.k, i);
-            }
-
-            // Checks empty paths.
-            let count = 0;
-            for (const pair of this.shortestPaths) {
-                if (pair.length > 0) {
-                    count++;
-                    break;
+                const shortestPaths = this.ksp(odPairs[i].origin, odPairs[i].destination, odPairs[i].pathType, uiConfig.k);
+                // Extracts the paths.
+                this.shortestPaths[i] = [];
+                for (const path of shortestPaths) {
+                    this.shortestPaths[i].push(path.edges);
                 }
             }
-            if (count == 0) { return throwError('calcShortestPaths'); }
+            // Gets the edges in the paths.
+            this.shortestPathsEdges = this.getEdgesfromShortestPaths();
+            if (this.shortestPathsEdges.length == 0) {
+                return throwError('calcShortestPaths');
+            }
         } catch (error) {
             return throwError('calcShortestPaths');
         }
@@ -434,14 +329,14 @@ export class Graph {
         return this.shortestPaths;
     }
 
+    public getShortestPathsEgdes(): Edge[] {
+        return this.shortestPathsEdges;
+    }
+
     /**
      * Calculates the incidence matrix of paths for O/D pairs.
      */
     public calcIncidenceMatrix(): Observable<any> {
-        // Gets the edges in the paths.
-        this.shortestPathsEdges = this.getEdgesfromShortestPaths();
-
-        // Builds the matrix.
         for (let z = 0; z < this.shortestPaths.length; z++) {
             this.incidenceMatrix[z] = [];
             for (let n = 0; n < this.shortestPaths[z].length; n++) {
@@ -493,10 +388,6 @@ export class Graph {
         return this.assignmentMatrix;
     }
 
-    public getShortestPathsEgdes(): Edge[] {
-        return this.shortestPathsEdges;
-    }
-
     /**
      * Calculates the max flow for each edge.
      * @param factor Weather Adjustment Factor
@@ -515,9 +406,9 @@ export class Graph {
      * @param destination Destination node
      * @param pathType Distance or duration
      * @param k The number of shortest paths to compute
-     * @param i Index of O/D pair
+     * @returns The set of shortest paths
      */
-    private ksp(origin: number, destination: number, pathType: String, k: number, i: number): void {
+    private ksp(origin: number, destination: number, pathType: String, k: number): Path[] {
         const o = this.getOdNode(origin);
         const d = this.getOdNode(destination);
         // Sets to zero the count property of the nodes.
@@ -527,14 +418,7 @@ export class Graph {
         // Inserts the path of origin into heap with cost 0.
         this.heap.push({ pathId: 0, node: o, edges: [], cost: 0 });
         // Walks the graph.
-        const shortestPaths = this.walk(o, d, pathType, k);
-        // Extracts the paths.
-        this.shortestPaths[i] = [];
-        for (let n = 0; n < k; n++) {
-            if (shortestPaths[n]) {
-                this.shortestPaths[i].push(shortestPaths[n].edges);
-            }
-        }
+        return this.walk(o, d, pathType, k);
     }
 
     /**

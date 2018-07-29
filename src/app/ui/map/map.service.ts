@@ -9,7 +9,7 @@ import { getCoord } from '@turf/invariant';
 
 import { WizardService } from '../wizard/wizard.service';
 import { NetworkService } from '../../network/network.service';
-import { Edge, Node, OdPair, OdPairShowing } from '../../network/graph';
+import { Edge, Node, OdPair } from '../../network/graph';
 import { uiConfig } from '../ui-config';
 
 /**
@@ -262,7 +262,7 @@ import { uiConfig } from '../ui-config';
      * Shows/hides the paths of O/D pairs.
      * @param odPairs The O/D pairs
      */
-    public showPaths(odPairs: OdPairShowing[]): void {
+    public showPaths(odPairs: any[]): void {
         for (let i = 0; i < odPairs.length; i++) {
             if (this.paths[i].length > 0) {
                 for (let n = 0; n < this.paths[i].length; n++) {

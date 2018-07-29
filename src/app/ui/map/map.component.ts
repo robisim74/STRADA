@@ -8,7 +8,7 @@ import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/wizard';
 import { MapStyle } from './map.style';
-import { OdPair, OdPairShowing } from '../../network/graph';
+import { OdPair } from '../../network/graph';
 import { uiConfig } from '../ui-config';
 
 import { BaseComponent } from '../models/base.component';
@@ -106,7 +106,7 @@ export class MapComponent extends BaseComponent implements OnInit {
                 case 3:
                     if (steps[3] && steps[3].data.odPairs) {
                         // Shows/hides O/D paths.
-                        const odPairs: OdPairShowing[] = steps[3].data.odPairs;
+                        const odPairs = steps[3].data.odPairs;
                         this.map.showPaths(odPairs);
                     }
                     break;

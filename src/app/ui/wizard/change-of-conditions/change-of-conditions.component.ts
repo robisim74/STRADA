@@ -9,7 +9,6 @@ import { WeatherService } from '../../../network/weather/weather.service';
 import { DemandService } from '../../../demand/demand.service';
 import * as fromUi from '../../models/reducers';
 import { Step } from '../../models/wizard';
-import { OdPairShowing } from '../../../network/graph';
 import { WeatherDescription, WeatherConditions } from '../../../network/weather/weather';
 import { EnumValues } from '../../utils';
 import { uiConfig } from '../../ui-config';
@@ -55,8 +54,8 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
     valueChanges(): void {
         // Updates demand service data on value changes.
         this.subscriptions.push(this.formGroup.get('odPairs').valueChanges.subscribe(
-            (odPairs: OdPairShowing[]) => {
-                const demand = odPairs.map((pair: OdPairShowing) => {
+            (odPairs: any[]) => {
+                const demand = odPairs.map((pair: any) => {
                     return pair.demand;
                 });
                 this.demand.changeDemand(demand);
