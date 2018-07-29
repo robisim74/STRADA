@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import * as math from 'mathjs';
-
 import { NetworkService } from '../network/network.service';
 import { LinkFlow } from '../network/graph';
+import { round } from '../ui/utils';
 import { uiConfig } from '../ui/ui-config';
 
 /**
@@ -13,19 +12,13 @@ import { uiConfig } from '../ui/ui-config';
 @Injectable() export class DemandService {
 
     /**
-     * The array of the demand [pairs].
+     * The array of the demand.
      */
-    private demand: number[] = [];
-
-    /**
-     * The matrix of the demand [pairs,paths]
-     */
-    private odMatrix: number[][] = [];
+    private odMatrix: number[] = [];
 
     constructor(private network: NetworkService) { }
 
     public reset(): void {
-        this.demand = [];
         this.odMatrix = [];
     }
 
@@ -38,27 +31,17 @@ import { uiConfig } from '../ui/ui-config';
         // Gets assignment matrix from network.
         const assignmentMatrix = this.network.getAssignmentMatrix();
         // Calculates demand.
-        this.demand = this.gls(linkFlows, assignmentMatrix);
-        // Shares the demand on each path.
-        this.shareDemand(assignmentMatrix);
+        this.odMatrix = this.gls(linkFlows, assignmentMatrix);
         return of(null);
     }
 
-    public getDemand(): number[] {
-        return this.demand;
-    }
-
-    public getOdMatrix(): number[][] {
+    public getOdMatrix(): number[] {
         return this.odMatrix;
     }
 
     public changeDemand(demand: number[]): void {
         if (demand.length > 0) {
-            // Gets assignment matrix from network.
-            const assignmentMatrix = this.network.getAssignmentMatrix();
-
-            this.demand = demand;
-            this.shareDemand(assignmentMatrix);
+            this.odMatrix = demand;
         }
     }
 
@@ -68,7 +51,7 @@ import { uiConfig } from '../ui/ui-config';
      * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
      * @returns The array of the demand
      */
-    public gls(linkFlows: LinkFlow[], assignmentMatrix: number[][][]): number[] | null {
+    public gls(linkFlows: LinkFlow[], assignmentMatrix: number[][][]): number[] {
         const demand: number[] = [];
         // Calculates argument of the minimum for each O/D pair.
         for (let z = 0; z < assignmentMatrix.length; z++) {
@@ -84,7 +67,6 @@ import { uiConfig } from '../ui/ui-config';
      */
     private argmin(linkFlows: LinkFlow[], odMatrixAssignment: number[][]): number {
         const estimations: number[] = [];
-
         // The unknown demand.
         let x = 0;
         estimations[x] = this.estimate(linkFlows, odMatrixAssignment, x);
@@ -107,11 +89,10 @@ import { uiConfig } from '../ui/ui-config';
         for (let i = 0; i < linkFlows.length; i++) {
             if (linkFlows[i].value > 0 && this.isOnPath(odMatrixAssignment, i)) {
                 const base = linkFlows[i].value - this.sum(odMatrixAssignment, i, x);
-                sum += math.pow(base, 2) as number
-                    / linkFlows[i].variance;
+                sum += Math.pow(base, 2) / linkFlows[i].variance;
             }
         }
-        return math.round(sum, 2) as number;
+        return round(sum, 2);
     }
 
     /**
@@ -127,7 +108,7 @@ import { uiConfig } from '../ui/ui-config';
                 sum += odMatrixAssignment[n][i] * x;
             }
         }
-        return math.round(sum, 2) as number;
+        return round(sum, 2);
     }
 
     /**
@@ -148,19 +129,21 @@ import { uiConfig } from '../ui/ui-config';
      * Shares the demand on each path.
      * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
      */
-    private shareDemand(assignmentMatrix: number[][][]): void {
+    private shareDemand(assignmentMatrix: number[][][]): number[][] {
+        const sharedDemand: number[][] = [];
         for (let z = 0; z < assignmentMatrix.length; z++) {
-            this.odMatrix[z] = [];
-            if (this.demand[z] != null) {
+            sharedDemand[z] = [];
+            if (this.odMatrix[z] != null) {
                 let sum = 0;
                 for (let n = 0; n < assignmentMatrix[z].length; n++) {
                     const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
-                    this.odMatrix[z][n] = math.round(p * this.demand[z]) as number;
-                    sum += this.odMatrix[z][n];
+                    sharedDemand[z][n] = round(p * this.odMatrix[z]);
+                    sum += sharedDemand[z][n];
                 }
-                if (this.demand[z] - sum > 0) { this.odMatrix[z][0] = this.demand[z] - sum; }
+                if (this.odMatrix[z] - sum > 0) { sharedDemand[z][0] = this.odMatrix[z] - sum; }
             }
         }
+        return sharedDemand;
     }
 
 }

@@ -539,7 +539,7 @@ import { uiConfig } from '../ui/ui-config';
                 {
                     path: path,
                     icons: icons,
-                    strokeColor: uiConfig.edges.baseColor,
+                    strokeColor: uiConfig.links.baseColor,
                     strokeOpacity: 1,
                     strokeWeight: 3,
                     zIndex: 5

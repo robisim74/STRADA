@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --aot --open",
     "build": "ng build --prod",
+    "analyze": "ng build --prod --stats-json && webpack-bundle-analyzer dist/strada/stats.json",
     "serve": "firebase serve -p 4200",
     "deploy": "firebase deploy --only hosting",
     "test": "ng test",
@@ -46,7 +47,6 @@
     "@turf/center": "6.0.1",
     "ng-pick-datetime": "6.0.5",
     "mout": "1.1.0",
-    "mathjs": "5.0.3",
     "web-animations-js": "2.3.1",
     "hammerjs": "2.0.8",
     "animejs": "2.2.0",
@@ -83,6 +83,6 @@
     "rxjs-tslint": "0.1.4",
     "typescript": "2.7.2",
     "husky": "1.0.0-rc.9",
-    "circular-json": "0.5.5"
+    "webpack-bundle-analyzer": "2.13.1"
   }
 }

@@ -3,10 +3,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import * as math from 'mathjs';
-
 import { LocationService } from '../../location/location.service';
 import { WeatherConditions } from './weather';
+import { round } from '../../ui/utils';
 import { appConfig } from '../../app-config';
 import { uiConfig } from '../../ui/ui-config';
 
@@ -91,11 +90,11 @@ import { uiConfig } from '../../ui/ui-config';
 
     /**
      * Calculates Weather Adjustment Factors.
-     * @returns The factor for sp parameter
+     * @returns The factor for max flow parameter
      */
     public getFactors(): number[] {
         const factors: number[] = [];
-        let capacityFactor = uiConfig.adjustmentFactorCoefficients[0] +
+        let maxFlowFactor = uiConfig.adjustmentFactorCoefficients[0] +
             uiConfig.adjustmentFactorCoefficients[1] * (this.weatherConditions.visibility / 1000) +
             uiConfig.adjustmentFactorCoefficients[2] * this.toInches(this.weatherConditions.rainIntensity) +
             uiConfig.adjustmentFactorCoefficients[3] * this.toInches(this.weatherConditions.snowIntensity) +
@@ -103,8 +102,8 @@ import { uiConfig } from '../../ui/ui-config';
             this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.rainIntensity) +
             uiConfig.adjustmentFactorCoefficients[5] *
             this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.snowIntensity);
-        if (capacityFactor < 0.1) { capacityFactor = 0.1; }
-        factors.push(math.round(capacityFactor, 2) as number);
+        if (maxFlowFactor < 0.1) { maxFlowFactor = 0.1; }
+        factors.push(round(maxFlowFactor, 2));
         return factors;
     }
 

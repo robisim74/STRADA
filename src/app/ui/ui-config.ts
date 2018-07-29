@@ -18,7 +18,7 @@ export const uiConfig = {
      */
     areaMaxLimit: 30,
     areaMinLimit: 3,
-    edges: {
+    links: {
         baseColor: '#babdbe',
         noTrafficColor: '#76d219',
         moderateTrafficColor: '#d27519',
@@ -66,7 +66,7 @@ export const uiConfig = {
      */
     maxDemand: 10000,
     /**
-     * Weather Adjustment Factor Coefficients for capacity.
+     * Weather Adjustment Factor Coefficients for max flow.
      * "Traffic Analysis Toolbox. Volume XI: Weather and Traffic Analysis, Modeling and Simulation"
      */
     adjustmentFactorCoefficients: [0.91, 0.009, -0.404, -1.455, 0, 0],
@@ -89,5 +89,13 @@ export const uiConfig = {
     snowIntensity: {
         max: 20
     },
-    weatherIcons: ['01d', '02d', '03d', '04d', '09d', '10d', '11d', '13d', '50d']
+    weatherIcons: ['01d', '02d', '03d', '04d', '09d', '10d', '11d', '13d', '50d'],
+    /**
+     * Minimum fraction of the capacity of the moderate traffic level.
+     */
+    moderateTraffic: 0.3,
+    /**
+     * Minimum fraction of the capacity of the heavy traffic level.
+     */
+    heavyTraffic: 0.7
 };

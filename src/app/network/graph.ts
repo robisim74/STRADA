@@ -1,9 +1,9 @@
 import { Observable, of, throwError } from 'rxjs';
 
 import * as combine from 'mout/array/combine';
-import * as math from 'mathjs';
 
 import { Heap, Path } from './k-shortest-path';
+import { round } from '../ui/utils';
 import { uiConfig } from '../ui/ui-config';
 
 export enum PathType {
@@ -82,6 +82,30 @@ export class Node {
 
     public outgoingEdges: Edge[] = [];
 
+    /**
+     * Simulation (LTM): origin node.
+     */
+    public origin: {
+        /**
+         * Number of vehicles that would like to enter the network.
+         */
+        sendingFlow?: number;
+    } = {};
+
+    /**
+     * Simulation (LTM): destination node.
+     */
+    public destination: {
+        /**
+         * Number of vehicles that leaves the network.
+         */
+        receivingFlow?: number;
+        /**
+         * Traffic fraction.
+         */
+        p?: number;
+    } = {};
+
     public drawingOptions: { marker?: google.maps.Marker } = {};
 
     /**
@@ -135,14 +159,44 @@ export class Edge {
     public linkFlow: number;
 
     /**
-     * Maximum capacity of the edge.
+     * Maximum flow of the link.
      */
-    public capacity: number;
+    public maxFlow: number;
 
     /**
-     * Simulation queue.
+     * Simulation (LTM): traffic fraction.
      */
-    public queue = 0;
+    public p: number;
+
+    /**
+     * Simulation (LTM): the vehicle numbers of the link.
+     */
+    public trafficVolume = 0;
+
+    /**
+     * Simulation (LTM): the cumulative vehicle numbers at the upstream link end.
+     */
+    public upstreamCount = 0;
+
+    /**
+     * Simulation (LTM): the cumulative vehicle numbers at the downstream link end.
+     */
+    public downstreamCount = 0;
+
+    /**
+     * Statistics: number of vehicles crossing the link during the simulation.
+     */
+    public totalCount = 0;
+
+    /**
+     * Statistics: count of how many times the link reaches a level of moderate traffic.
+     */
+    public moderateTrafficCount = 0;
+
+    /**
+     * Statistics: count of how many times the link reaches a level of heavy traffic.
+     */
+    public heavyTrafficCount = 0;
 
     public drawingOptions: {
         path?: google.maps.LatLng[],
@@ -159,38 +213,89 @@ export class Edge {
     public calcLinkFlow(): void {
         if (this.durationInTraffic > 0 && this.duration > 0 && this.durationInTraffic >= this.duration) {
             // Calculates free flow velocity (m/s).
-            this.velocity = math.round(this.distance / this.duration, 2) as number;
+            this.velocity = round(this.distance / this.duration, 2);
             // Calculates velocity (m/s).
-            const velocity = math.round(this.distance / this.durationInTraffic, 2) as number;
-            // Calculates kjam.
-            const kjam = 1 / uiConfig.sp;
+            const velocity = round(this.distance / this.durationInTraffic, 2);
             // Calculates density.
-            this.density = math.round(kjam * (this.velocity - velocity) / this.velocity, 2) as number;
+            this.density = round(this.getKjam() * (this.velocity - velocity) / this.velocity, 2);
             // Calculates flow.
-            this.flow = math.round(this.density * velocity, 2) as number;
+            this.flow = round(this.density * velocity, 2);
             // Calculates link flow.
-            this.linkFlow = math.round(this.density * this.distance) as number;
+            this.linkFlow = round(this.density * this.distance);
         } else {
+            this.velocity = 0;
             this.density = 0;
+            this.flow = 0;
             this.linkFlow = 0;
         }
     }
 
     /**
-     * Calculates the max capacity of the edge.
+     * Calculates the max flow of the edge.
      * @param factor Weather Adjustment Factor
      */
-    public calcCapacity(factor: number): void {
-        let capacity = math.round(this.distance / uiConfig.sp) as number;
-        capacity = capacity * factor;
-        this.capacity = capacity >= 1 ? capacity : 1;
+    public calcMaxFlow(factor: number): void {
+        const maxFlow = round(this.getKjam() * this.velocity);
+        this.maxFlow = round(maxFlow * factor, 2);
     }
 
     /**
      * Gets the variance of measurement error of link flow.
      */
     public getVariance(): number {
-        return this.density > 0 ? math.round(1 / this.density, 2) as number : 1;
+        return this.density > 0 ? round(1 / this.density, 2) : 1;
+    }
+
+    /**
+     * Updates the cumulative vehicle numbers at the upstream link end.
+     * @param transitionFlows The sum of transition flows from incoming links.
+     */
+    public updateUpstream(transitionFlows: number): void {
+        this.upstreamCount += transitionFlows;
+    }
+
+    /**
+     * Updates the cumulative vehicle numbers at the downstream link end.
+     * @param transitionFlows The sum of transition flows to outgoing links.
+     */
+    public updateDownstream(transitionFlows: number): void {
+        this.downstreamCount += transitionFlows;
+    }
+
+    /**
+     * Calculates the vehicle numbers of the link.
+     */
+    public calTrafficVolume(): void {
+        this.trafficVolume = this.upstreamCount - this.downstreamCount;
+    }
+
+    private getKjam(): number {
+        return round(1 / uiConfig.sp, 2);
+    }
+
+    private getCapacity(timeInterval: number): number {
+        const capacity = round(this.maxFlow * timeInterval);
+        return capacity >= 1 ? capacity : 1;
+    }
+
+    private updateStatistics(): void {
+        this.totalCount = this.upstreamCount;
+        // Heavy traffic.
+        if (this.trafficVolume > round(this.getCapacity(this.duration) * uiConfig.heavyTraffic)) {
+            this.heavyTrafficCount++;
+            this.draw(uiConfig.links.heavyTrafficColor);
+            // Moderate traffic.
+        } else if (this.trafficVolume > round(this.getCapacity(this.duration) * uiConfig.moderateTraffic)) {
+            this.moderateTrafficCount++;
+            this.draw(uiConfig.links.moderateTrafficColor);
+            // No traffic.
+        } else {
+            this.draw(uiConfig.links.noTrafficColor);
+        }
+    }
+
+    private draw(color: string): void {
+        this.drawingOptions.polyline.set('strokeColor', color);
     }
 
 }
@@ -393,12 +498,12 @@ export class Graph {
     }
 
     /**
-     * Calculates the max capacity for each edge.
+     * Calculates the max flow for each edge.
      * @param factor Weather Adjustment Factor
      */
-    public calcCapacities(factor: number): Observable<any> {
+    public calcMaxflows(factor: number): Observable<any> {
         for (const edge of this.edges) {
-            edge.calcCapacity(factor);
+            edge.calcMaxFlow(factor);
         }
         return of(null);
     }
@@ -514,7 +619,7 @@ export class Graph {
         const exps: number[][] = [];
         for (let z = 0; z < pathCosts.length; z++) {
             exps[z] = pathCosts[z].map((value: number) => {
-                return value > 0 ? math.exp(-value / parameter) : 0;
+                return value > 0 ? Math.exp(-value / parameter) : 0;
             });
         }
         // Calculates denominator.
@@ -527,7 +632,7 @@ export class Graph {
         for (let z = 0; z < exps.length; z++) {
             shortestPathsProbabilities[z] = [];
             for (let n = 0; n < exps[z].length; n++) {
-                const p = sumExps[z] > 0 ? math.round(exps[z][n] / sumExps[z], 3) as number : 0;
+                const p = sumExps[z] > 0 ? round(exps[z][n] / sumExps[z], 3) : 0;
                 shortestPathsProbabilities[z].push(p);
             }
         }

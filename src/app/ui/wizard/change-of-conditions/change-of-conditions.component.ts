@@ -90,7 +90,7 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                     break;
                 case this.index:
                     const odPairs = this.network.getOdPairs();
-                    const demand = this.demand.getDemand();
+                    const demand = this.demand.getOdMatrix();
                     for (let i = 0; i < odPairs.length; i++) {
                         odPairsControl.push(this.buildOdPair(odPairs[i], demand[i]));
                     }
