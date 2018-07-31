@@ -74,7 +74,7 @@ export class WizardComponent implements OnInit {
                     })
                 }),
                 this.formBuilder.group({
-
+                    endSimulation: [false, [Validators.requiredTrue]]
                 }),
                 this.formBuilder.group({
 

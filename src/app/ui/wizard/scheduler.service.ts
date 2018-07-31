@@ -8,6 +8,7 @@ import { NetworkService } from "../../network/network.service";
 import { WeatherService } from "../../network/weather/weather.service";
 import { DemandService } from "../../demand/demand.service";
 import { SimulationService } from "../../simulation/simulation.service";
+import { ClockService } from "../../simulation/clock.service";
 
 @Injectable() export class SchedulerService {
 
@@ -18,7 +19,8 @@ import { SimulationService } from "../../simulation/simulation.service";
         private network: NetworkService,
         private weather: WeatherService,
         private demand: DemandService,
-        private simulation: SimulationService
+        private simulation: SimulationService,
+        private clock: ClockService
     ) { }
 
     /**
@@ -35,6 +37,7 @@ import { SimulationService } from "../../simulation/simulation.service";
             this.weather.reset();
             this.demand.reset();
             this.simulation.reset();
+            this.clock.reset();
         });
     }
 

@@ -139,7 +139,7 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
         }
     }
 
-    addOrigin(control: FormArray, origin: number): void {
+    addOrigin(control: FormArray, origin: string): void {
         control.push(this.formBuilder.group({
             origin: origin,
             destination: null,
@@ -147,7 +147,7 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
         }));
     }
 
-    addDestination(control: FormArray, origin: number, destination: number): void {
+    addDestination(control: FormArray, origin: string, destination: string): void {
         control.get([control.length - 1]).patchValue({
             origin: origin,
             destination: destination,

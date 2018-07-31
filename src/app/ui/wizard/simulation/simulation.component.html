@@ -1,1 +1,53 @@
-WIP
+<div [formGroup]="formGroup">
+    <div fxLayout="column" fxLayoutGap="8px">
+        <div fxLayout="column" fxLayoutGap="3px">
+            <div fxLayout="row" fxLayoutGap="3px">
+                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="stop()" title="Stop" aria-label="Stop">
+                        <mat-icon>stop</mat-icon>
+                    </button>
+                </div>
+                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="start()" title="Start" aria-label="Start">
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+                </div>
+                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="pause()" title="Pause" aria-label="Pause">
+                        <mat-icon>pause</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="3px">
+                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="slow()" title="Slow" aria-label="Slow">
+                        <mat-icon>fast_rewind</mat-icon>
+                    </button>
+                </div>
+                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="step()" title="Next step" aria-label="Next step">
+                        <mat-icon>skip_next</mat-icon>
+                    </button>
+                </div>
+                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <button mat-icon-button color="accent" (click)="quick()" title="Quick" aria-label="Quick">
+                        <mat-icon>fast_forward</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div fxLayout="column" fxLayoutGap="8px">
+            <p>Time interval: s</p>
+            <p>Time period: s</p>
+            <p>Simulated time interval: s</p>
+            <p>Simulated time period: s</p>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue
+            <mat-icon>navigate_next</mat-icon>
+        </button>
+    </div>
+</div>

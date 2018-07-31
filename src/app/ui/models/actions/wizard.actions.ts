@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-import { Step, Map } from '../wizard';
+import { Step, Map, Simulation } from '../wizard';
 
 /**
  * ngrx: wizard Actions.
@@ -9,6 +9,7 @@ export enum WizardActionTypes {
 
     StepChanged = '[Wizard] Step Changed',
     MapChanged = '[Wizard] Map Changed',
+    SimulationChanged = '[Wizard] Simulation Changed',
     StepError = '[Wizard] Step Error',
     StepPending = '[Wizard] Step Pending',
     GoOn = '[Wizard] Go On',
@@ -29,6 +30,14 @@ export class MapChanged implements Action {
     public readonly type: string = WizardActionTypes.MapChanged;
 
     constructor(public payload: { map: Map }) { }
+
+}
+
+export class SimulationChanged implements Action {
+
+    public readonly type: string = WizardActionTypes.SimulationChanged;
+
+    constructor(public payload: { simulation: Simulation }) { }
 
 }
 
@@ -64,4 +73,4 @@ export class Reset implements Action {
 
 }
 
-export type WizardActions = StepChanged | MapChanged | StepError | StepPending | GoOn | Reset;
+export type WizardActions = StepChanged | MapChanged | SimulationChanged | StepError | StepPending | GoOn | Reset;

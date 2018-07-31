@@ -97,5 +97,11 @@ export const uiConfig = {
     /**
      * Minimum fraction of the capacity of the heavy traffic level.
      */
-    heavyTraffic: 0.7
+    heavyTraffic: 0.7,
+    /**
+     * Simulated time interval (ms).
+     */
+    simulatedTimeInterval: 500,
+    timeIntervalIncrement: 100,
+    timeIntervalDecrement: 100
 };

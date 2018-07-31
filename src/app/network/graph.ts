@@ -16,8 +16,8 @@ export enum PathType {
  */
 export interface OdPair {
 
-    origin: number;
-    destination: number;
+    origin: string;
+    destination: string;
     pathType: PathType;
 
 }
@@ -63,7 +63,7 @@ export class Node {
 
     public nodeId: number;
 
-    public label: number;
+    public label: string;
 
     public lat: number;
 
@@ -94,6 +94,8 @@ export class Node {
 export class Edge {
 
     public edgeId: number;
+
+    public label: string;
 
     public origin: Node;
 
@@ -145,9 +147,15 @@ export class Edge {
      * Calculates the value of the link flow.
      */
     public calcLinkFlow(): void {
-        if (this.durationInTraffic > 0 && this.duration > 0 && this.durationInTraffic >= this.duration) {
-            // Calculates free flow velocity (m/s).
-            this.velocity = round(this.distance / this.duration, 2);
+        // Min distance is 1 meter.
+        if (this.distance == 0) { this.distance = 1; }
+        // Min duration is 1 second.
+        if (this.duration == 0) {
+            this.duration = round(this.distance / 50 / 3.6) > 0 ? round(this.distance / 50 / 3.6) : 1;
+        }
+        // Calculates free flow velocity (m/s).
+        this.velocity = round(this.distance / this.duration, 2);
+        if (this.durationInTraffic > 0 && this.durationInTraffic >= this.duration) {
             // Calculates velocity (m/s).
             const velocity = round(this.distance / this.durationInTraffic, 2);
             // Calculates density.
@@ -157,7 +165,6 @@ export class Edge {
             // Calculates link flow.
             this.linkFlow = round(this.density * this.distance);
         } else {
-            this.velocity = 0;
             this.density = 0;
             this.flow = 0;
             this.linkFlow = 0;
@@ -169,7 +176,7 @@ export class Edge {
      * @param factor Weather Adjustment Factor
      */
     public calcMaxFlow(factor: number): void {
-        const maxFlow = round(this.getKjam() * this.velocity);
+        const maxFlow = this.getKjam() * this.velocity;
         this.maxFlow = round(maxFlow * factor, 2);
     }
 
@@ -185,8 +192,7 @@ export class Edge {
     }
 
     protected getCapacity(timeInterval: number): number {
-        const capacity = round(this.maxFlow * timeInterval);
-        return capacity >= 1 ? capacity : 1;
+        return this.maxFlow * timeInterval;
     }
 
     protected draw(color: string): void {
@@ -228,11 +234,9 @@ export class Graph {
      */
     protected shortestPaths: Edge[][][] = [];
 
-    protected shortestPathsEdges: Edge[] = [];
+    protected incidenceMatrix: boolean[][][] = [];
 
-    private incidenceMatrix: boolean[][][] = [];
-
-    private assignmentMatrix: number[][][] = [];
+    protected assignmentMatrix: number[][][] = [];
 
     private heap: Heap;
 
@@ -255,9 +259,6 @@ export class Graph {
     public addOrUpdateNode(node: Node): void {
         const existingNode = this.getNode(node.nodeId);
         if (existingNode) {
-            existingNode.lat = node.lat;
-            existingNode.lon = node.lon;
-            existingNode.tags = combine(existingNode.tags, node.tags);
             existingNode.incomingEdges = combine(existingNode.incomingEdges, node.incomingEdges);
             existingNode.outgoingEdges = combine(existingNode.outgoingEdges, node.outgoingEdges);
         } else {
@@ -292,7 +293,7 @@ export class Graph {
             true : false;
     }
 
-    public getOdNode(label: number): Node {
+    public getOdNode(label: string): Node {
         return this.nodes.find((node: Node) => node.label == label);
     }
 
@@ -307,16 +308,18 @@ export class Graph {
     public calcShortestPaths(odPairs: OdPair[]): Observable<any> {
         try {
             for (let i = 0; i < odPairs.length; i++) {
-                const shortestPaths = this.ksp(odPairs[i].origin, odPairs[i].destination, odPairs[i].pathType, uiConfig.k);
+                const origin = this.getOdNode(odPairs[i].origin);
+                const destination = this.getOdNode(odPairs[i].destination);
+                const shortestPaths = this.ksp(origin, destination, odPairs[i].pathType, uiConfig.k);
                 // Extracts the paths.
                 this.shortestPaths[i] = [];
                 for (const path of shortestPaths) {
                     this.shortestPaths[i].push(path.edges);
                 }
             }
-            // Gets the edges in the paths.
-            this.shortestPathsEdges = this.getEdgesfromShortestPaths();
-            if (this.shortestPathsEdges.length == 0) {
+            // Sets O/D edges.
+            this.setPathsEdges();
+            if (this.getPathsEdges().length == 0) {
                 return throwError('calcShortestPaths');
             }
         } catch (error) {
@@ -329,20 +332,21 @@ export class Graph {
         return this.shortestPaths;
     }
 
-    public getShortestPathsEgdes(): Edge[] {
-        return this.shortestPathsEdges;
+    public getPathsEdges(): Edge[] {
+        return this.edges.filter((edge: Edge) => edge.label);
     }
 
     /**
      * Calculates the incidence matrix of paths for O/D pairs.
      */
     public calcIncidenceMatrix(): Observable<any> {
+        const edges = this.getPathsEdges();
         for (let z = 0; z < this.shortestPaths.length; z++) {
             this.incidenceMatrix[z] = [];
             for (let n = 0; n < this.shortestPaths[z].length; n++) {
                 this.incidenceMatrix[z][n] = [];
-                for (let m = 0; m < this.shortestPathsEdges.length; m++) {
-                    if (this.shortestPaths[z][n].find(value => value.edgeId == this.shortestPathsEdges[m].edgeId)) {
+                for (let m = 0; m < edges.length; m++) {
+                    if (this.shortestPaths[z][n].find(value => value.edgeId == edges[m].edgeId)) {
                         // The path crosses the edge.
                         this.incidenceMatrix[z][n][m] = true;
                     } else {
@@ -402,15 +406,13 @@ export class Graph {
     /**
      * Calculates the set of minimum paths between a source and destination node based on the link distance or duration attribute.
      * k Shortest Paths algorithm in the Eppstein version.
-     * @param origin Source node
-     * @param destination Destination node
+     * @param o Source node
+     * @param d Destination node
      * @param pathType Distance or duration
      * @param k The number of shortest paths to compute
      * @returns The set of shortest paths
      */
-    private ksp(origin: number, destination: number, pathType: String, k: number): Path[] {
-        const o = this.getOdNode(origin);
-        const d = this.getOdNode(destination);
+    private ksp(o: Node, d: Node, pathType: String, k: number): Path[] {
         // Sets to zero the count property of the nodes.
         this.resetCount();
         // Instantiates the heap.
@@ -472,21 +474,19 @@ export class Graph {
         }
     }
 
-    /**
-     * Returns the edges without repetitions in the shortest paths.
-     */
-    private getEdgesfromShortestPaths(): Edge[] {
+    private setPathsEdges(): void {
         const edges: Edge[] = [];
+        let count = 1;
         for (const pair of this.shortestPaths) {
             for (const path of pair) {
                 for (const edge of path) {
                     if (!edges.find(value => value.edgeId == edge.edgeId)) {
                         edges.push(edge);
+                        edge.label = 'E' + count++;
                     }
                 }
             }
         }
-        return edges;
     }
 
     /**

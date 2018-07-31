@@ -10,6 +10,7 @@ import { getCoord } from '@turf/invariant';
 import { WizardService } from '../wizard/wizard.service';
 import { NetworkService } from '../../network/network.service';
 import { Edge, Node, OdPair } from '../../network/graph';
+import { round } from '../utils';
 import { uiConfig } from '../ui-config';
 
 /**
@@ -65,6 +66,14 @@ import { uiConfig } from '../ui-config';
      * Draws the polyline for each shortest path.
      */
     public drawPaths(): Observable<any> {
+        const lineSymbol = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale: 2
+        };
+        const icons = [{
+            icon: lineSymbol,
+            offset: '100%'
+        }];
         const graph = this.network.getGraph();
         const paths = graph.getShortestPaths();
         for (let z = 0; z < paths.length; z++) {
@@ -83,6 +92,7 @@ import { uiConfig } from '../ui-config';
                 const polyline = new google.maps.Polyline(
                     {
                         path: path,
+                        icons: icons,
                         strokeColor: uiConfig.paths.colors[n],
                         strokeOpacity: 1,
                         strokeWeight: 3,
@@ -361,7 +371,7 @@ import { uiConfig } from '../ui-config';
             [ne.lng(), ne.lat()], [sw.lng(), ne.lat()], [sw.lng(), sw.lat()], [ne.lng(), sw.lat()], [ne.lng(), ne.lat()]
         ]]);
         let a = area(p) / 10000;
-        a = Math.round(a * 10) / 10;
+        a = round(a, 1);
         return a;
     }
 

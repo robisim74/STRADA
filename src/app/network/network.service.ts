@@ -14,6 +14,7 @@ import { point, lineString } from '@turf/helpers';
 
 import { WeatherService } from './weather/weather.service';
 import { Graph, Node, Edge, Tag, OdPair, LinkFlow } from './graph';
+import { round } from '../ui/utils';
 import { environment } from '../../environments/environment';
 import { appConfig } from '../app-config';
 import { uiConfig } from '../ui/ui-config';
@@ -204,8 +205,8 @@ import { uiConfig } from '../ui/ui-config';
                 }
             }
 
-            // Creates O/D nodes.
-            this.createOdNodes();
+            // Sets O/D nodes.
+            this.setOdNodes();
         } catch (error) {
             return throwError('correctGraph');
         }
@@ -219,11 +220,11 @@ import { uiConfig } from '../ui/ui-config';
     public getTrafficData(): Observable<any> {
         const url: string = environment.functions.trafficData.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const shortestPathsEdges = this.graph.getShortestPathsEgdes();
-        const filteredShortestPathsEdges = shortestPathsEdges
+        const edges = this.graph.getPathsEdges();
+        const filteredEdges = edges
             .filter((edge: Edge) => edge.distance > uiConfig.minDistance && edge.duration > uiConfig.minDuration);
 
-        const data = filteredShortestPathsEdges.map((v: Edge, i: number, arr: Edge[]) => {
+        const data = filteredEdges.map((v: Edge, i: number, arr: Edge[]) => {
             return {
                 edgeId: v.edgeId,
                 origin: { lat: v.origin.lat, lon: v.origin.lon },
@@ -248,9 +249,9 @@ import { uiConfig } from '../ui/ui-config';
      * @param data Traffic data
      */
     public calcLinkFlows(data: any[]): Observable<any> {
-        const shortestPathsEdges = this.graph.getShortestPathsEgdes();
+        const edges = this.graph.getPathsEdges();
         // Assigns traffic data.
-        for (const edge of shortestPathsEdges) {
+        for (const edge of edges) {
             edge.durationInTraffic = 0;
             for (const value of data) {
                 if (value.edgeId == edge.edgeId) {
@@ -268,8 +269,8 @@ import { uiConfig } from '../ui/ui-config';
      * Returns the values of the link flow and the corresponding variance of the paths.
      */
     public getLinkFlows(): LinkFlow[] {
-        const shortestPathsEdges = this.graph.getShortestPathsEgdes();
-        return shortestPathsEdges.map((edge: Edge) => {
+        const edges = this.graph.getPathsEdges();
+        return edges.map((edge: Edge) => {
             return { value: edge.linkFlow, variance: edge.getVariance() };
         });
     }
@@ -380,6 +381,7 @@ import { uiConfig } from '../ui/ui-config';
                             this.fillWays(ways[n], ways[i]);
                             ways.splice(i, 1);
                             n = ways.length - 1;
+                            i = -1;
                         }
                     }
                     n++;
@@ -496,7 +498,7 @@ import { uiConfig } from '../ui/ui-config';
     private calcGeodesicDistance(edge: Edge): number {
         const origin = point([edge.origin.lon, edge.origin.lat]);
         const destination = point([edge.destination.lon, edge.destination.lat]);
-        const geodesicDistance = Math.round(distance(origin, destination) * 1000);
+        const geodesicDistance = round(distance(origin, destination) * 1000);
         return geodesicDistance;
     }
 
@@ -576,13 +578,13 @@ import { uiConfig } from '../ui/ui-config';
         });
     }
 
-    private createOdNodes(): void {
+    private setOdNodes(): void {
         const nodes = this.graph.getNodes();
-        let nodeId = 1;
+        let count = 1;
         for (const node of nodes) {
             // Only nodes at the end of the ways.
             if (node.incomingEdges.length + node.outgoingEdges.length <= 2) {
-                node.label = nodeId++;
+                node.label = 'N' + count++;
             }
         }
     }

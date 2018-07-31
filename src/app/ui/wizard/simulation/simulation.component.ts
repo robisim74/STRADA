@@ -4,7 +4,9 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard.service';
+import { SimulationService } from '../../../simulation/simulation.service';
 import * as fromUi from '../../models/reducers';
+import { ClockService } from '../../../simulation/clock.service';
 
 @Component({
     selector: 'wizard-simulation',
@@ -20,7 +22,9 @@ export class SimulationComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private store: Store<fromUi.UiState>,
-        private wizard: WizardService
+        private wizard: WizardService,
+        private simulation: SimulationService,
+        private clock: ClockService
     ) { }
 
     ngOnInit(): void {
@@ -39,6 +43,30 @@ export class SimulationComponent implements OnInit {
 
     sendActions(): void {
         //
+    }
+
+    start(): void {
+        this.clock.start();
+    }
+
+    pause(): void {
+        this.clock.pause();
+    }
+
+    stop(): void {
+        this.clock.stop();
+    }
+
+    step(): void {
+        this.clock.step();
+    }
+
+    slow(): void {
+        this.clock.slow();
+    }
+
+    quick(): void {
+        this.clock.quick();
     }
 
 }

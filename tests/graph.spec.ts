@@ -39,9 +39,9 @@ describe('Graph', () => {
             tick();
 
             const odPairs = [
-                { origin: 5, destination: 3, pathType: PathType.distance },
-                { origin: 4, destination: 3, pathType: PathType.duration },
-                { origin: 4, destination: 1, pathType: PathType.distance }
+                { origin: 'N5', destination: 'N3', pathType: PathType.distance },
+                { origin: 'N4', destination: 'N3', pathType: PathType.duration },
+                { origin: 'N4', destination: 'N1', pathType: PathType.distance }
             ];
 
             graph.calcShortestPaths(odPairs).toPromise();

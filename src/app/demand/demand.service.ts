@@ -125,25 +125,4 @@ import { uiConfig } from '../ui/ui-config';
         return false;
     }
 
-    /**
-     * Shares the demand on each path.
-     * @param assignmentMatrix Assignment matrix [pairs,paths,edges]
-     */
-    private shareDemand(assignmentMatrix: number[][][]): number[][] {
-        const sharedDemand: number[][] = [];
-        for (let z = 0; z < assignmentMatrix.length; z++) {
-            sharedDemand[z] = [];
-            if (this.odMatrix[z] != null) {
-                let sum = 0;
-                for (let n = 0; n < assignmentMatrix[z].length; n++) {
-                    const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
-                    sharedDemand[z][n] = round(p * this.odMatrix[z]);
-                    sum += sharedDemand[z][n];
-                }
-                if (this.odMatrix[z] - sum > 0) { sharedDemand[z][0] = this.odMatrix[z] - sum; }
-            }
-        }
-        return sharedDemand;
-    }
-
 }
