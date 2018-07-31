@@ -35,13 +35,6 @@ import { WizardState } from "../models/reducers/wizard.reducer";
         });
     }
 
-    public updateMap(data: any): void {
-        this.store.dispatch({
-            type: WizardActionTypes.MapChanged,
-            payload: { map: { data: data } }
-        });
-    }
-
     public putInError(error: string): void {
         this.store.dispatch({
             type: WizardActionTypes.StepError,
@@ -53,6 +46,13 @@ import { WizardState } from "../models/reducers/wizard.reducer";
         this.store.dispatch({
             type: WizardActionTypes.StepPending,
             payload: message || true
+        });
+    }
+
+    public removeFromError(): void {
+        this.store.dispatch({
+            type: WizardActionTypes.StepError,
+            payload: null
         });
     }
 

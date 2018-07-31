@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+import { Store } from '@ngrx/store';
+
 import { NetworkService } from '../network/network.service';
 import { DemandService } from '../demand/demand.service';
+import * as fromSimulation from './models/reducers';
+import { SimulationActionTypes } from './models/actions/simulation.actions';
 import { Graph, OdPair } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
 import { round } from '../ui/utils';
@@ -33,6 +37,7 @@ import { round } from '../ui/utils';
     public processingTime: number;
 
     constructor(
+        private store: Store<fromSimulation.SimulationState>,
         private network: NetworkService,
         private demand: DemandService
     ) { }
@@ -42,6 +47,10 @@ import { round } from '../ui/utils';
         this.timePeriod = [];
         this.timeInterval = 0;
         this.processingTime = 0;
+        // Simulation state.
+        this.store.dispatch({
+            type: SimulationActionTypes.Reset
+        });
     }
 
     /**
@@ -67,7 +76,10 @@ import { round } from '../ui/utils';
         // Calculates traffic fractions.
         this.calcFractions(demand);
         // Updates simulation state.
-        this.updateSimulationState();
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+        });
         return of(null);
     }
 
@@ -76,16 +88,29 @@ import { round } from '../ui/utils';
      */
     public propagateFlows(): void {
         const startTime = Date.now();
+
         // Performs a LTM algorithm cycle.
         this.ltm();
         // Updates statistics.
         this.updateStatistics();
+
         const endTime = Date.now();
         // Updates processing time.
         this.processingTime = endTime - startTime;
         // Updates simulation state.
-        this.updateSimulationState();
-        console.log(this.processingTime);
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+        });
+        // Checks if the simulation is finished.
+        if (this.endLtm()) {
+            // Updates simulation state.
+            this.store.dispatch({
+                type: SimulationActionTypes.SimulationEnded,
+                payload: true
+            });
+        }
+
         console.log(this.ltmGraph);
     }
 
@@ -103,20 +128,14 @@ import { round } from '../ui/utils';
         this.setOdNodes(demand, odPairs);
         this.setEdges();
         // Updates simulation state.
-        this.updateSimulationState();
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+        });
     }
 
     public updateTimePeriod(): void {
         this.timePeriod.push(this.timePeriod[this.timePeriod.length - 1] + this.timeInterval);
-    }
-
-    public endSimulation(): boolean {
-        const nodes = this.ltmGraph.getOdNodes();
-        return nodes.filter(
-            (node: LtmNode) =>
-                node.destination &&
-                node.destination.receivingFlow < node.destination.expectedFlow
-        ).length > 0 ? false : true;
     }
 
     /**
@@ -185,7 +204,7 @@ import { round } from '../ui/utils';
             if (node.origin) {
                 if (node.transitionFlows[node.label][outgoingEdge.label]) {
                     transitionFlow += node.transitionFlows[node.label][outgoingEdge.label];
-                    node.origin.sendingFlow += node.transitionFlows[node.label][outgoingEdge.label];
+                    node.origin.sendingFlow -= node.transitionFlows[node.label][outgoingEdge.label];
                 }
             }
             for (const incomingEdge of node.incomingEdges) {
@@ -195,6 +214,15 @@ import { round } from '../ui/utils';
             }
             outgoingEdge.updateUpstream(transitionFlow);
         }
+    }
+
+    private endLtm(): boolean {
+        const nodes = this.ltmGraph.getOdNodes();
+        return nodes.filter(
+            (node: LtmNode) =>
+                node.destination &&
+                node.destination.receivingFlow < node.destination.expectedFlow
+        ).length > 0 ? false : true;
     }
 
     /**
@@ -309,10 +337,6 @@ import { round } from '../ui/utils';
         for (const edge of edges) {
             edge.updateStatistics();
         }
-    }
-
-    private updateSimulationState(): void {
-        //
     }
 
 }

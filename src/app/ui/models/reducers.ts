@@ -1,7 +1,8 @@
 import { ActionReducerMap, createFeatureSelector, createSelector, MemoizedSelector } from "@ngrx/store";
 
 import * as fromWizard from './reducers/wizard.reducer';
-import { Step, Map, Simulation } from "./wizard";
+import * as fromMap from './reducers/map.reducer';
+import { Step, Map } from "./ui-state";
 
 /**
  * User interface state management.
@@ -9,11 +10,13 @@ import { Step, Map, Simulation } from "./wizard";
 export interface UiState {
 
     wizard: fromWizard.WizardState;
+    map: fromMap.MapState;
 
 }
 
 export const reducers: ActionReducerMap<UiState> = {
-    wizard: fromWizard.wizardReducer
+    wizard: fromWizard.wizardReducer,
+    map: fromMap.mapReducer
 };
 
 export const featureUiState: MemoizedSelector<object, UiState> = createFeatureSelector<UiState>('ui');
@@ -32,22 +35,6 @@ export const wizardState: MemoizedSelector<object, fromWizard.WizardState> = cre
 export const steps: MemoizedSelector<object, Step[]> = createSelector(
     wizardState,
     fromWizard.getSteps
-);
-
-/**
- * Exports the map state.
- */
-export const map: MemoizedSelector<object, Map> = createSelector(
-    wizardState,
-    fromWizard.getMap
-);
-
-/**
- * Exports the simulation state.
- */
-export const simulation: MemoizedSelector<object, Simulation> = createSelector(
-    wizardState,
-    fromWizard.getSimulation
 );
 
 /**
@@ -72,4 +59,17 @@ export const error: MemoizedSelector<object, string> = createSelector(
 export const pending: MemoizedSelector<object, string | boolean> = createSelector(
     wizardState,
     fromWizard.getPending
+);
+
+/**
+ * Exports the map state.
+ */
+export const mapState: MemoizedSelector<object, fromMap.MapState> = createSelector(
+    featureUiState,
+    (state: UiState) => state.map
+);
+
+export const map: MemoizedSelector<object, Map> = createSelector(
+    mapState,
+    fromMap.getMap
 );

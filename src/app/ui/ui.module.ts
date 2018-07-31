@@ -4,7 +4,6 @@ import { UiRoutingModule } from './ui-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { StoreModule } from "@ngrx/store";
-import { EffectsModule } from "@ngrx/effects";
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 import { UiComponent } from './ui.component';
@@ -29,7 +28,6 @@ import { reducers } from './models/reducers';
         UiRoutingModule,
         SharedModule,
         StoreModule.forFeature('ui', reducers),
-        EffectsModule.forFeature([]),
         OwlDateTimeModule,
         OwlNativeDateTimeModule
     ],

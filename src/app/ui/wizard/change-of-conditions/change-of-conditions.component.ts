@@ -8,7 +8,7 @@ import { NetworkService } from '../../../network/network.service';
 import { WeatherService } from '../../../network/weather/weather.service';
 import { DemandService } from '../../../demand/demand.service';
 import * as fromUi from '../../models/reducers';
-import { Step } from '../../models/wizard';
+import { Step } from '../../models/ui-state';
 import { WeatherDescription, WeatherConditions } from '../../../network/weather/weather';
 import { EnumValues } from '../../utils';
 import { uiConfig } from '../../ui-config';

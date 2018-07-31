@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
 import * as fromUi from '../../models/reducers';
-import { Map } from '../../models/wizard';
+import { Map } from '../../models/ui-state';
 import { PathType, OdPair, Node } from '../../../network/graph';
 import { EnumValues } from '../../utils';
 import { uiConfig } from '../../ui-config';

@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Observable, interval, Subscription } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { takeWhile } from "rxjs/operators";
 
 import { Store, select } from '@ngrx/store';
 
 import { SimulationService } from "./simulation.service";
+import * as fromSimulation from './models/reducers';
+import { SimulationActionTypes } from './models/actions/simulation.actions';
 import { uiConfig } from "../ui/ui-config";
 
 @Injectable() export class ClockService {
@@ -26,16 +28,29 @@ import { uiConfig } from "../ui/ui-config";
 
     private subscription: Subscription;
 
+    private endSimulation = false;
+
     constructor(
+        private store: Store<fromSimulation.SimulationState>,
         private simulation: SimulationService
     ) {
+        this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) => {
+            this.endSimulation = end;
+        });
         this.simulatedTimeInterval = uiConfig.simulatedTimeInterval;
-        this.updateSimulationState();
+        // Updates simulation state.
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+        });
     }
 
     public reset(): void {
         this.simulatedTimePeriod = 0;
         this.simulatedTimeInterval = uiConfig.simulatedTimeInterval;
+        this.interval = null;
+        this.subscription = null;
+        this.endSimulation = false;
     }
 
     /**
@@ -45,10 +60,14 @@ import { uiConfig } from "../ui/ui-config";
         // Sets interval.
         this.interval = interval(this.simulatedTimeInterval);
         this.subscription = this.interval.pipe(
-            // takeUntil()
+            takeWhile(() => !this.endSimulation)
         ).subscribe(() => {
             this.simulation.propagateFlows();
-            this.updateSimulationState();
+            // Updates simulation state.
+            this.store.dispatch({
+                type: SimulationActionTypes.PeriodsChanged,
+                payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+            });
             this.simulation.updateTimePeriod();
             this.updateSimulatedTimePeriod();
         });
@@ -62,7 +81,11 @@ import { uiConfig } from "../ui/ui-config";
         this.subscription.unsubscribe();
         this.simulation.resetFlows();
         this.reset();
-        this.updateSimulationState();
+        // Updates simulation state.
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+        });
     }
 
     /**
@@ -70,7 +93,11 @@ import { uiConfig } from "../ui/ui-config";
      */
     public step(): void {
         this.simulation.propagateFlows();
-        this.updateSimulationState();
+        // Updates simulation state.
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+        });
         this.simulation.updateTimePeriod();
         this.updateSimulatedTimePeriod();
     }
@@ -95,10 +122,6 @@ import { uiConfig } from "../ui/ui-config";
                 this.simulatedTimeInterval -= uiConfig.timeIntervalDecrement;
             }
         }
-    }
-
-    private updateSimulationState(): void {
-        //
     }
 
     private updateSimulatedTimePeriod(): void {

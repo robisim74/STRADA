@@ -1,15 +1,18 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+import { Store } from '@ngrx/store';
 import area from '@turf/area';
 import centroid from '@turf/centroid';
 import center from '@turf/center';
 import { polygon, point, featureCollection } from '@turf/helpers';
 import { getCoord } from '@turf/invariant';
 
-import { WizardService } from '../wizard/wizard.service';
 import { NetworkService } from '../../network/network.service';
 import { Edge, Node, OdPair } from '../../network/graph';
+import * as fromUi from '../models/reducers';
+import { MapActionTypes } from '../models/actions/map.actions';
+import { WizardActionTypes } from '../models/actions/wizard.actions';
 import { round } from '../utils';
 import { uiConfig } from '../ui-config';
 
@@ -36,7 +39,7 @@ import { uiConfig } from '../ui-config';
 
     constructor(
         private zone: NgZone,
-        private wizard: WizardService,
+        private store: Store<fromUi.UiState>,
         private network: NetworkService
     ) { }
 
@@ -46,6 +49,10 @@ import { uiConfig } from '../ui-config';
         this.hideRect();
         this.paths = [];
         this.centroid = null;
+        // UI state.
+        this.store.dispatch({
+            type: MapActionTypes.Reset
+        });
     }
 
     /**
@@ -312,7 +319,10 @@ import { uiConfig } from '../ui-config';
         // Adds listener.
         node.drawingOptions.marker.addListener('click', () =>
             // Updates map state.
-            this.wizard.updateMap({ selectedNode: node })
+            this.store.dispatch({
+                type: MapActionTypes.MapChanged,
+                payload: { map: { data: { selectedNode: node } } }
+            })
         );
     }
 
@@ -341,10 +351,23 @@ import { uiConfig } from '../ui-config';
             // Checks area limits.
             if (a >= uiConfig.areaMinLimit && a <= uiConfig.areaMaxLimit) {
                 // Updates map state.
-                this.wizard.updateMap({ bounds: this.getBounds() });
+                this.store.dispatch({
+                    type: MapActionTypes.MapChanged,
+                    payload: { map: { data: { bounds: this.getBounds() } } }
+                });
+                this.store.dispatch({
+                    type: WizardActionTypes.StepError,
+                    payload: null
+                });
             } else {
-                this.wizard.putInError(`The area must be between ${uiConfig.areaMinLimit} and ${uiConfig.areaMaxLimit} hectares`);
-                this.wizard.updateMap({ bounds: null });
+                this.store.dispatch({
+                    type: WizardActionTypes.StepError,
+                    payload: `The area must be between ${uiConfig.areaMinLimit} and ${uiConfig.areaMaxLimit} hectares`
+                });
+                this.store.dispatch({
+                    type: MapActionTypes.MapChanged,
+                    payload: { map: { data: { bounds: null } } }
+                });
             }
         });
     }

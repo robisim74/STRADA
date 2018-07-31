@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store';
 
 import { WizardService } from '../wizard.service';
 import { SimulationService } from '../../../simulation/simulation.service';
-import * as fromUi from '../../models/reducers';
+import * as fromSimulation from '../../../simulation/models/reducers';
 import { ClockService } from '../../../simulation/clock.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class SimulationComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private store: Store<fromUi.UiState>,
+        private store: Store<fromSimulation.SimulationState>,
         private wizard: WizardService,
         private simulation: SimulationService,
         private clock: ClockService

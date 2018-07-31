@@ -22,15 +22,6 @@ export interface Map {
 
 }
 
-export interface Simulation {
-
-    /**
-     * Simulation data.
-     */
-    data: any;
-
-}
-
 /**
  * Initial steps.
  */

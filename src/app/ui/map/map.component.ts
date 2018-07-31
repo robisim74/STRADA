@@ -2,11 +2,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { Store, select } from '@ngrx/store';
 
-import { WizardService } from '../wizard/wizard.service';
 import { MapService } from './map.service';
 import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
-import { Step } from '../models/wizard';
+import { Step } from '../models/ui-state';
 import { MapStyle } from './map.style';
 import { OdPair } from '../../network/graph';
 import { uiConfig } from '../ui-config';
@@ -35,9 +34,10 @@ export class MapComponent extends BaseComponent implements OnInit {
     gestureHandling: string;
     styles: google.maps.MapTypeStyle[];
 
+    currentStep: number;
+
     constructor(
         private store: Store<fromUi.UiState>,
-        private wizard: WizardService,
         private map: MapService,
         private network: NetworkService
     ) {
@@ -63,6 +63,7 @@ export class MapComponent extends BaseComponent implements OnInit {
 
     receiveActions(): void {
         this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
+            this.currentStep = currentStep;
             switch (currentStep) {
                 case 0:
                     this.center = uiConfig.map.center;
@@ -88,7 +89,7 @@ export class MapComponent extends BaseComponent implements OnInit {
             }
         }));
         this.subscriptions.push(this.store.pipe(select(fromUi.steps)).subscribe((steps: Step[]) => {
-            switch (this.wizard.state.currentStep) {
+            switch (this.currentStep) {
                 case 0:
                     if (steps[0]) {
                         // Updates center map.

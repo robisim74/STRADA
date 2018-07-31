@@ -2,11 +2,10 @@ import { Component, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angula
 
 import { Store, select } from '@ngrx/store';
 
-import { WizardService } from '../wizard/wizard.service';
 import { WeatherService } from '../../network/weather/weather.service';
 import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
-import { Step } from '../models/wizard';
+import { Step } from '../models/ui-state';
 import { WeatherConditions } from '../../network/weather/weather';
 import { appConfig } from '../../app-config';
 
@@ -31,7 +30,6 @@ export class WeatherComponent extends BaseComponent implements OnInit, AfterView
         private elementRef: ElementRef,
         private renderer: Renderer2,
         private store: Store<fromUi.UiState>,
-        private wizard: WizardService,
         private weather: WeatherService,
         private network: NetworkService
     ) {
