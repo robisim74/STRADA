@@ -151,7 +151,7 @@ export class Edge {
         if (this.distance == 0) { this.distance = 1; }
         // Min duration is 1 second.
         if (this.duration == 0) {
-            this.duration = round(this.distance / 50 / 3.6) > 0 ? round(this.distance / 50 / 3.6) : 1;
+            this.duration = round(this.distance / (50 / 3.6)) > 0 ? round(this.distance / (50 / 3.6)) : 1;
         }
         // Calculates free flow velocity (m/s).
         this.velocity = round(this.distance / this.duration, 2);

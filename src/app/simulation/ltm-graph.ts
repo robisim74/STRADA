@@ -1,4 +1,4 @@
-import { polynomial } from 'everpolate';
+import { linear } from 'everpolate';
 
 import * as combine from 'mout/array/combine';
 
@@ -21,9 +21,13 @@ export class LtmNode extends Node {
      */
     public origin?: {
         /**
-         * Number of vehicles that would like to enter the network.
+         * Number of vehicles that enters the network.
          */
         sendingFlow: number;
+        /**
+         * Traffic demand.
+         */
+        expectedFlow: number;
     };
 
     /**
@@ -43,33 +47,38 @@ export class LtmNode extends Node {
     /**
      * The amount of vehicles that are transferred from incoming links to outgoing links.
      */
-    public transitionFlows: number[][];
+    public transitionFlows: any = {};
 
     public reset(): void {
         this.origin = null;
         this.destination = null;
+        this.transitionFlows = {};
     }
 
     public calcTransitionFlows(shortestPaths: LtmEdge[][][]): void {
-        this.transitionFlows = [];
+        this.transitionFlows = {};
         for (const incomingEdge of this.incomingEdges) {
-            this.transitionFlows[incomingEdge.label] = [];
-            // Destination node.
+            this.transitionFlows[incomingEdge.label] = {};
+            // To destination.
             if (this.destination) {
-                this.transitionFlows[incomingEdge.label][this.label] = this.calcOutgoingFlow(incomingEdge);
+                if (this.toDestination(incomingEdge, shortestPaths)) {
+                    this.transitionFlows[incomingEdge.label][this.label] = this.calcOutgoingFlow(incomingEdge);
+                }
             }
             // Link to link.
             for (const outgoingEdge of this.outgoingEdges) {
-                if (this.areOnPath(incomingEdge, outgoingEdge, shortestPaths)) {
+                if (this.linkToLink(incomingEdge, outgoingEdge, shortestPaths)) {
                     this.transitionFlows[incomingEdge.label][outgoingEdge.label] = this.calcTransitionFlow(incomingEdge, outgoingEdge);
                 }
             }
         }
-        // Origin node.
+        // From origin.
         for (const outgoingEdge of this.outgoingEdges) {
             if (this.origin) {
-                this.transitionFlows[this.label] = [];
-                this.transitionFlows[this.label][outgoingEdge.label] = this.calcIncomingFlow(outgoingEdge);
+                if (this.fromOrigin(outgoingEdge, shortestPaths)) {
+                    this.transitionFlows[this.label] = {};
+                    this.transitionFlows[this.label][outgoingEdge.label] = this.calcIncomingFlow(outgoingEdge);
+                }
             }
         }
     }
@@ -102,12 +111,34 @@ export class LtmNode extends Node {
      */
     private calcIncomingFlow(outgoingEdge: LtmEdge): number {
         return Math.min(
-            this.origin.sendingFlow - outgoingEdge.upstream[outgoingEdge.upstream.length - 1],
+            this.origin.expectedFlow - outgoingEdge.upstream[outgoingEdge.upstream.length - 1],
             outgoingEdge.receivingFlow
         );
     }
 
-    private areOnPath(incomingEdge: LtmEdge, outgoingEdge: LtmEdge, shortestPaths: LtmEdge[][][]): boolean {
+    private toDestination(incomingEdge: LtmEdge, shortestPaths: LtmEdge[][][]): boolean {
+        for (let z = 0; z < shortestPaths.length; z++) {
+            for (let n = 0; n < shortestPaths[z].length; n++) {
+                if (shortestPaths[z][n][shortestPaths[z][n].length - 1].edgeId == incomingEdge.edgeId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private fromOrigin(outgoingEdge: LtmEdge, shortestPaths: LtmEdge[][][]): boolean {
+        for (let z = 0; z < shortestPaths.length; z++) {
+            for (let n = 0; n < shortestPaths[z].length; n++) {
+                if (shortestPaths[z][n][0].edgeId == outgoingEdge.edgeId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private linkToLink(incomingEdge: LtmEdge, outgoingEdge: LtmEdge, shortestPaths: LtmEdge[][][]): boolean {
         for (let z = 0; z < shortestPaths.length; z++) {
             for (let n = 0; n < shortestPaths[z].length; n++) {
                 for (let m = 0; m < shortestPaths[z][n].length - 1; m++) {
@@ -185,23 +216,39 @@ export class LtmEdge extends Edge {
         this.totalCount = 0;
         this.moderateTrafficCount = 0;
         this.heavyTrafficCount = 0;
+        this.draw(uiConfig.links.baseColor);
     }
 
     public calcSendingFlow(timePeriod: number[], timeInterval: number): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval - this.duration;
         const capacity = this.getCapacity(timeInterval);
-        this.sendingFlow = Math.min(
-            timePeriod.length > 1 ? polynomial([time], timePeriod, this.upstream) : 0 -
-                this.downstream[this.downstream.length - 1],
-            capacity
-        );
+        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstream) : [0];
+        let sendingFlow = 0;
+        // The sending flow should only be calculated in the presence of vehicles on the link.
+        if (this.trafficVolume > 0) {
+            sendingFlow = Math.min(
+                interpolation[0] > 0 ? interpolation[0] : 0 -
+                    this.downstream[this.downstream.length - 1],
+                capacity
+            );
+            // The sending flow should not exceed the number of vehicles on the link.
+            if (sendingFlow > this.trafficVolume) {
+                sendingFlow = this.trafficVolume;
+            }
+            // The sending flow should not be less than zero.
+            if (sendingFlow < 0) {
+                sendingFlow = 0;
+            }
+        }
+        this.sendingFlow = sendingFlow;
     }
 
     public calcReceivingFlow(timePeriod: number[], timeInterval: number): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval + this.duration;
         const capacity = this.getCapacity(timeInterval);
+        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream) : [0];
         this.receivingFlow = Math.min(
-            timePeriod.length > 1 ? polynomial([time], timePeriod, this.downstream) : 0 +
+            interpolation[0] > 0 ? interpolation[0] : 0 +
                 this.getKjam() * this.distance -
                 this.upstream[this.upstream.length - 1],
             capacity
@@ -224,19 +271,26 @@ export class LtmEdge extends Edge {
         this.downstream.push(this.downstream[this.downstream.length - 1] + transitionFlow);
     }
 
+    /**
+     * Updates the traffic volume as the difference between the cumulative flows.
+     */
+    public updateTrafficVolume(): void {
+        this.trafficVolume = this.upstream[this.upstream.length - 1] - this.downstream[this.downstream.length - 1];
+    }
+
     public updateStatistics(): void {
-        this.trafficVolume = round(this.upstream[this.upstream.length - 1] - this.downstream[this.downstream.length - 1]);
-        this.totalCount = round(this.upstream[this.upstream.length - 1]);
+        // Total counts.
+        this.totalCount = this.upstream[this.upstream.length - 1];
         // Heavy traffic.
-        if (this.trafficVolume > round(this.getCapacity(this.duration) * uiConfig.heavyTraffic)) {
+        if (this.trafficVolume > this.getCapacity(this.duration) * uiConfig.heavyTraffic) {
             this.heavyTrafficCount++;
             this.draw(uiConfig.links.heavyTrafficColor);
             // Moderate traffic.
-        } else if (this.trafficVolume > round(this.getCapacity(this.duration) * uiConfig.moderateTraffic)) {
+        } else if (this.trafficVolume > this.getCapacity(this.duration) * uiConfig.moderateTraffic) {
             this.moderateTrafficCount++;
             this.draw(uiConfig.links.moderateTrafficColor);
             // No traffic.
-        } else {
+        } else if (this.trafficVolume > 0 || this.totalCount > 0) {
             this.draw(uiConfig.links.noTrafficColor);
         }
     }
@@ -316,7 +370,7 @@ export class LtmGraph extends Graph {
         const edges = graph.getPathsEdges();
         for (let i = 0; i < edges.length; i++) {
             const origin = this.getNode(edges[i].origin.nodeId) || new LtmNode(edges[i].origin.nodeId);
-            const destination = this.getNode(edges[i].origin.nodeId) || new LtmNode(edges[i].destination.nodeId);
+            const destination = this.getNode(edges[i].destination.nodeId) || new LtmNode(edges[i].destination.nodeId);
             const edge = new LtmEdge(edges[i].edgeId);
             edge.origin = origin;
             edge.destination = destination;

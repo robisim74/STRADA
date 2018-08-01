@@ -17,6 +17,8 @@ import { StatisticsComponent } from './wizard/statistics/statistics.component';
 import { MapComponent } from './map/map.component';
 import { GoogleMapComponent } from './map/google-map.component';
 import { WeatherComponent } from './weather/weather.component';
+import { NumericComponent } from './numeric/numeric.component';
+import { ChartsComponent } from './charts/charts.component';
 
 import { WizardService } from './wizard/wizard.service';
 import { SchedulerService } from './wizard/scheduler.service';
@@ -42,7 +44,9 @@ import { reducers } from './models/reducers';
         StatisticsComponent,
         MapComponent,
         GoogleMapComponent,
-        WeatherComponent
+        WeatherComponent,
+        NumericComponent,
+        ChartsComponent
     ],
     providers: [
         WizardService,

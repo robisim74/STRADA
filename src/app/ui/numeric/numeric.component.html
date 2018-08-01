@@ -1,0 +1,20 @@
+<table mat-table [dataSource]="data" class="mat-elevation-z3">
+    <ng-container matColumnDef="edge">
+        <th mat-header-cell *matHeaderCellDef> Edge </th>
+        <td mat-cell *matCellDef="let element"> {{ element.edge }} </td>
+    </ng-container>
+    <ng-container matColumnDef="wayName">
+        <th mat-header-cell *matHeaderCellDef> Way name </th>
+        <td mat-cell *matCellDef="let element"> {{ element.wayName }} </td>
+    </ng-container>
+    <ng-container matColumnDef="trafficVolume">
+        <th mat-header-cell *matHeaderCellDef> Traffic volume </th>
+        <td mat-cell *matCellDef="let element"> {{ element.trafficVolume }} </td>
+    </ng-container>
+    <ng-container matColumnDef="totalCount">
+        <th mat-header-cell *matHeaderCellDef> Total count </th>
+        <td mat-cell *matCellDef="let element"> {{ element.totalCount }} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

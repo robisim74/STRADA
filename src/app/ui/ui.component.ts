@@ -23,6 +23,10 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 
     pending = false;
 
+    numerical = false;
+
+    statistics = false;
+
     subscriptions: Subscription[] = [];
 
     constructor(
@@ -42,6 +46,23 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         this.subscriptions.push(this.store.pipe(select(fromUi.error)).subscribe((error: string) => {
             if (error) {
                 this.openSnackBar(error);
+            }
+        }));
+        // Panels.
+        this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
+            switch (currentStep) {
+                case 0:
+                    this.numerical = false;
+                    this.statistics = false;
+                    break;
+                case 4:
+                    this.numerical = true;
+                    this.statistics = false;
+                    break;
+                case 5:
+                    this.numerical = true;
+                    this.statistics = true;
+                    break;
             }
         }));
     }

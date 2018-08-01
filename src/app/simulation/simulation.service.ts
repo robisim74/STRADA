@@ -7,8 +7,9 @@ import { NetworkService } from '../network/network.service';
 import { DemandService } from '../demand/demand.service';
 import * as fromSimulation from './models/reducers';
 import { SimulationActionTypes } from './models/actions/simulation.actions';
-import { Graph, OdPair } from '../network/graph';
+import { Graph, OdPair, Tag } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
+import { NumericalSimulation } from './models/simulation-state';
 import { round } from '../ui/utils';
 
 /**
@@ -32,9 +33,9 @@ import { round } from '../ui/utils';
     public timeInterval: number;
 
     /**
-     * PropagateFlow processing time.
+     * PropagateFlow processing time (ms).
      */
-    public processingTime: number;
+    public processingTime = 99;
 
     constructor(
         private store: Store<fromSimulation.SimulationState>,
@@ -97,10 +98,16 @@ import { round } from '../ui/utils';
         const endTime = Date.now();
         // Updates processing time.
         this.processingTime = endTime - startTime;
+        // Updates time period.
+        this.updateTimePeriod();
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
             payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+        });
+        this.store.dispatch({
+            type: SimulationActionTypes.SimulationChanged,
+            payload: { simulation: { data: this.numericalSimulation() } }
         });
         // Checks if the simulation is finished.
         if (this.endLtm()) {
@@ -131,6 +138,10 @@ import { round } from '../ui/utils';
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
             payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+        });
+        this.store.dispatch({
+            type: SimulationActionTypes.SimulationChanged,
+            payload: { simulation: { data: [] } }
         });
     }
 
@@ -204,7 +215,7 @@ import { round } from '../ui/utils';
             if (node.origin) {
                 if (node.transitionFlows[node.label][outgoingEdge.label]) {
                     transitionFlow += node.transitionFlows[node.label][outgoingEdge.label];
-                    node.origin.sendingFlow -= node.transitionFlows[node.label][outgoingEdge.label];
+                    node.origin.sendingFlow += node.transitionFlows[node.label][outgoingEdge.label];
                 }
             }
             for (const incomingEdge of node.incomingEdges) {
@@ -214,14 +225,21 @@ import { round } from '../ui/utils';
             }
             outgoingEdge.updateUpstream(transitionFlow);
         }
+        // Updates the traffic volume of the links.
+        const edges = this.ltmGraph.getEdges();
+        for (const edge of edges) {
+            edge.updateTrafficVolume();
+        }
     }
 
+    /**
+     * The algorithm ends when there is no more traffic volume on the links.
+     */
     private endLtm(): boolean {
-        const nodes = this.ltmGraph.getOdNodes();
-        return nodes.filter(
-            (node: LtmNode) =>
-                node.destination &&
-                node.destination.receivingFlow < node.destination.expectedFlow
+        const edges = this.ltmGraph.getEdges();
+        return edges.filter(
+            (edge: LtmEdge) =>
+                edge.trafficVolume > 0
         ).length > 0 ? false : true;
     }
 
@@ -239,10 +257,11 @@ import { round } from '../ui/utils';
             const origin = this.ltmGraph.getOdNode(odPairs[i].origin);
             const destination = this.ltmGraph.getOdNode(odPairs[i].destination);
             if (origin.origin) {
-                origin.origin.sendingFlow += odMatrix[i];
+                origin.origin.expectedFlow += odMatrix[i];
             } else {
                 origin.origin = {
-                    sendingFlow: odMatrix[i]
+                    sendingFlow: 0,
+                    expectedFlow: odMatrix[i]
                 };
             }
             if (destination.destination) {
@@ -271,11 +290,13 @@ import { round } from '../ui/utils';
     private calcFractions(odMatrix: number[]): void {
         const sharedDomand = this.shareDemand(odMatrix, this.ltmGraph.getAssignmentMatrix());
         const shortestPaths = this.ltmGraph.getShortestPaths();
-        const edges = this.ltmGraph.getEdges();
-        for (const edge of edges) {
-            const nodeId = edge.origin.nodeId;
-            const edgeId = edge.edgeId;
-            edge.p = this.calcFraction(shortestPaths, sharedDomand, nodeId, edgeId);
+        const nodes = this.ltmGraph.getNodes();
+        for (const node of nodes) {
+            for (const edge of node.outgoingEdges) {
+                const nodeId = node.nodeId;
+                const edgeId = edge.edgeId;
+                edge.p = this.calcFraction(shortestPaths, sharedDomand, nodeId, edgeId);
+            }
         }
     }
 
@@ -284,8 +305,8 @@ import { round } from '../ui/utils';
      * and the total of the demand that crosses the node of origin of the link.
      * @param shortestPaths The shortest paths
      * @param sharedDemand The demand shared on each path
-     * @param nodeId The origin node of the edge
-     * @param edgeId The id of the edge
+     * @param nodeId The node id
+     * @param edgeId The id of the outgoing edge
      */
     private calcFraction(shortestPaths: LtmEdge[][][], sharedDemand: number[][], nodeId: number, edgeId: number): number {
         let total = 0;
@@ -296,9 +317,6 @@ import { round } from '../ui/utils';
                     // Total of the paths and destinations that cross the node.
                     if (shortestPaths[z][n][m].origin.nodeId == nodeId) {
                         total += sharedDemand[z][n];
-                    }
-                    if (shortestPaths[z][n][m].origin.destination) {
-                        total += shortestPaths[z][n][m].origin.destination.expectedFlow;
                     }
                     // Partial of the paths that cross the link.
                     if (shortestPaths[z][n][m].edgeId == edgeId) {
@@ -337,6 +355,25 @@ import { round } from '../ui/utils';
         for (const edge of edges) {
             edge.updateStatistics();
         }
+    }
+
+    private numericalSimulation(): NumericalSimulation[] {
+        const data: NumericalSimulation[] = [];
+
+        const edges = this.ltmGraph.getEdges();
+        for (const edge of edges) {
+            const wayTag = edge.tags.find((tag: Tag) => tag.key == 'name');
+            const wayName = wayTag ? wayTag.value : '';
+            data.push(
+                {
+                    edge: edge.label,
+                    wayName: wayName,
+                    trafficVolume: round(edge.trafficVolume),
+                    totalCount: round(edge.totalCount)
+                }
+            );
+        }
+        return data;
     }
 
 }

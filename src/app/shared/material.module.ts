@@ -15,7 +15,8 @@ import {
     MatDialogModule,
     MatGridListModule,
     MatSelectModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule
 } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -34,7 +35,8 @@ const materialModules: any[] = [
     MatDialogModule,
     MatGridListModule,
     MatSelectModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule
 ];
 
 @NgModule({

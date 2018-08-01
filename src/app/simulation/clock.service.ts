@@ -9,17 +9,26 @@ import * as fromSimulation from './models/reducers';
 import { SimulationActionTypes } from './models/actions/simulation.actions';
 import { uiConfig } from "../ui/ui-config";
 
+export enum Control {
+    start = 'start',
+    pause = 'pause',
+    stop = 'stop',
+    step = 'step',
+    slow = 'slow',
+    quick = 'quick'
+}
+
 @Injectable() export class ClockService {
 
     /**
      * Simulated running time.
      */
-    private simulatedTimePeriod = 0;
+    private simulatedTimePeriod;
 
     /**
      * Simulated time interval.
      */
-    private simulatedTimeInterval;
+    private simulatedTimeInterval: number;
 
     /**
      * Simulation timer.
@@ -37,6 +46,7 @@ import { uiConfig } from "../ui/ui-config";
         this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) => {
             this.endSimulation = end;
         });
+        this.simulatedTimePeriod = 0;
         this.simulatedTimeInterval = uiConfig.simulatedTimeInterval;
         // Updates simulation state.
         this.store.dispatch({
@@ -53,32 +63,60 @@ import { uiConfig } from "../ui/ui-config";
         this.endSimulation = false;
     }
 
+    public pressControl(control: Control): void {
+        switch (control) {
+            case Control.start:
+                this.start();
+                break;
+            case Control.pause:
+                this.pause();
+                break;
+            case Control.stop:
+                this.stop();
+                break;
+            case Control.step:
+                this.step();
+                break;
+            case Control.slow:
+                this.slow();
+                break;
+            case Control.quick:
+                this.quick();
+                break;
+        }
+    }
+
     /**
      * Starts simulation.
      */
     public start(): void {
-        // Sets interval.
-        this.interval = interval(this.simulatedTimeInterval);
-        this.subscription = this.interval.pipe(
-            takeWhile(() => !this.endSimulation)
-        ).subscribe(() => {
-            this.simulation.propagateFlows();
-            // Updates simulation state.
-            this.store.dispatch({
-                type: SimulationActionTypes.PeriodsChanged,
-                payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+        if (!this.subscription || this.subscription.closed) {
+            // Sets interval.
+            this.interval = interval(this.simulatedTimeInterval);
+            this.subscription = this.interval.pipe(
+                takeWhile(() => !this.endSimulation)
+            ).subscribe(() => {
+                this.simulation.propagateFlows();
+                this.updateSimulatedTimePeriod();
+                // Updates simulation state.
+                this.store.dispatch({
+                    type: SimulationActionTypes.PeriodsChanged,
+                    payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+                });
             });
-            this.simulation.updateTimePeriod();
-            this.updateSimulatedTimePeriod();
-        });
+        }
     }
 
     public pause(): void {
-        this.subscription.unsubscribe();
+        if (this.subscription && !this.subscription.closed) {
+            this.subscription.unsubscribe();
+        }
     }
 
     public stop(): void {
-        this.subscription.unsubscribe();
+        if (this.subscription && !this.subscription.closed) {
+            this.subscription.unsubscribe();
+        }
         this.simulation.resetFlows();
         this.reset();
         // Updates simulation state.
@@ -86,20 +124,26 @@ import { uiConfig } from "../ui/ui-config";
             type: SimulationActionTypes.PeriodsChanged,
             payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
         });
+        this.store.dispatch({
+            type: SimulationActionTypes.SimulationEnded,
+            payload: false
+        });
     }
 
     /**
      * Performs one step.
      */
     public step(): void {
+        if (this.subscription && !this.subscription.closed) {
+            this.subscription.unsubscribe();
+        }
         this.simulation.propagateFlows();
+        this.updateSimulatedTimePeriod();
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
             payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
         });
-        this.simulation.updateTimePeriod();
-        this.updateSimulatedTimePeriod();
     }
 
     public slow(): void {
@@ -110,6 +154,11 @@ import { uiConfig } from "../ui/ui-config";
         } else {
             this.simulatedTimeInterval += uiConfig.timeIntervalIncrement;
         }
+        // Updates simulation state.
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+        });
     }
 
     public quick(): void {
@@ -121,6 +170,11 @@ import { uiConfig } from "../ui/ui-config";
             } else {
                 this.simulatedTimeInterval -= uiConfig.timeIntervalDecrement;
             }
+            // Updates simulation state.
+            this.store.dispatch({
+                type: SimulationActionTypes.PeriodsChanged,
+                payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+            });
         }
     }
 

@@ -27,11 +27,15 @@
                     <wizard-change-of-conditions [formGroup]="formSteps.get([3])" [index]="3"></wizard-change-of-conditions>
                 </mat-step>
                 <mat-step formGroupName="4" [stepControl]="formSteps.get([4])" editable="false">
-                    <ng-template matStepLabel>Simulation</ng-template>
+                    <ng-template matStepLabel>
+                        <div matTooltip="Run the graphic or numerical simulation using the control panel">Simulation</div>
+                    </ng-template>
                     <wizard-simulation [formGroup]="formSteps.get([4])" [index]="4"></wizard-simulation>
                 </mat-step>
                 <mat-step formGroupName="5" [stepControl]="formSteps.get([5])" editable="false">
-                    <ng-template matStepLabel>Statistics</ng-template>
+                    <ng-template matStepLabel>
+                        <div matTooltip="See the statistics of the network">Statistics</div>
+                    </ng-template>
                     <wizard-statistics [formGroup]="formSteps.get([5])" [index]="5"></wizard-statistics>
                 </mat-step>
             </mat-vertical-stepper>

@@ -21,6 +21,22 @@
                     </mat-expansion-panel-header>
                     <ui-map></ui-map>
                 </mat-expansion-panel>
+                <mat-expansion-panel *ngIf="numerical">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Numerical
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ui-numeric></ui-numeric>
+                </mat-expansion-panel>
+                <mat-expansion-panel *ngIf="statistics" [expanded]="statistics">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Statistics
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ui-charts></ui-charts>
+                </mat-expansion-panel>
             </mat-accordion>
         </div>
     </div>
