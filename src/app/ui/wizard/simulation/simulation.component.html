@@ -44,6 +44,11 @@
             <p>Simulated time interval: {{ simulatedTimeInterval }} s</p>
             <p>Simulated time period: {{ simulatedTimePeriod }}</p>
         </div>
+        <br>
+        <div fxLayout="column" fxLayoutGap="8px">
+            <p>Started vehicles: {{ counts?.startedVehicles || 0 }}</p>
+            <p>Arrived vehicles: {{ counts?.arrivedVehicles || 0 }}</p>
+        </div>
     </div>
 
     <div class="navigation">

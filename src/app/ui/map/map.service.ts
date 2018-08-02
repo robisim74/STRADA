@@ -231,7 +231,10 @@ import { uiConfig } from '../ui-config';
         if (graph) {
             const edges = graph.getEdges();
             for (const edge of edges) {
-                if (edge.drawingOptions.polyline) { edge.drawingOptions.polyline.setMap(null); }
+                if (edge.drawingOptions.polyline) {
+                    edge.drawingOptions.polyline.setMap(null);
+                    edge.drawingOptions.marker.setMap(null);
+                }
             }
             this.hideNodes();
         }
@@ -306,13 +309,14 @@ import { uiConfig } from '../ui-config';
     private showEdge(edge: Edge): void {
         if (edge.drawingOptions.polyline) {
             edge.drawingOptions.polyline.setMap(this.map);
+            edge.drawingOptions.marker.setMap(this.map);
         }
     }
 
     private showNode(node: Node): void {
         node.drawingOptions.marker = new google.maps.Marker({
             position: { lat: node.lat, lng: node.lon },
-            icon: '../../assets/images/add_location.png',
+            icon: '../../assets/images/twotone-add_location-24px.svg',
             title: 'Node: ' + node.label,
             map: this.map
         });
@@ -327,11 +331,11 @@ import { uiConfig } from '../ui-config';
     }
 
     private selectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/place.png');
+        node.drawingOptions.marker.setIcon('../../assets/images/twotone-place-24px.svg');
     }
 
     private deselectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/add_location.png');
+        node.drawingOptions.marker.setIcon('../../assets/images/twotone-add_location-24px.svg');
     }
 
     private checkRect(): void {

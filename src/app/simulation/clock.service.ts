@@ -23,7 +23,7 @@ export enum Control {
     /**
      * Simulated running time.
      */
-    private simulatedTimePeriod;
+    private simulatedTimePeriod: number;
 
     /**
      * Simulated time interval.
@@ -35,9 +35,14 @@ export enum Control {
      */
     private interval: Observable<number>;
 
-    private subscription: Subscription;
+    /**
+     * PropagateFlow processing time (ms).
+     */
+    public processingTime = 99;
 
     private endSimulation = false;
+
+    private subscription: Subscription;
 
     constructor(
         private store: Store<fromSimulation.SimulationState>,
@@ -59,8 +64,9 @@ export enum Control {
         this.simulatedTimePeriod = 0;
         this.simulatedTimeInterval = uiConfig.simulatedTimeInterval;
         this.interval = null;
-        this.subscription = null;
+        this.processingTime = 0;
         this.endSimulation = false;
+        this.subscription = null;
     }
 
     public pressControl(control: Control): void {
@@ -96,13 +102,7 @@ export enum Control {
             this.subscription = this.interval.pipe(
                 takeWhile(() => !this.endSimulation)
             ).subscribe(() => {
-                this.simulation.propagateFlows();
-                this.updateSimulatedTimePeriod();
-                // Updates simulation state.
-                this.store.dispatch({
-                    type: SimulationActionTypes.PeriodsChanged,
-                    payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
-                });
+                this.execute();
             });
         }
     }
@@ -137,13 +137,7 @@ export enum Control {
         if (this.subscription && !this.subscription.closed) {
             this.subscription.unsubscribe();
         }
-        this.simulation.propagateFlows();
-        this.updateSimulatedTimePeriod();
-        // Updates simulation state.
-        this.store.dispatch({
-            type: SimulationActionTypes.PeriodsChanged,
-            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
-        });
+        this.execute();
     }
 
     public slow(): void {
@@ -162,7 +156,7 @@ export enum Control {
     }
 
     public quick(): void {
-        if (this.simulatedTimeInterval - uiConfig.timeIntervalDecrement > this.simulation.processingTime) {
+        if (this.simulatedTimeInterval - uiConfig.timeIntervalDecrement > this.processingTime) {
             if (this.subscription && !this.subscription.closed) {
                 this.subscription.unsubscribe();
                 this.simulatedTimeInterval -= uiConfig.timeIntervalDecrement;
@@ -176,6 +170,20 @@ export enum Control {
                 payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
             });
         }
+    }
+
+    private execute(): void {
+        const startTime = Date.now();
+        this.simulation.propagateFlows();
+        const endTime = Date.now();
+        // Updates processing time.
+        this.processingTime = endTime - startTime;
+        this.updateSimulatedTimePeriod();
+        // Updates simulation state.
+        this.store.dispatch({
+            type: SimulationActionTypes.PeriodsChanged,
+            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
+        });
     }
 
     private updateSimulatedTimePeriod(): void {

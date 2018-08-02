@@ -4,6 +4,7 @@ import * as combine from 'mout/array/combine';
 
 import { Heap, Path } from './k-shortest-path';
 import { round } from '../ui/utils';
+import { environment } from '../../environments/environment';
 import { uiConfig } from '../ui/ui-config';
 
 export enum PathType {
@@ -136,7 +137,8 @@ export class Edge {
 
     public drawingOptions: {
         path?: google.maps.LatLng[],
-        polyline?: google.maps.Polyline
+        polyline?: google.maps.Polyline,
+        marker?: google.maps.Marker
     } = {};
 
     constructor(edgeId: number) {
@@ -197,6 +199,8 @@ export class Edge {
 
     protected draw(color: string): void {
         this.drawingOptions.polyline.set('strokeColor', color);
+        this.drawingOptions.polyline.set('zIndex', 10);
+        this.drawingOptions.marker.set('visible', true);
     }
 
 }
@@ -483,6 +487,9 @@ export class Graph {
                     if (!edges.find(value => value.edgeId == edge.edgeId)) {
                         edges.push(edge);
                         edge.label = 'E' + count++;
+                        if (!environment.testing) {
+                            edge.drawingOptions.marker.set('title', 'Edge: ' + edge.label);
+                        }
                     }
                 }
             }

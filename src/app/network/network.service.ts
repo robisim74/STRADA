@@ -537,16 +537,19 @@ import { uiConfig } from '../ui/ui-config';
             }
 
             edge.drawingOptions.path = path;
-            edge.drawingOptions.polyline = new google.maps.Polyline(
-                {
-                    path: path,
-                    icons: icons,
-                    strokeColor: uiConfig.links.baseColor,
-                    strokeOpacity: 1,
-                    strokeWeight: 3,
-                    zIndex: 5
-                }
-            );
+            edge.drawingOptions.polyline = new google.maps.Polyline({
+                path: path,
+                icons: icons,
+                strokeColor: uiConfig.links.baseColor,
+                strokeOpacity: 1,
+                strokeWeight: 3,
+                zIndex: 5
+            });
+            edge.drawingOptions.marker = new google.maps.Marker({
+                position: path[Math.round(path.length / 2)],
+                icon: '../../assets/images/twotone-info-24px.svg',
+                visible: false
+            });
         }
     }
 

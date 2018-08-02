@@ -6,6 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { WizardService } from '../wizard.service';
 import { ClockService, Control } from '../../../simulation/clock.service';
 import * as fromSimulation from '../../../simulation/models/reducers';
+import { Simulation, Counts } from '../../../simulation/models/simulation-state';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -27,6 +28,8 @@ export class SimulationComponent extends BaseComponent implements OnInit {
     simulatedTimeInterval: number;
 
     simulatedTimePeriod: string;
+
+    counts: Counts;
 
     endSimulation: boolean;
 
@@ -66,6 +69,11 @@ export class SimulationComponent extends BaseComponent implements OnInit {
                 if (typeof periods.simulatedTimePeriod !== "undefined") {
                     this.simulatedTimePeriod = this.formatTimeFromMilliseconds(periods.simulatedTimePeriod);
                 }
+            }
+        }));
+        this.subscriptions.push(this.store.pipe(select(fromSimulation.simulation)).subscribe((simulation: Simulation) => {
+            if (simulation && simulation.counts) {
+                this.counts = simulation.counts;
             }
         }));
         this.subscriptions.push(this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) => {

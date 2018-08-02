@@ -9,7 +9,7 @@ import * as fromSimulation from './models/reducers';
 import { SimulationActionTypes } from './models/actions/simulation.actions';
 import { Graph, OdPair, Tag } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
-import { NumericalSimulation } from './models/simulation-state';
+import { NumericalSimulation, Counts } from './models/simulation-state';
 import { round } from '../ui/utils';
 
 /**
@@ -20,22 +20,17 @@ import { round } from '../ui/utils';
     /**
      * Ltm graph instance.
      */
-    private ltmGraph: LtmGraph;
+    private graph: LtmGraph;
 
     /**
-     * Time period.
+     * The cumulated time period.
      */
-    public timePeriod: number[] = [];
+    private timePeriod: number[] = [];
 
     /**
      * The time period is divided into time intervals.
      */
-    public timeInterval: number;
-
-    /**
-     * PropagateFlow processing time (ms).
-     */
-    public processingTime = 99;
+    private timeInterval: number;
 
     constructor(
         private store: Store<fromSimulation.SimulationState>,
@@ -44,10 +39,9 @@ import { round } from '../ui/utils';
     ) { }
 
     public reset(): void {
-        this.ltmGraph = null;
+        this.graph = null;
         this.timePeriod = [];
         this.timeInterval = 0;
-        this.processingTime = 0;
         // Simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.Reset
@@ -65,7 +59,7 @@ import { round } from '../ui/utils';
         // Gets O/D pairs.
         const odPairs = this.network.getOdPairs();
         // Instances LTM graph from graph.
-        this.ltmGraph = new LtmGraph(graph);
+        this.graph = new LtmGraph(graph);
         // Sets the time period.
         this.timePeriod[0] = 0;
         // Sets time interval.
@@ -85,19 +79,13 @@ import { round } from '../ui/utils';
     }
 
     /**
-     * Performs a flow propagation cycle.
+     * Performs a flows propagation cycle.
      */
     public propagateFlows(): void {
-        const startTime = Date.now();
-
         // Performs a LTM algorithm cycle.
         this.ltm();
         // Updates statistics.
         this.updateStatistics();
-
-        const endTime = Date.now();
-        // Updates processing time.
-        this.processingTime = endTime - startTime;
         // Updates time period.
         this.updateTimePeriod();
         // Updates simulation state.
@@ -107,7 +95,7 @@ import { round } from '../ui/utils';
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: this.numericalSimulation() } }
+            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts() } }
         });
         // Checks if the simulation is finished.
         if (this.endLtm()) {
@@ -118,7 +106,7 @@ import { round } from '../ui/utils';
             });
         }
 
-        console.log(this.ltmGraph);
+        console.log(this.graph);
     }
 
     /**
@@ -126,7 +114,7 @@ import { round } from '../ui/utils';
      */
     public resetFlows(): void {
         // Resets.
-        this.ltmGraph.reset();
+        this.graph.reset();
         this.timePeriod = [];
         // Reinitializes.
         this.timePeriod[0] = 0;
@@ -153,7 +141,7 @@ import { round } from '../ui/utils';
      * Link Transmission Model algorithm.
      */
     private ltm(): void {
-        const nodes = this.ltmGraph.getNodes();
+        const nodes = this.graph.getNodes();
         // For each node on the paths.
         for (const node of nodes) {
             this.takeFirstStep(node);
@@ -182,8 +170,8 @@ import { round } from '../ui/utils';
      * @param node The node on the paths
      */
     private takeSecondStep(node: LtmNode): void {
-        const shortestPaths = this.ltmGraph.getShortestPaths();
-        node.calcTransitionFlows(shortestPaths);
+        const fractions = this.graph.getFractions();
+        node.calcTransitionFlows(fractions);
     }
 
     /**
@@ -196,13 +184,13 @@ import { round } from '../ui/utils';
             let transitionFlow = 0;
             // Destination node.
             if (node.destination) {
-                if (node.transitionFlows[incomingEdge.label][node.label]) {
+                if (node.transitionFlows[incomingEdge.label] && node.transitionFlows[incomingEdge.label][node.label]) {
                     transitionFlow += node.transitionFlows[incomingEdge.label][node.label];
                     node.destination.receivingFlow += node.transitionFlows[incomingEdge.label][node.label];
                 }
             }
             for (const outgoingEdge of node.outgoingEdges) {
-                if (node.transitionFlows[incomingEdge.label][outgoingEdge.label]) {
+                if (node.transitionFlows[incomingEdge.label] && node.transitionFlows[incomingEdge.label][outgoingEdge.label]) {
                     transitionFlow += node.transitionFlows[incomingEdge.label][outgoingEdge.label];
                 }
             }
@@ -213,22 +201,22 @@ import { round } from '../ui/utils';
             let transitionFlow = 0;
             // Origin node.
             if (node.origin) {
-                if (node.transitionFlows[node.label][outgoingEdge.label]) {
+                if (node.transitionFlows[node.label] && node.transitionFlows[node.label][outgoingEdge.label]) {
                     transitionFlow += node.transitionFlows[node.label][outgoingEdge.label];
                     node.origin.sendingFlow += node.transitionFlows[node.label][outgoingEdge.label];
                 }
             }
             for (const incomingEdge of node.incomingEdges) {
-                if (node.transitionFlows[incomingEdge.label][outgoingEdge.label]) {
+                if (node.transitionFlows[incomingEdge.label] && node.transitionFlows[incomingEdge.label][outgoingEdge.label]) {
                     transitionFlow += node.transitionFlows[incomingEdge.label][outgoingEdge.label];
                 }
             }
             outgoingEdge.updateUpstream(transitionFlow);
         }
         // Updates the traffic volume of the links.
-        const edges = this.ltmGraph.getEdges();
+        const edges = this.graph.getEdges();
         for (const edge of edges) {
-            edge.updateTrafficVolume();
+            edge.updateTrafficCounts();
         }
     }
 
@@ -236,7 +224,7 @@ import { round } from '../ui/utils';
      * The algorithm ends when there is no more traffic volume on the links.
      */
     private endLtm(): boolean {
-        const edges = this.ltmGraph.getEdges();
+        const edges = this.graph.getEdges();
         return edges.filter(
             (edge: LtmEdge) =>
                 edge.trafficVolume > 0
@@ -247,36 +235,40 @@ import { round } from '../ui/utils';
      * Calculate the time interval as the smallest connection travel time.
      */
     private setTimeInterval(): void {
-        const edges = this.ltmGraph.getEdges();
+        const edges = this.graph.getEdges();
         const edge = edges.reduce((prev: LtmEdge, curr: LtmEdge) => prev.duration < curr.duration ? prev : curr);
         this.timeInterval = edge.duration;
     }
 
     private setOdNodes(odMatrix: number[], odPairs: OdPair[]): void {
         for (let i = 0; i < odPairs.length; i++) {
-            const origin = this.ltmGraph.getOdNode(odPairs[i].origin);
-            const destination = this.ltmGraph.getOdNode(odPairs[i].destination);
-            if (origin.origin) {
-                origin.origin.expectedFlow += odMatrix[i];
-            } else {
-                origin.origin = {
-                    sendingFlow: 0,
-                    expectedFlow: odMatrix[i]
-                };
+            const origin = this.graph.getOdNode(odPairs[i].origin);
+            const destination = this.graph.getOdNode(odPairs[i].destination);
+            if (origin) {
+                if (origin.origin) {
+                    origin.origin.expectedFlow += odMatrix[i] || 0;
+                } else {
+                    origin.origin = {
+                        sendingFlow: 0,
+                        expectedFlow: odMatrix[i] || 0
+                    };
+                }
             }
-            if (destination.destination) {
-                destination.destination.expectedFlow += odMatrix[i];
-            } else {
-                destination.destination = {
-                    receivingFlow: 0,
-                    expectedFlow: odMatrix[i]
-                };
+            if (destination) {
+                if (destination.destination) {
+                    destination.destination.expectedFlow += odMatrix[i] || 0;
+                } else {
+                    destination.destination = {
+                        receivingFlow: 0,
+                        expectedFlow: odMatrix[i] || 0
+                    };
+                }
             }
         }
     }
 
     private setEdges(): void {
-        const edges = this.ltmGraph.getEdges();
+        const edges = this.graph.getEdges();
         for (const edge of edges) {
             edge.upstream[0] = 0;
             edge.downstream[0] = 0;
@@ -284,48 +276,95 @@ import { round } from '../ui/utils';
     }
 
     /**
-     * Calculates traffic fraction for each edge of the paths.
+     * Calculates traffic fraction for each:
+     * - origin to link
+     * - link to link
+     * - link to destination
      * @param odMatrix The O/D matrix
      */
     private calcFractions(odMatrix: number[]): void {
-        const sharedDomand = this.shareDemand(odMatrix, this.ltmGraph.getAssignmentMatrix());
-        const shortestPaths = this.ltmGraph.getShortestPaths();
-        const nodes = this.ltmGraph.getNodes();
-        for (const node of nodes) {
-            for (const edge of node.outgoingEdges) {
-                const nodeId = node.nodeId;
-                const edgeId = edge.edgeId;
-                edge.p = this.calcFraction(shortestPaths, sharedDomand, nodeId, edgeId);
-            }
-        }
-    }
+        const sharedDomand = this.shareDemand(odMatrix, this.graph.getAssignmentMatrix());
+        const shortestPaths = this.graph.getShortestPaths();
 
-    /**
-     * Calculates the fraction as the ratio between the partial of the demand that crosses the link
-     * and the total of the demand that crosses the node of origin of the link.
-     * @param shortestPaths The shortest paths
-     * @param sharedDemand The demand shared on each path
-     * @param nodeId The node id
-     * @param edgeId The id of the outgoing edge
-     */
-    private calcFraction(shortestPaths: LtmEdge[][][], sharedDemand: number[][], nodeId: number, edgeId: number): number {
-        let total = 0;
-        let partial = 0;
+        const fractions: any = {};
         for (let z = 0; z < shortestPaths.length; z++) {
             for (let n = 0; n < shortestPaths[z].length; n++) {
                 for (let m = 0; m < shortestPaths[z][n].length; m++) {
-                    // Total of the paths and destinations that cross the node.
-                    if (shortestPaths[z][n][m].origin.nodeId == nodeId) {
-                        total += sharedDemand[z][n];
+                    const edge = shortestPaths[z][n][m];
+                    if (m == 0) {
+                        if (!fractions[edge.origin.label]) { fractions[edge.origin.label] = {}; }
+                        fractions[edge.origin.label][edge.label] =
+                            this.calcFromOriginFraction(shortestPaths, sharedDomand, edge.origin.nodeId, edge.edgeId);
                     }
-                    // Partial of the paths that cross the link.
-                    if (shortestPaths[z][n][m].edgeId == edgeId) {
-                        partial += sharedDemand[z][n];
+                    if (m < shortestPaths[z][n].length - 1) {
+                        if (!fractions[edge.label]) { fractions[edge.label] = {}; }
+                        fractions[edge.label][shortestPaths[z][n][m + 1].label] =
+                            this.calcLinkToLinkFraction(shortestPaths, sharedDomand, edge.edgeId, shortestPaths[z][n][m + 1].edgeId);
+                    }
+                    if (m == shortestPaths[z][n].length - 1) {
+                        if (!fractions[edge.label]) { fractions[edge.label] = {}; }
+                        fractions[edge.label][edge.destination.label] =
+                            this.calcToDestinationFraction(shortestPaths, sharedDomand, edge.edgeId, edge.destination.nodeId);
                     }
                 }
             }
         }
-        return round(partial / total, 3);
+        this.graph.setFractions(fractions);
+    }
+
+    private calcFromOriginFraction(shortestPaths: LtmEdge[][][], sharedDemand: number[][], nodeId: number, edgeId: number): number {
+        let total = 0;
+        let partial = 0;
+        for (let z = 0; z < shortestPaths.length; z++) {
+            for (let n = 0; n < shortestPaths[z].length; n++) {
+                if (shortestPaths[z][n][0].origin.nodeId == nodeId) {
+                    total += sharedDemand[z] ? sharedDemand[z][n] || 0 : 0;
+                }
+                if (shortestPaths[z][n][0].edgeId == edgeId) {
+                    partial += sharedDemand[z] ? sharedDemand[z][n] || 0 : 0;
+                }
+            }
+        }
+        return total > 0 ? partial / total : 0;
+    }
+
+    private calcLinkToLinkFraction(
+        shortestPaths: LtmEdge[][][],
+        sharedDemand: number[][],
+        incomingEdgeId: number,
+        outgoingEdgeId: number
+    ): number {
+        let total = 0;
+        let partial = 0;
+        for (let z = 0; z < shortestPaths.length; z++) {
+            for (let n = 0; n < shortestPaths[z].length; n++) {
+                for (let m = 0; m < shortestPaths[z][n].length - 1; m++) {
+                    if (shortestPaths[z][n][m].edgeId == incomingEdgeId) {
+                        total += sharedDemand[z] ? sharedDemand[z][n] || 0 : 0;
+                    }
+                    if (shortestPaths[z][n][m].edgeId == incomingEdgeId && shortestPaths[z][n][m + 1].edgeId == outgoingEdgeId) {
+                        partial += sharedDemand[z] ? sharedDemand[z][n] || 0 : 0;
+                    }
+                }
+            }
+        }
+        return total > 0 ? partial / total : 0;
+    }
+
+    private calcToDestinationFraction(shortestPaths: LtmEdge[][][], sharedDemand: number[][], edgeId: number, nodeId: number): number {
+        let total = 0;
+        let partial = 0;
+        for (let z = 0; z < shortestPaths.length; z++) {
+            for (let n = 0; n < shortestPaths[z].length; n++) {
+                if (shortestPaths[z][n][shortestPaths[z][n].length - 1].destination.nodeId == nodeId) {
+                    total += sharedDemand[z] ? sharedDemand[z][n] || 0 : 0;
+                }
+                if (shortestPaths[z][n][shortestPaths[z][n].length - 1].edgeId == edgeId) {
+                    partial += sharedDemand[z] ? sharedDemand[z][n] || 0 : 0;
+                }
+            }
+        }
+        return total > 0 ? partial / total : 0;
     }
 
     /**
@@ -351,7 +390,7 @@ import { round } from '../ui/utils';
     }
 
     private updateStatistics(): void {
-        const edges = this.ltmGraph.getEdges();
+        const edges = this.graph.getEdges();
         for (const edge of edges) {
             edge.updateStatistics();
         }
@@ -360,7 +399,7 @@ import { round } from '../ui/utils';
     private numericalSimulation(): NumericalSimulation[] {
         const data: NumericalSimulation[] = [];
 
-        const edges = this.ltmGraph.getEdges();
+        const edges = this.graph.getEdges();
         for (const edge of edges) {
             const wayTag = edge.tags.find((tag: Tag) => tag.key == 'name');
             const wayName = wayTag ? wayTag.value : '';
@@ -369,11 +408,30 @@ import { round } from '../ui/utils';
                     edge: edge.label,
                     wayName: wayName,
                     trafficVolume: round(edge.trafficVolume),
-                    totalCount: round(edge.totalCount)
+                    trafficCount: round(edge.trafficCount)
                 }
             );
         }
         return data;
+    }
+
+    private getCounts(): Counts {
+        let startedVehicles = 0;
+        let arrivedVehicles = 0;
+
+        const nodes = this.graph.getNodes();
+        for (const node of nodes) {
+            if (node.origin) {
+                startedVehicles += node.origin.sendingFlow;
+            }
+            if (node.destination) {
+                arrivedVehicles += node.destination.receivingFlow;
+            }
+        }
+        return {
+            startedVehicles: round(startedVehicles),
+            arrivedVehicles: round(arrivedVehicles)
+        };
     }
 
 }
