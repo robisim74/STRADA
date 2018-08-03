@@ -257,12 +257,17 @@ export class LtmEdge extends Edge {
         const time = timePeriod[timePeriod.length - 1] + timeInterval + this.duration;
         const capacity = this.getCapacity(timeInterval);
         const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream) : [0];
-        this.receivingFlow = Math.min(
+        let receivingFlow = Math.min(
             interpolation[0] > 0 ? interpolation[0] : 0 +
                 this.getKjam() * this.distance -
                 this.upstream[this.upstream.length - 1],
             capacity
         );
+        // The receiving flow should no be exceed the real capacity.
+        if (receivingFlow > this.getCapacity(this.duration) - this.trafficVolume) {
+            receivingFlow = this.getCapacity(this.duration) - this.trafficVolume;
+        }
+        this.receivingFlow = receivingFlow;
     }
 
     /**
@@ -282,26 +287,26 @@ export class LtmEdge extends Edge {
     }
 
     /**
-     * Updates the traffic volume as the difference between the cumulative flows
-     * and total count as cumulative flow at the upstream link end.
+     * Updates the traffic volume as the difference between the cumulative flows.
      */
-    public updateTrafficCounts(): void {
+    public updateTrafficVolume(): void {
         this.trafficVolume = this.upstream[this.upstream.length - 1] - this.downstream[this.downstream.length - 1];
-        this.trafficCount = this.upstream[this.upstream.length - 1];
     }
 
-    public updateStatistics(): void {
+    public updateTrafficCounts(): void {
+        // Traffic count is the cumulative flow at the upstream link end.
+        this.trafficCount = this.upstream[this.upstream.length - 1];
         // Heavy traffic.
         if (this.trafficVolume > this.getCapacity(this.duration) * uiConfig.heavyTraffic) {
             this.heavyTrafficCount++;
-            this.draw(uiConfig.links.heavyTrafficColor);
+            this.draw(uiConfig.links.heavyTrafficColor, 13);
             // Moderate traffic.
         } else if (this.trafficVolume > this.getCapacity(this.duration) * uiConfig.moderateTraffic) {
             this.moderateTrafficCount++;
-            this.draw(uiConfig.links.moderateTrafficColor);
+            this.draw(uiConfig.links.moderateTrafficColor, 12);
             // No traffic.
         } else if (this.trafficVolume > 0 || this.trafficCount > 0) {
-            this.draw(uiConfig.links.noTrafficColor);
+            this.draw(uiConfig.links.noTrafficColor, 11);
         }
     }
 

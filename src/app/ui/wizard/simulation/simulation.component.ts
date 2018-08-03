@@ -111,7 +111,7 @@ export class SimulationComponent extends BaseComponent implements OnInit {
     formatTimeFromMilliseconds(ms: number): string {
         return Math.floor(ms / 1000 / 60) + ':' +
             ('0' + Math.floor((ms / 1000) % 60)).slice(-2) + '.' +
-            (ms - Math.floor(ms / 1000) * 1000);
+            ('00' + (ms - Math.floor(ms / 1000) * 1000)).slice(-3);
     }
 
 }

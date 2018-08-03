@@ -95,6 +95,9 @@ export class MapComponent extends BaseComponent implements OnInit {
                         // Updates center map.
                         this.center = steps[0].data.center;
                         this.zoom = 16;
+                    } else {
+                        this.center = uiConfig.map.center;
+                        this.zoom = uiConfig.map.zoom;
                     }
                     break;
                 case 2:

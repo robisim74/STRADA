@@ -49,13 +49,12 @@ describe('Graph', () => {
 
             const shortestPaths = graph.getShortestPaths();
             expect(shortestPaths.length).toBe(3);
-            expect(shortestPaths[0].length).toBe(3);
+            expect(shortestPaths[0].length).toBe(2);
             expect(shortestPaths[1].length).toBe(2);
             expect(shortestPaths[2].length).toBe(0);
 
             expect(shortestPaths[0][0].length).toBe(9);
-            expect(shortestPaths[0][1].length).toBe(10);
-            expect(shortestPaths[0][2].length).toBe(7);
+            expect(shortestPaths[0][1].length).toBe(7);
             expect(shortestPaths[1][0].length).toBe(3);
             expect(shortestPaths[1][1].length).toBe(8);
         }));

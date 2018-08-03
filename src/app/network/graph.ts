@@ -138,7 +138,8 @@ export class Edge {
     public drawingOptions: {
         path?: google.maps.LatLng[],
         polyline?: google.maps.Polyline,
-        marker?: google.maps.Marker
+        marker?: google.maps.Marker,
+        infowindow?: google.maps.InfoWindow
     } = {};
 
     constructor(edgeId: number) {
@@ -197,9 +198,9 @@ export class Edge {
         return this.maxFlow * timeInterval;
     }
 
-    protected draw(color: string): void {
+    protected draw(color: string, zIndex = 10): void {
         this.drawingOptions.polyline.set('strokeColor', color);
-        this.drawingOptions.polyline.set('zIndex', 10);
+        this.drawingOptions.polyline.set('zIndex', zIndex);
         this.drawingOptions.marker.set('visible', true);
     }
 
@@ -315,6 +316,8 @@ export class Graph {
                 const origin = this.getOdNode(odPairs[i].origin);
                 const destination = this.getOdNode(odPairs[i].destination);
                 const shortestPaths = this.ksp(origin, destination, odPairs[i].pathType, uiConfig.k);
+                // Filters the paths.
+                this.filterPaths(shortestPaths);
                 // Extracts the paths.
                 this.shortestPaths[i] = [];
                 for (const path of shortestPaths) {
@@ -488,9 +491,25 @@ export class Graph {
                         edges.push(edge);
                         edge.label = 'E' + count++;
                         if (!environment.testing) {
-                            edge.drawingOptions.marker.set('title', 'Edge: ' + edge.label);
+                            edge.drawingOptions.infowindow.setContent('Edge: ' + edge.label);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private filterPaths(shortestPaths: Path[]): void {
+        if (shortestPaths.length > 1) {
+            for (let i = 0; i < shortestPaths.length - 1; i++) {
+                const pathA = shortestPaths[i].edges;
+                const pathB = shortestPaths[i + 1].edges;
+                const sharedEdges: Edge[] = pathA.filter((edgeOfA: Edge) =>
+                    pathB.find((edgeOfB: Edge) =>
+                        edgeOfB.edgeId == edgeOfA.edgeId));
+                if (pathA.length - sharedEdges.length <= 1 && pathB.length - sharedEdges.length <= 2) {
+                    shortestPaths.splice(i + 1, 1);
+                    break;
                 }
             }
         }

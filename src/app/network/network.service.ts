@@ -550,6 +550,9 @@ import { uiConfig } from '../ui/ui-config';
                 icon: '../../assets/images/twotone-info-24px.svg',
                 visible: false
             });
+            edge.drawingOptions.infowindow = new google.maps.InfoWindow({
+                content: ''
+            });
         }
     }
 

@@ -129,7 +129,7 @@ import { round } from '../ui/utils';
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: [] } }
+            payload: { simulation: { data: [], counts: {} } }
         });
     }
 
@@ -216,7 +216,7 @@ import { round } from '../ui/utils';
         // Updates the traffic volume of the links.
         const edges = this.graph.getEdges();
         for (const edge of edges) {
-            edge.updateTrafficCounts();
+            edge.updateTrafficVolume();
         }
     }
 
@@ -392,7 +392,7 @@ import { round } from '../ui/utils';
     private updateStatistics(): void {
         const edges = this.graph.getEdges();
         for (const edge of edges) {
-            edge.updateStatistics();
+            edge.updateTrafficCounts();
         }
     }
 

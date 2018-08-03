@@ -238,6 +238,7 @@ import { uiConfig } from '../ui-config';
             }
             this.hideNodes();
         }
+        google.maps.event.clearListeners(this.map, 'click');
     }
 
     /**
@@ -310,6 +311,9 @@ import { uiConfig } from '../ui-config';
         if (edge.drawingOptions.polyline) {
             edge.drawingOptions.polyline.setMap(this.map);
             edge.drawingOptions.marker.setMap(this.map);
+            edge.drawingOptions.marker.addListener('click', () => {
+                edge.drawingOptions.infowindow.open(this.map, edge.drawingOptions.marker);
+            });
         }
     }
 
