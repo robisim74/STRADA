@@ -25,9 +25,9 @@ export class LtmNode extends Node {
          */
         sendingFlow: number;
         /**
-         * Traffic demand.
+         * Traffic demand for each path.
          */
-        expectedFlow: number;
+        expectedFlow: number[];
     };
 
     /**
@@ -39,123 +39,100 @@ export class LtmNode extends Node {
          */
         receivingFlow: number;
         /**
-         * Number of expected vehicles.
+         * Number of expected vehicles for each path.
          */
-        expectedFlow: number;
+        expectedFlow: number[];
     };
 
     /**
      * The amount of vehicles that are transferred from incoming links to outgoing links.
      */
-    public transitionFlows: any = {};
+    public transitionFlows: any[] = [];
 
     public reset(): void {
         this.origin = null;
         this.destination = null;
-        this.transitionFlows = {};
+        this.transitionFlows = [];
     }
 
     /**
      * Calculates the transition flows of the node.
-     * @param fractions Traffic fractions
+     * @param index The path
+     * @param paths Existing paths
      */
-    public calcTransitionFlows(fractions: any): void {
-        this.transitionFlows = {};
+    public calcTransitionFlows(index: number, paths: any[]): void {
+        this.transitionFlows[index] = {};
         for (const incomingEdge of this.incomingEdges) {
-            this.transitionFlows[incomingEdge.label] = {};
+            if (!this.transitionFlows[index][incomingEdge.label]) { this.transitionFlows[index][incomingEdge.label] = {}; }
             // To destination.
             if (this.destination) {
-                if (this.toDestinationFraction(incomingEdge, fractions) > 0) {
-                    this.transitionFlows[incomingEdge.label][this.label] = this.calcOutgoingFlow(incomingEdge, fractions);
+                if (this.toDestination(index, incomingEdge, paths)) {
+                    this.transitionFlows[index][incomingEdge.label][this.label] = this.calcOutgoingFlow(index, incomingEdge);
                 }
             }
             // Link to link.
             for (const outgoingEdge of this.outgoingEdges) {
-                if (this.linkToLinkFraction(incomingEdge, outgoingEdge, fractions) > 0) {
-                    this.transitionFlows[incomingEdge.label][outgoingEdge.label] =
-                        this.calcTransitionFlow(incomingEdge, outgoingEdge, fractions);
+                if (this.linkToLink(index, incomingEdge, outgoingEdge, paths)) {
+                    this.transitionFlows[index][incomingEdge.label][outgoingEdge.label] =
+                        this.calcTransitionFlow(index, incomingEdge, outgoingEdge, paths);
                 }
             }
         }
         // From origin.
         for (const outgoingEdge of this.outgoingEdges) {
             if (this.origin) {
-                if (this.fromOriginFraction(outgoingEdge, fractions) > 0) {
-                    this.transitionFlows[this.label] = {};
-                    this.transitionFlows[this.label][outgoingEdge.label] = this.calcIncomingFlow(outgoingEdge, fractions);
+                if (this.fromOrigin(index, outgoingEdge, paths)) {
+                    if (!this.transitionFlows[index][this.label]) { this.transitionFlows[index][this.label] = {}; }
+                    this.transitionFlows[index][this.label][outgoingEdge.label] = this.calcIncomingFlow(index, outgoingEdge);
                 }
             }
         }
     }
 
-    private calcTransitionFlow(incomingEdge: LtmEdge, outgoingEdge: LtmEdge, fractions: any): number {
-        let sum = 0;
-        for (let i = 0; i < this.incomingEdges.length; i++) {
-            for (let j = 0; j < this.outgoingEdges.length; j++) {
-                const pij = this.linkToLinkFraction(this.incomingEdges[i], this.outgoingEdges[j], fractions);
-                sum += pij * this.incomingEdges[i].sendingFlow;
-            }
-        }
-        const sums: number[] = [];
-        if (sum > 0) {
-            for (let n = 0; n < this.outgoingEdges.length; n++) {
-                if (this.linkToLinkFraction(incomingEdge, this.outgoingEdges[n], fractions) > 0) {
-                    sums.push(this.outgoingEdges[n].receivingFlow * incomingEdge.sendingFlow / sum);
-                }
-            }
-        }
-        let min = 0;
-        if (sums.length > 0) {
-            min = Math.min(...sums);
-        }
-
-        const p = this.linkToLinkFraction(incomingEdge, outgoingEdge, fractions);
-        return p *
-            Math.min(
-                min,
-                incomingEdge.sendingFlow
-            );
+    /**
+     * From link to link.
+     */
+    private calcTransitionFlow(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): number {
+        return Math.min(
+            outgoingEdge.receivingFlow[index],
+            incomingEdge.sendingFlow[index]
+        );
     }
 
     /**
      * At the destination node.
      */
-    private calcOutgoingFlow(incomingEdge: LtmEdge, fractions: any): number {
-        const p = this.toDestinationFraction(incomingEdge, fractions);
-        return p * incomingEdge.sendingFlow;
+    private calcOutgoingFlow(index: number, incomingEdge: LtmEdge): number {
+        return incomingEdge.sendingFlow[index];
     }
 
     /**
      * At the origin node.
      */
-    private calcIncomingFlow(outgoingEdge: LtmEdge, fractions: any): number {
-        const p = this.fromOriginFraction(outgoingEdge, fractions);
-        return p *
-            Math.min(
-                this.origin.expectedFlow - outgoingEdge.upstream[outgoingEdge.upstream.length - 1],
-                outgoingEdge.receivingFlow
-            );
+    private calcIncomingFlow(index: number, outgoingEdge: LtmEdge): number {
+        return Math.min(
+            this.origin.expectedFlow[index] -
+            outgoingEdge.upstream[index][outgoingEdge.upstream[index].length - 1],
+            outgoingEdge.receivingFlow[index]
+        );
     }
 
-    private toDestinationFraction(incomingEdge: LtmEdge, fractions: any): number {
-        if (fractions[incomingEdge.label]) {
-            return fractions[incomingEdge.label][this.label] || 0;
+    private toDestination(index: number, incomingEdge: LtmEdge, paths: any[]): boolean {
+        if (paths[index][incomingEdge.label]) {
+            return paths[index][incomingEdge.label][this.label] || false;
         }
-        return 0;
     }
 
-    private fromOriginFraction(outgoingEdge: LtmEdge, fractions: any): number {
-        if (fractions[this.label]) {
-            return fractions[this.label][outgoingEdge.label] || 0;
+    private fromOrigin(index: number, outgoingEdge: LtmEdge, paths: any[]): boolean {
+        if (paths[index][this.label]) {
+            return paths[index][this.label][outgoingEdge.label] || false;
         }
-        return 0;
     }
 
-    private linkToLinkFraction(incomingEdge: LtmEdge, outgoingEdge: LtmEdge, fractions: any): number {
-        if (fractions[incomingEdge.label]) {
-            return fractions[incomingEdge.label][outgoingEdge.label] || 0;
+    private linkToLink(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): boolean {
+        if (paths[index][incomingEdge.label]) {
+            return paths[index][incomingEdge.label][outgoingEdge.label] || false;
         }
-        return 0;
     }
 
 }
@@ -172,22 +149,26 @@ export class LtmEdge extends Edge {
     /**
      * Max amount of vehicles that could leave the downstream end during time interval.
      */
-    public sendingFlow: number;
+    public sendingFlow: number[] = [];
 
     /**
      * Max amount of vehicles that could enter the upstream end during time interval.
      */
-    public receivingFlow: number;
+    public receivingFlow: number[] = [];
 
     /**
      * The cumulative vehicles number at the upstream link end.
      */
-    public upstream: number[] = [];
+    public upstream: number[][] = [];
+
+    public upstreamCount = 0;
 
     /**
      * The cumulative vehicles number at the downstream link end.
      */
-    public downstream: number[] = [];
+    public downstream: number[][] = [];
+
+    public downstreamCount = 0;
 
     /**
      * The vehicles number of the link.
@@ -210,8 +191,12 @@ export class LtmEdge extends Edge {
     public heavyTrafficCount = 0;
 
     public reset(): void {
+        this.sendingFlow = [];
+        this.receivingFlow = [];
         this.upstream = [];
+        this.upstreamCount = 0;
         this.downstream = [];
+        this.downstreamCount = 0;
         this.trafficVolume = 0;
         this.trafficCount = 0;
         this.moderateTrafficCount = 0;
@@ -221,81 +206,103 @@ export class LtmEdge extends Edge {
 
     /**
      * Calculates the sending flow of the incoming link.
+     * @param index The path
      * @param timePeriod The cumulated time period
      * @param timeInterval The time interval
+     * @param fractions Traffic fractions
      */
-    public calcSendingFlow(timePeriod: number[], timeInterval: number): void {
+    public calcSendingFlow(index: number, timePeriod: number[], timeInterval: number, fractions: any[]): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval - this.duration;
-        const capacity = this.getCapacity(timeInterval);
-        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstream) : [0];
+        const capacity = fractions[index][this.label] * this.getCapacity(timeInterval);
+        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstream[index]) : [0];
+        const trafficVolume = this.upstream[index][this.upstream[index].length - 1] -
+            this.downstream[index][this.downstream[index].length - 1];
+
         let sendingFlow = 0;
         // The sending flow should only be calculated in the presence of vehicles on the link.
-        if (this.trafficVolume > 0) {
+        if (trafficVolume > 0) {
             sendingFlow = Math.min(
                 interpolation[0] > 0 ? interpolation[0] : 0 -
-                    this.downstream[this.downstream.length - 1],
+                    this.downstream[index][this.downstream[index].length - 1],
                 capacity
             );
             // The sending flow should not exceed the number of vehicles on the link.
-            if (sendingFlow > this.trafficVolume) {
-                sendingFlow = this.trafficVolume;
+            if (sendingFlow > trafficVolume) {
+                sendingFlow = trafficVolume;
             }
             // The sending flow should not be less than zero.
             if (sendingFlow < 0) {
                 sendingFlow = 0;
             }
         }
-        this.sendingFlow = sendingFlow;
+        if (sendingFlow > 0 && sendingFlow < 1) {
+            this.sendingFlow[index] = 1;
+        } else {
+            this.sendingFlow[index] = round(sendingFlow);
+        }
     }
 
     /**
      * Calculates the receiving flow of the outgoing link.
+     * @param index The path
      * @param timePeriod The cumulated time period
      * @param timeInterval The time interval
+     * @param fractions Traffic fractions
      */
-    public calcReceivingFlow(timePeriod: number[], timeInterval: number): void {
+    public calcReceivingFlow(index: number, timePeriod: number[], timeInterval: number, fractions: any[]): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval + this.duration;
-        const capacity = this.getCapacity(timeInterval);
-        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream) : [0];
+        const capacity = fractions[index][this.label] * this.getCapacity(timeInterval);
+        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream[index]) : [0];
+        const trafficVolume = this.upstream[index][this.upstream[index].length - 1] -
+            this.downstream[index][this.downstream[index].length - 1];
+
         let receivingFlow = Math.min(
             interpolation[0] > 0 ? interpolation[0] : 0 +
-                this.getKjam() * this.distance -
-                this.upstream[this.upstream.length - 1],
+                fractions[index][this.label] * this.getKjam() * this.distance -
+                this.upstream[index][this.upstream[index].length - 1],
             capacity
         );
         // The receiving flow should no be exceed the real capacity.
-        if (receivingFlow > this.getCapacity(this.duration) - this.trafficVolume) {
-            receivingFlow = this.getCapacity(this.duration) - this.trafficVolume;
+        if (receivingFlow > fractions[index][this.label] * this.getCapacity(this.duration) - trafficVolume) {
+            receivingFlow = fractions[index][this.label] * this.getCapacity(this.duration) - trafficVolume;
         }
-        this.receivingFlow = receivingFlow;
+        if (receivingFlow > 0 && receivingFlow < 1) {
+            this.receivingFlow[index] = 1;
+        } else {
+            this.receivingFlow[index] = round(receivingFlow);
+        }
     }
 
     /**
      * Updates the cumulative vehicles number at the upstream link end.
-     * @param transitionFlow The sum of transition flows from incoming links.
+     * @param index The path
+     * @param transitionFlow The transition flow from incoming link
      */
-    public updateUpstream(transitionFlow: number): void {
-        this.upstream.push(this.upstream[this.upstream.length - 1] + transitionFlow);
+    public updateUpstream(index: number, transitionFlow: number): void {
+        this.upstream[index].push(this.upstream[index][this.upstream[index].length - 1] + transitionFlow);
+        this.upstreamCount += transitionFlow;
     }
 
     /**
      * Updates the cumulative vehicles number at the downstream link end.
-     * @param transitionFlow The sum of transition flows to outgoing links.
+     * @param index The path
+     * @param transitionFlow The transition flow to outgoing link
      */
-    public updateDownstream(transitionFlow: number): void {
-        this.downstream.push(this.downstream[this.downstream.length - 1] + transitionFlow);
+    public updateDownstream(index: number, transitionFlow: number): void {
+        this.downstream[index].push(this.downstream[index][this.downstream[index].length - 1] + transitionFlow);
+        this.downstreamCount += transitionFlow;
     }
 
     /**
      * Updates the traffic volume as the difference between the cumulative flows.
      */
     public updateTrafficVolume(): void {
-        this.trafficVolume = this.upstream[this.upstream.length - 1] - this.downstream[this.downstream.length - 1];
+        this.trafficVolume = this.upstreamCount - this.downstreamCount;
     }
 
     public updateTrafficCounts(): void {
         // Traffic count is the cumulative flow at the upstream link end.
-        this.trafficCount = this.upstream[this.upstream.length - 1];
+        this.trafficCount = this.upstreamCount;
         // Heavy traffic.
         if (this.trafficVolume > this.getCapacity(this.duration) * uiConfig.heavyTraffic) {
             this.heavyTrafficCount++;
@@ -322,14 +329,6 @@ export class LtmGraph extends Graph {
     protected edges: LtmEdge[] = [];
 
     protected shortestPaths: LtmEdge[][][] = [];
-
-    /**
-     * The object with the traffic fraction for each:
-     * - origin to link
-     * - link to link
-     * - link to destination
-     */
-    private fractions: any = {};
 
     constructor(graph: Graph) {
         super();
@@ -386,14 +385,6 @@ export class LtmGraph extends Graph {
 
     public getShortestPaths(): LtmEdge[][][] {
         return this.shortestPaths;
-    }
-
-    public getFractions(): any {
-        return this.fractions;
-    }
-
-    public setFractions(fractions: any): void {
-        this.fractions = fractions;
     }
 
     private mapGraph(graph: Graph): void {

@@ -38,7 +38,7 @@ export enum Control {
     /**
      * PropagateFlow processing time (ms).
      */
-    public processingTime = 99;
+    public processingTime = 0;
 
     private endSimulation = false;
 
