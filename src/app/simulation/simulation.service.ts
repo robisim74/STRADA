@@ -33,11 +33,6 @@ import { round } from '../ui/utils';
     private timeInterval: number;
 
     /**
-     * Traffic fractions for each [path][link].
-     */
-    private fractions: any[] = [];
-
-    /**
      * Existing paths for each:
      * - [path][origin][link]
      * - [path][link][link]
@@ -50,6 +45,11 @@ import { round } from '../ui/utils';
      */
     private pathsDemand: number[] = [];
 
+    /**
+     * Demand fractions for each [path][link].
+     */
+    private fractions: any[] = [];
+
     constructor(
         private store: Store<fromSimulation.SimulationState>,
         private network: NetworkService,
@@ -60,9 +60,9 @@ import { round } from '../ui/utils';
         this.graph = null;
         this.timePeriod = [];
         this.timeInterval = 0;
-        this.fractions = [];
         this.paths = [];
         this.pathsDemand = [];
+        this.fractions = [];
         // Simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.Reset
@@ -83,12 +83,12 @@ import { round } from '../ui/utils';
         this.timePeriod[0] = 0;
         // Sets time interval.
         this.setTimeInterval();
-        // Calculates paths demand.
-        this.calcPathsDemand(demand);
-        // Calculates traffic fractions.
-        this.calcFractions();
         // Builds existing paths.
         this.buildPaths();
+        // Calculates paths demand.
+        this.calcPathsDemand(demand);
+        // Calculates demand fractions.
+        this.calcFractions();
         // Sets O/D nodes expected flows.
         this.setOdNodes();
         // Sets edges upstream and downstream.
@@ -163,84 +163,44 @@ import { round } from '../ui/utils';
      */
     private ltm(): void {
         const nodes = this.graph.getNodes();
-        // For each path.
-        for (let i = 0; i < this.paths.length; i++) {
-            // For each node on the path.
-            for (const node of nodes) {
-                this.takeFirstStep(i, node);
-                this.takeSecondStep(i, node);
-                this.takeThirdStep(i, node);
-            }
+        // For each node on the paths.
+        for (const node of nodes) {
+            this.takeFirstStep(node);
+            this.takeSecondStep(node);
+            this.takeThirdStep(node);
         }
     }
 
     /**
      * Calculates sending and receiving flows.
-     * @param index The path
-     * @param node The node on the path
+     * @param node The node on the paths
      */
-    private takeFirstStep(index: number, node: LtmNode): void {
+    private takeFirstStep(node: LtmNode): void {
         // Sending flows.
         for (const edge of node.incomingEdges) {
-            edge.calcSendingFlow(index, this.timePeriod, this.timeInterval, this.fractions);
+            edge.calcSendingFlows(this.timePeriod, this.timeInterval, this.paths, this.fractions);
         }
         // Receiving flows.
         for (const edge of node.outgoingEdges) {
-            edge.calcReceivingFlow(index, this.timePeriod, this.timeInterval, this.fractions);
+            edge.calcReceivingFlows(this.timePeriod, this.timeInterval, this.paths, this.fractions);
         }
     }
 
     /**
      * Determines the transition flows from incoming links to outgoing links.
-     * @param index The path
-     * @param node The node on the path
+     * @param node The node on the paths
      */
-    private takeSecondStep(index: number, node: LtmNode): void {
-        node.calcTransitionFlows(index, this.paths);
+    private takeSecondStep(node: LtmNode): void {
+        node.calcTransitionFlows(this.paths);
     }
 
     /**
      * Updates the cumulative vehicles number.
-     * @param index The path
-     * @param node The node on the path
+     * @param node The node on the paths
      */
-    private takeThirdStep(index: number, node: LtmNode): void {
-        // Downstream of incoming links.
-        for (const incomingEdge of node.incomingEdges) {
-            let transitionFlow = 0;
-            // Destination node.
-            if (node.destination) {
-                if (node.transitionFlows[index][incomingEdge.label] && node.transitionFlows[index][incomingEdge.label][node.label]) {
-                    transitionFlow = node.transitionFlows[index][incomingEdge.label][node.label];
-                    node.destination.receivingFlow += transitionFlow;
-                }
-            }
-            for (const outgoingEdge of node.outgoingEdges) {
-                if (node.transitionFlows[index][incomingEdge.label] &&
-                    node.transitionFlows[index][incomingEdge.label][outgoingEdge.label]) {
-                    transitionFlow = node.transitionFlows[index][incomingEdge.label][outgoingEdge.label];
-                }
-            }
-            incomingEdge.updateDownstream(index, transitionFlow);
-        }
-        // Upstream of outgoing links.
-        for (const outgoingEdge of node.outgoingEdges) {
-            let transitionFlow = 0;
-            // Origin node.
-            if (node.origin) {
-                if (node.transitionFlows[index][node.label] && node.transitionFlows[index][node.label][outgoingEdge.label]) {
-                    transitionFlow = node.transitionFlows[index][node.label][outgoingEdge.label];
-                    node.origin.sendingFlow += transitionFlow;
-                }
-            }
-            for (const incomingEdge of node.incomingEdges) {
-                if (node.transitionFlows[index][incomingEdge.label] &&
-                    node.transitionFlows[index][incomingEdge.label][outgoingEdge.label]) {
-                    transitionFlow = node.transitionFlows[index][incomingEdge.label][outgoingEdge.label];
-                }
-            }
-            outgoingEdge.updateUpstream(index, transitionFlow);
-        }
+    private takeThirdStep(node: LtmNode): void {
+        node.updateCumulativeFlows(this.paths);
+
         // Updates the traffic volume of the links.
         const edges = this.graph.getEdges();
         for (const edge of edges) {
@@ -293,7 +253,34 @@ import { round } from '../ui/utils';
     }
 
     /**
-     * Calculates traffic fractions.
+     * Builds existing paths.
+     */
+    private buildPaths(): void {
+        const shortestPaths = this.graph.getShortestPaths();
+
+        let i = 0;
+        for (let z = 0; z < shortestPaths.length; z++) {
+            for (let n = 0; n < shortestPaths[z].length; n++) {
+                this.paths[i] = {};
+                for (let m = 0; m < shortestPaths[z][n].length; m++) {
+                    const edge = shortestPaths[z][n][m];
+                    if (m == 0) {
+                        this.paths[i][edge.origin.label] = edge.label;
+                    }
+                    if (m < shortestPaths[z][n].length - 1) {
+                        this.paths[i][edge.label] = shortestPaths[z][n][m + 1].label;
+                    }
+                    if (m == shortestPaths[z][n].length - 1) {
+                        this.paths[i][edge.label] = edge.destination.label;
+                    }
+                }
+                i++;
+            }
+        }
+    }
+
+    /**
+     * Calculates demand fractions.
      */
     private calcFractions(): void {
         const shortestPaths = this.graph.getShortestPaths();
@@ -304,7 +291,6 @@ import { round } from '../ui/utils';
                 this.fractions[i] = {};
                 for (let m = 0; m < shortestPaths[z][n].length; m++) {
                     const edge = shortestPaths[z][n][m];
-                    // Fractions.
                     this.fractions[i][edge.label] = this.calcFraction(i, edge.edgeId, shortestPaths);
                 }
                 i++;
@@ -328,36 +314,6 @@ import { round } from '../ui/utils';
         return total > 0 ? this.pathsDemand[index] / total : 0;
     }
 
-    /**
-     * Builds existing paths.
-     */
-    private buildPaths(): void {
-        const shortestPaths = this.graph.getShortestPaths();
-
-        let i = 0;
-        for (let z = 0; z < shortestPaths.length; z++) {
-            for (let n = 0; n < shortestPaths[z].length; n++) {
-                this.paths[i] = {};
-                for (let m = 0; m < shortestPaths[z][n].length; m++) {
-                    const edge = shortestPaths[z][n][m];
-                    if (m == 0) {
-                        if (!this.paths[i][edge.origin.label]) { this.paths[i][edge.origin.label] = {}; }
-                        this.paths[i][edge.origin.label][edge.label] = true;
-                    }
-                    if (m < shortestPaths[z][n].length - 1) {
-                        if (!this.paths[i][edge.label]) { this.paths[i][edge.label] = {}; }
-                        this.paths[i][edge.label][shortestPaths[z][n][m + 1].label] = true;
-                    }
-                    if (m == shortestPaths[z][n].length - 1) {
-                        if (!this.paths[i][edge.label]) { this.paths[i][edge.label] = {}; }
-                        this.paths[i][edge.label][edge.destination.label] = true;
-                    }
-                }
-                i++;
-            }
-        }
-    }
-
     private setOdNodes(): void {
         const shortestPaths = this.graph.getShortestPaths();
 
@@ -369,17 +325,17 @@ import { round } from '../ui/utils';
                 if (!origin.origin) {
                     origin.origin = {
                         sendingFlow: 0,
-                        expectedFlow: []
+                        expectedInflows: []
                     };
                 }
-                origin.origin.expectedFlow[i] = this.pathsDemand[i];
+                origin.origin.expectedInflows[i] = this.pathsDemand[i];
                 if (!destination.destination) {
                     destination.destination = {
                         receivingFlow: 0,
-                        expectedFlow: []
+                        expectedOutFlows: []
                     };
                 }
-                destination.destination.expectedFlow[i] = this.pathsDemand[i];
+                destination.destination.expectedOutFlows[i] = this.pathsDemand[i];
                 i++;
             }
         }
@@ -389,10 +345,12 @@ import { round } from '../ui/utils';
         const edges = this.graph.getEdges();
         for (const edge of edges) {
             for (let i = 0; i < this.paths.length; i++) {
-                edge.upstream[i] = [];
-                edge.upstream[i][0] = 0;
-                edge.downstream[i] = [];
-                edge.downstream[i][0] = 0;
+                edge.upstreams[i] = [];
+                edge.upstreams[i][0] = 0;
+                edge.upstream[0] = 0;
+                edge.downstreams[i] = [];
+                edge.downstreams[i][0] = 0;
+                edge.downstream[0] = 0;
             }
         }
     }
