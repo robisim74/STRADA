@@ -28,6 +28,10 @@ export class LtmNode extends Node {
          * Traffic demand disaggregated by route.
          */
         expectedInflows: number[];
+        /**
+         * Traffic demand.
+         */
+        expectedInflow: number;
     };
 
     /**
@@ -39,20 +43,15 @@ export class LtmNode extends Node {
          */
         receivingFlow: number;
         /**
-         * Expected vehicles disaggregated by route.
+         * Expected vehicles.
          */
-        expectedOutFlows: number[];
+        expectedOutFlow: number;
     };
 
     /**
      * The amount of vehicles that are transferred from incoming links to outgoing links disaggregated by route.
      */
     public transitionFlows: any[] = [];
-
-    /**
-     * The amount of vehicles that are transferred from incoming links to outgoing links.
-     */
-    public transitionFlow: any;
 
     public reset(): void {
         this.origin = null;
@@ -61,25 +60,18 @@ export class LtmNode extends Node {
     }
 
     /**
-     * Calculates the transition flows of the node.
+     * Calculates disaggregated transition flows of the node.
      * @param paths Existing paths
      */
     public calcTransitionFlows(paths: any[]): void {
-        this.transitionFlow = {};
-        // Disaggregates for each path.
         for (let i = 0; i < paths.length; i++) {
             this.transitionFlows[i] = {};
             for (const incomingEdge of this.incomingEdges) {
                 if (!this.transitionFlows[i][incomingEdge.label]) { this.transitionFlows[i][incomingEdge.label] = {}; }
-                if (!this.transitionFlow[incomingEdge.label]) { this.transitionFlow[incomingEdge.label] = {}; }
                 // To destination.
                 if (this.destination) {
                     if (this.toDestination(i, incomingEdge, paths)) {
                         this.transitionFlows[i][incomingEdge.label][this.label] = this.calcOutflow(i, incomingEdge);
-                        if (!this.transitionFlow[incomingEdge.label][this.label]) {
-                            this.transitionFlow[incomingEdge.label][this.label] = 0;
-                        }
-                        this.transitionFlow[incomingEdge.label][this.label] += this.transitionFlows[i][incomingEdge.label][this.label];
                     }
                 }
                 // Link to link.
@@ -87,25 +79,15 @@ export class LtmNode extends Node {
                     if (this.linkToLink(i, incomingEdge, outgoingEdge, paths)) {
                         this.transitionFlows[i][incomingEdge.label][outgoingEdge.label] =
                             this.calcTransitionFlow(i, incomingEdge, outgoingEdge, paths);
-                        if (!this.transitionFlow[incomingEdge.label][outgoingEdge.label]) {
-                            this.transitionFlow[incomingEdge.label][outgoingEdge.label] = 0;
-                        }
-                        this.transitionFlow[incomingEdge.label][outgoingEdge.label] +=
-                            this.transitionFlows[i][incomingEdge.label][outgoingEdge.label];
                     }
                 }
             }
             // From origin.
-            for (const outgoingEdge of this.outgoingEdges) {
-                if (this.origin) {
+            if (this.origin) {
+                for (const outgoingEdge of this.outgoingEdges) {
                     if (this.fromOrigin(i, outgoingEdge, paths)) {
                         if (!this.transitionFlows[i][this.label]) { this.transitionFlows[i][this.label] = {}; }
-                        if (!this.transitionFlow[this.label]) { this.transitionFlow[this.label] = {}; }
-                        if (!this.transitionFlow[this.label][outgoingEdge.label]) {
-                            this.transitionFlow[this.label][outgoingEdge.label] = 0;
-                        }
                         this.transitionFlows[i][this.label][outgoingEdge.label] = this.calcInflow(i, outgoingEdge);
-                        this.transitionFlow[this.label][outgoingEdge.label] += this.transitionFlows[i][this.label][outgoingEdge.label];
                     }
                 }
             }
@@ -113,72 +95,59 @@ export class LtmNode extends Node {
     }
 
     /**
-     * Updates the cumulative vehicles number.
+     * Updates disaggregated and aggregated cumulative vehicles number.
      * @param paths Existing paths
      */
     public updateCumulativeFlows(paths: any[]): void {
-        // Disaggregates for each path.
-        for (let i = 0; i < paths.length; i++) {
-            for (const incomingEdge of this.incomingEdges) {
-                const transitionFlow = this.calcDownstreamFlow(incomingEdge, this.transitionFlows[i]);
-                incomingEdge.updateDownstream(transitionFlow, i);
-            }
-            for (const outgoingEdge of this.outgoingEdges) {
-                const transitionFlow = this.calcUpstreamFlow(outgoingEdge, this.transitionFlows[i]);
-                outgoingEdge.updateUpstream(transitionFlow, i);
-            }
-        }
-
+        let transitionFlow: number;
+        // Downstream.
         for (const incomingEdge of this.incomingEdges) {
-            const transitionFlow = this.calcDownstreamFlow(incomingEdge, this.transitionFlow);
-            if (this.destination) {
-                this.destination.receivingFlow += transitionFlow;
+            // Disaggregated.
+            transitionFlow = 0;
+            for (let i = 0; i < paths.length; i++) {
+                let disaggregatedTransitionFlow = 0;
+                if (this.destination) {
+                    if (this.transitionFlows[i][incomingEdge.label] && this.transitionFlows[i][incomingEdge.label][this.label]) {
+                        disaggregatedTransitionFlow = this.transitionFlows[i][incomingEdge.label][this.label];
+                        // Updates the number of vechicles that leaves the network.
+                        this.destination.receivingFlow += disaggregatedTransitionFlow;
+                    }
+                }
+                for (const outgoingEdge of this.outgoingEdges) {
+                    if (this.transitionFlows[i][incomingEdge.label] && this.transitionFlows[i][incomingEdge.label][outgoingEdge.label]) {
+                        disaggregatedTransitionFlow = this.transitionFlows[i][incomingEdge.label][outgoingEdge.label];
+                    }
+                }
+                incomingEdge.updateDownstream(disaggregatedTransitionFlow, incomingEdge.downstreams[i]);
+                transitionFlow += disaggregatedTransitionFlow;
             }
-            incomingEdge.updateDownstream(transitionFlow);
+            // Aggregated.
+            incomingEdge.updateDownstream(transitionFlow, incomingEdge.downstream);
         }
+        // Upstream.
         for (const outgoingEdge of this.outgoingEdges) {
-            const transitionFlow = this.calcUpstreamFlow(outgoingEdge, this.transitionFlow);
-            if (this.origin) {
-                this.origin.sendingFlow += transitionFlow;
+            // Disaggregated.
+            transitionFlow = 0;
+            for (let i = 0; i < paths.length; i++) {
+                let disaggregatedTransitionFlow = 0;
+                if (this.origin) {
+                    if (this.transitionFlows[i][this.label] && this.transitionFlows[i][this.label][outgoingEdge.label]) {
+                        disaggregatedTransitionFlow = this.transitionFlows[i][this.label][outgoingEdge.label];
+                        // Updates the number of vechicles that enters the network.
+                        this.origin.sendingFlow += disaggregatedTransitionFlow;
+                    }
+                }
+                for (const incomingEdge of this.incomingEdges) {
+                    if (this.transitionFlows[i][incomingEdge.label] && this.transitionFlows[i][incomingEdge.label][outgoingEdge.label]) {
+                        disaggregatedTransitionFlow = this.transitionFlows[i][incomingEdge.label][outgoingEdge.label];
+                    }
+                }
+                outgoingEdge.updateUpstream(disaggregatedTransitionFlow, outgoingEdge.upstreams[i]);
+                transitionFlow += disaggregatedTransitionFlow;
             }
-            outgoingEdge.updateUpstream(transitionFlow);
+            // Aggregated.
+            outgoingEdge.updateUpstream(transitionFlow, outgoingEdge.upstream);
         }
-    }
-
-    /**
-     * Calculates downstream flow of incoming link.
-     */
-    private calcDownstreamFlow(incomingEdge: LtmEdge, transitionFlow: any): number {
-        let downstreamFlow = 0;
-        if (this.destination) {
-            if (transitionFlow[incomingEdge.label] && transitionFlow[incomingEdge.label][this.label]) {
-                downstreamFlow += transitionFlow[incomingEdge.label][this.label];
-            }
-        }
-        for (const outgoingEdge of this.outgoingEdges) {
-            if (transitionFlow[incomingEdge.label] && transitionFlow[incomingEdge.label][outgoingEdge.label]) {
-                downstreamFlow += transitionFlow[incomingEdge.label][outgoingEdge.label];
-            }
-        }
-        return downstreamFlow;
-    }
-
-    /**
-     * Calculates upstream flow of outgoing link.
-     */
-    private calcUpstreamFlow(outgoingEdge: LtmEdge, transitionFlow: any): number {
-        let upstreamFlow = 0;
-        if (this.origin) {
-            if (transitionFlow[this.label] && transitionFlow[this.label][outgoingEdge.label]) {
-                upstreamFlow += transitionFlow[this.label][outgoingEdge.label];
-            }
-        }
-        for (const incomingEdge of this.incomingEdges) {
-            if (transitionFlow[incomingEdge.label] && transitionFlow[incomingEdge.label][outgoingEdge.label]) {
-                upstreamFlow += transitionFlow[incomingEdge.label][outgoingEdge.label];
-            }
-        }
-        return upstreamFlow;
     }
 
     /**
@@ -192,18 +161,21 @@ export class LtmNode extends Node {
         const receivingFlows: number[] = [];
         if (sendingFlow > 0) {
             for (const edge of this.outgoingEdges) {
-                receivingFlows.push(round(edge.receivingFlow * incomingEdge.sendingFlows[index] / sendingFlow));
+                receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
             }
         }
         let minFlow = 0;
         if (receivingFlows.length > 0) {
             minFlow = Math.min(...receivingFlows);
         }
-
         return Math.min(
             minFlow,
             incomingEdge.sendingFlows[index]
         );
+    }
+
+    private calcReceivingFlow(receivingFlow: number, inflow: number, sendingFlow: number): number {
+        return round(receivingFlow * inflow / sendingFlow);
     }
 
     /**
@@ -220,8 +192,12 @@ export class LtmNode extends Node {
         return Math.min(
             this.origin.expectedInflows[index] -
             outgoingEdge.upstreams[index][outgoingEdge.upstreams[index].length - 1],
-            outgoingEdge.receivingFlows[index]
+            this.calcReceivingFlow(outgoingEdge.receivingFlow, this.origin.expectedInflows[index], this.origin.expectedInflow)
         );
+    }
+
+    private linkToLink(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): boolean {
+        return paths[index][incomingEdge.label] == outgoingEdge.label;
     }
 
     private toDestination(index: number, incomingEdge: LtmEdge, paths: any[]): boolean {
@@ -230,10 +206,6 @@ export class LtmNode extends Node {
 
     private fromOrigin(index: number, outgoingEdge: LtmEdge, paths: any[]): boolean {
         return paths[index][this.label] == outgoingEdge.label;
-    }
-
-    private linkToLink(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): boolean {
-        return paths[index][incomingEdge.label] == outgoingEdge.label;
     }
 
 }
@@ -256,11 +228,6 @@ export class LtmEdge extends Edge {
      * Max amount of vehicles that could leave the downstream end during time interval.
      */
     public sendingFlow: number;
-
-    /**
-     * Max amount of vehicles that could enter the upstream end during time interval disaggregated by route.
-     */
-    public receivingFlows: number[] = [];
 
     /**
      * Max amount of vehicles that could enter the upstream end during time interval.
@@ -309,7 +276,6 @@ export class LtmEdge extends Edge {
 
     public reset(): void {
         this.sendingFlows = [];
-        this.receivingFlows = [];
         this.upstreams = [];
         this.upstream = [];
         this.downstreams = [];
@@ -322,82 +288,68 @@ export class LtmEdge extends Edge {
     }
 
     /**
-     * Calculates the sending flows of the incoming link.
+     * Calculates disaggregated and aggregated sending flows of the incoming link.
      * @param timePeriod The cumulated time period
      * @param timeInterval The time interval
      * @param paths Existing paths
-     * @param fractions Demand fractions
      */
-    public calcSendingFlows(timePeriod: number[], timeInterval: number, paths: any[], fractions: any[]): void {
+    public calcSendingFlows(timePeriod: number[], timeInterval: number, paths: any[]): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval - this.duration;
-        let interpolation: number[];
-        let capacity: number;
+        const capacity = this.getCapacity(timeInterval);
 
-        // Disaggregates for each path.
+        let interpolation: number[];
+        // Disaggregated.
         for (let i = 0; i < paths.length; i++) {
             interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstreams[i]) : [0];
-            capacity = fractions[i][this.label] * this.getCapacity(timeInterval);
-
             this.sendingFlows[i] = this.calcSendingFlow(interpolation, capacity, this.upstreams[i], this.downstreams[i]);
         }
-
+        // Aggregated.
         interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstream) : [0];
-        capacity = this.getCapacity(timeInterval);
         this.sendingFlow = this.calcSendingFlow(interpolation, capacity, this.upstream, this.downstream);
     }
 
     /**
-     * Calculates the receiving flows of the outgoing link.
+     * Calculates the receiving flow of the outgoing link.
      * @param timePeriod The cumulated time period
      * @param timeInterval The time interval
      * @param paths Existing paths
-     * @param fractions Demand fractions
      */
-    public calcReceivingFlows(timePeriod: number[], timeInterval: number, paths: any[], fractions: any[]): void {
+    public calcReceivingFlow(timePeriod: number[], timeInterval: number, paths: any[]): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval + this.duration;
-        let interpolation: number[];
-        let capacity: number;
-        let maxCapacity: number;
-
-        // Disaggregates for each path.
-        for (let i = 0; i < paths.length; i++) {
-            interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstreams[i]) : [0];
-            capacity = fractions[i][this.label] * this.getCapacity(timeInterval);
-            maxCapacity = fractions[i][this.label] * this.getCapacity(this.duration); // kjam * distance
-
-            this.receivingFlows[i] = this.calcReceivingFlow(interpolation, capacity, maxCapacity, this.upstreams[i]);
+        const capacity = this.getCapacity(timeInterval);
+        const maxCapacity = this.getCapacity(this.duration); // kjam * distance
+        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream) : [0];
+        const receivingFlow = Math.min(
+            (interpolation[0] > 0 ? interpolation[0] : 0) +
+            maxCapacity -
+            this.upstream[this.upstream.length - 1],
+            capacity
+        );
+        if (receivingFlow < 0) {
+            this.receivingFlow = 0;
+        } else if (receivingFlow > 0 && receivingFlow < 1) {
+            this.receivingFlow = 1;
+        } else {
+            this.receivingFlow = round(receivingFlow);
         }
-
-        interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream) : [0];
-        capacity = this.getCapacity(timeInterval);
-        maxCapacity = this.getCapacity(this.duration); // kjam * distance
-        this.receivingFlow = this.calcReceivingFlow(interpolation, capacity, maxCapacity, this.upstream);
     }
 
     /**
-     * Updates the cumulative vehicles number at the upstream link end.
+     * Updates disaggregated or aggregated cumulative vehicles number at the upstream link end.
      * @param transitionFlow The transition flow from incoming link
-     * @param index The path
+     * @param upstream The upstream
      */
-    public updateUpstream(transitionFlow: number, index?: number): void {
-        if (index != null) {
-            this.upstreams[index].push(this.upstreams[index][this.upstreams[index].length - 1] + transitionFlow);
-        } else {
-            this.upstream.push(this.upstream[this.upstream.length - 1] + transitionFlow);
-        }
+    public updateUpstream(transitionFlow: number, upstream: any[]): void {
+        upstream.push(upstream[upstream.length - 1] + transitionFlow);
     }
 
     /**
-     * Updates the cumulative vehicles number at the downstream link end.
+     * Updates disaggregated or aggregate cumulative vehicles number at the downstream link end.
      * @param transitionFlow The transition flow to outgoing link
-     * @param index The path
+     * @param downstream The downstream
      */
-    public updateDownstream(transitionFlow: number, index?: number): void {
-        if (index != null) {
-            this.downstreams[index].push(this.downstreams[index][this.downstreams[index].length - 1] + transitionFlow);
-        } else {
-            this.downstream.push(this.downstream[this.downstream.length - 1] + transitionFlow);
-        }
+    public updateDownstream(transitionFlow: number, downstream: any[]): void {
+        downstream.push(downstream[downstream.length - 1] + transitionFlow);
     }
 
     /**
@@ -442,27 +394,6 @@ export class LtmEdge extends Edge {
             return 1;
         } else {
             return round(sendingFlow);
-        }
-    }
-
-    private calcReceivingFlow(
-        interpolation: number[],
-        capacity: number,
-        maxCapacity: number,
-        upstream: number[]
-    ): number {
-        const receivingFlow = Math.min(
-            (interpolation[0] > 0 ? interpolation[0] : 0) +
-            maxCapacity -
-            upstream[upstream.length - 1],
-            capacity
-        );
-        if (receivingFlow < 0) {
-            return 0;
-        } else if (receivingFlow > 0 && receivingFlow < 1) {
-            return 1;
-        } else {
-            return round(receivingFlow);
         }
     }
 

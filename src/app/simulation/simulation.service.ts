@@ -45,11 +45,6 @@ import { round } from '../ui/utils';
      */
     private pathsDemand: number[] = [];
 
-    /**
-     * Demand fractions for each [path][link].
-     */
-    private fractions: any[] = [];
-
     constructor(
         private store: Store<fromSimulation.SimulationState>,
         private network: NetworkService,
@@ -62,7 +57,6 @@ import { round } from '../ui/utils';
         this.timeInterval = 0;
         this.paths = [];
         this.pathsDemand = [];
-        this.fractions = [];
         // Simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.Reset
@@ -81,18 +75,16 @@ import { round } from '../ui/utils';
         this.graph = new LtmGraph(graph);
         // Sets the time period.
         this.timePeriod[0] = 0;
-        // Sets time interval.
-        this.setTimeInterval();
-        // Builds existing paths.
-        this.buildPaths();
-        // Calculates paths demand.
-        this.calcPathsDemand(demand);
-        // Calculates demand fractions.
-        this.calcFractions();
-        // Sets O/D nodes expected flows.
-        this.setOdNodes();
-        // Sets edges upstream and downstream.
-        this.setEdges();
+        // Initializes time interval.
+        this.initTimeInterval();
+        // Initializes existing paths.
+        this.initPaths();
+        // Initializes paths demand.
+        this.initPathsDemand(demand);
+        // Initializes O/D nodes expected flows.
+        this.initOdNodes();
+        // Initializes edges upstream and downstream.
+        this.initEdges();
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
@@ -141,8 +133,8 @@ import { round } from '../ui/utils';
         this.timePeriod = [];
         // Reinitializes.
         this.timePeriod[0] = 0;
-        this.setOdNodes();
-        this.setEdges();
+        this.initOdNodes();
+        this.initEdges();
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
@@ -178,11 +170,11 @@ import { round } from '../ui/utils';
     private takeFirstStep(node: LtmNode): void {
         // Sending flows.
         for (const edge of node.incomingEdges) {
-            edge.calcSendingFlows(this.timePeriod, this.timeInterval, this.paths, this.fractions);
+            edge.calcSendingFlows(this.timePeriod, this.timeInterval, this.paths);
         }
         // Receiving flows.
         for (const edge of node.outgoingEdges) {
-            edge.calcReceivingFlows(this.timePeriod, this.timeInterval, this.paths, this.fractions);
+            edge.calcReceivingFlow(this.timePeriod, this.timeInterval, this.paths);
         }
     }
 
@@ -220,42 +212,18 @@ import { round } from '../ui/utils';
     }
 
     /**
-     * Calculate the time interval as the smallest connection travel time.
+     * Initializes the time interval as the smallest connection travel time.
      */
-    private setTimeInterval(): void {
+    private initTimeInterval(): void {
         const edges = this.graph.getEdges();
         const edge = edges.reduce((prev: LtmEdge, curr: LtmEdge) => prev.duration < curr.duration ? prev : curr);
         this.timeInterval = edge.duration;
     }
 
     /**
-     * Calculates paths demand.
-     * @param odMatrix The O/D matrix
+     * Initializes existing paths.
      */
-    private calcPathsDemand(odMatrix: number[]): void {
-        const assignmentMatrix = this.graph.getAssignmentMatrix();
-
-        let i = 0;
-        for (let z = 0; z < assignmentMatrix.length; z++) {
-            if (odMatrix[z] != null) {
-                const pos = i;
-
-                let sum = 0;
-                for (let n = 0; n < assignmentMatrix[z].length; n++) {
-                    const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
-                    this.pathsDemand[i] = round(p * odMatrix[z]);
-                    sum += this.pathsDemand[i];
-                    i++;
-                }
-                if (odMatrix[z] - sum > 0) { this.pathsDemand[pos] = odMatrix[z] - sum; }
-            }
-        }
-    }
-
-    /**
-     * Builds existing paths.
-     */
-    private buildPaths(): void {
+    private initPaths(): void {
         const shortestPaths = this.graph.getShortestPaths();
 
         let i = 0;
@@ -280,41 +248,30 @@ import { round } from '../ui/utils';
     }
 
     /**
-     * Calculates demand fractions.
+     * Initializes the demand for paths as the rate of the total demand.
+     * @param odMatrix The O/D matrix
      */
-    private calcFractions(): void {
-        const shortestPaths = this.graph.getShortestPaths();
+    private initPathsDemand(odMatrix: number[]): void {
+        const assignmentMatrix = this.graph.getAssignmentMatrix();
 
         let i = 0;
-        for (let z = 0; z < shortestPaths.length; z++) {
-            for (let n = 0; n < shortestPaths[z].length; n++) {
-                this.fractions[i] = {};
-                for (let m = 0; m < shortestPaths[z][n].length; m++) {
-                    const edge = shortestPaths[z][n][m];
-                    this.fractions[i][edge.label] = this.calcFraction(i, edge.edgeId, shortestPaths);
+        for (let z = 0; z < assignmentMatrix.length; z++) {
+            if (odMatrix[z] != null) {
+                const pos = i;
+
+                let sum = 0;
+                for (let n = 0; n < assignmentMatrix[z].length; n++) {
+                    const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
+                    this.pathsDemand[i] = round(p * odMatrix[z]);
+                    sum += this.pathsDemand[i];
+                    i++;
                 }
-                i++;
+                if (odMatrix[z] - sum > 0) { this.pathsDemand[pos] = odMatrix[z] - sum; }
             }
         }
     }
 
-    private calcFraction(index: number, edgeId: number, shortestPaths: LtmEdge[][][]): number {
-        let total = 0;
-        let i = 0;
-        for (let z = 0; z < shortestPaths.length; z++) {
-            for (let n = 0; n < shortestPaths[z].length; n++) {
-                for (let m = 0; m < shortestPaths[z][n].length; m++) {
-                    if (shortestPaths[z][n][m].edgeId == edgeId) {
-                        total += this.pathsDemand[i];
-                    }
-                }
-                i++;
-            }
-        }
-        return total > 0 ? this.pathsDemand[index] / total : 0;
-    }
-
-    private setOdNodes(): void {
+    private initOdNodes(): void {
         const shortestPaths = this.graph.getShortestPaths();
 
         let i = 0;
@@ -325,23 +282,25 @@ import { round } from '../ui/utils';
                 if (!origin.origin) {
                     origin.origin = {
                         sendingFlow: 0,
-                        expectedInflows: []
+                        expectedInflows: [],
+                        expectedInflow: 0
                     };
                 }
                 origin.origin.expectedInflows[i] = this.pathsDemand[i];
+                origin.origin.expectedInflow += this.pathsDemand[i];
                 if (!destination.destination) {
                     destination.destination = {
                         receivingFlow: 0,
-                        expectedOutFlows: []
+                        expectedOutFlow: 0
                     };
                 }
-                destination.destination.expectedOutFlows[i] = this.pathsDemand[i];
+                destination.destination.expectedOutFlow += this.pathsDemand[i];
                 i++;
             }
         }
     }
 
-    private setEdges(): void {
+    private initEdges(): void {
         const edges = this.graph.getEdges();
         for (const edge of edges) {
             for (let i = 0; i < this.paths.length; i++) {
