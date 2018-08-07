@@ -13,7 +13,7 @@ export function trafficDirections(edge: any, time: Date, googleMapsClient: any):
                 if (response.json && response.json.routes[0] && response.json.routes[0].legs[0]) {
                     const leg = response.json.routes[0].legs[0];
                     // Traffic information.
-                    edge.durationInTraffic = leg.duration_in_traffic.value;
+                    edge.durationInTraffic = leg.duration_in_traffic ? leg.duration_in_traffic.value : null;
                     observer.next(edge);
                     observer.complete();
                 } else {

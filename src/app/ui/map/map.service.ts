@@ -28,11 +28,6 @@ import { uiConfig } from '../ui-config';
     private rectangleInfoWindow: google.maps.InfoWindow;
 
     /**
-     * Shortest paths polylines.
-     */
-    private paths: google.maps.Polyline[][] = [];
-
-    /**
      * Centroid of the graph.
      */
     private centroid: google.maps.LatLngLiteral;
@@ -44,71 +39,14 @@ import { uiConfig } from '../ui-config';
     ) { }
 
     public reset(): void {
+        this.hideRect();
         this.hideGraph();
         this.hidePaths();
-        this.hideRect();
-        this.paths = [];
         this.centroid = null;
         // UI state.
         this.store.dispatch({
             type: MapActionTypes.Reset
         });
-    }
-
-    /**
-     * Update the map after obtaining network data.
-     */
-    public updateMap(): Observable<any> {
-        // Shows graph.
-        this.showGraph();
-        // Sets centroid.
-        this.setCentroid();
-        // Sets map.
-        this.setCenter(this.getCentroid());
-        this.setZoom(17);
-        return of(null);
-    }
-
-    /**
-     * Draws the polyline for each shortest path.
-     */
-    public drawPaths(): Observable<any> {
-        const lineSymbol = {
-            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            scale: 2
-        };
-        const icons = [{
-            icon: lineSymbol,
-            offset: '100%'
-        }];
-        const graph = this.network.getGraph();
-        const paths = graph.getShortestPaths();
-        for (let z = 0; z < paths.length; z++) {
-            this.paths[z] = [];
-
-            for (let n = 0; n < paths[z].length; n++) {
-                let path: google.maps.LatLng[] = [];
-                let distance = 0;
-                let duration = 0;
-                for (let m = 0; m < paths[z][n].length; m++) {
-                    const edge = paths[z][n][m];
-                    path = path.concat(edge.drawingOptions.path);
-                    distance += edge.distance;
-                    duration += edge.duration;
-                }
-                const polyline = new google.maps.Polyline(
-                    {
-                        path: path,
-                        icons: icons,
-                        strokeColor: uiConfig.paths.colors[n],
-                        strokeOpacity: 1,
-                        strokeWeight: 3,
-                        zIndex: 10 - n
-                    });
-                this.paths[z][n] = polyline;
-            }
-        }
-        return of(null);
     }
 
     /**
@@ -142,16 +80,6 @@ import { uiConfig } from '../ui-config';
         };
     }
 
-    public getBounds(): google.maps.LatLngBoundsLiteral {
-        const bounds: google.maps.LatLngBounds = this.rectangle.getBounds();
-        return {
-            north: bounds.getNorthEast().lat(),
-            south: bounds.getSouthWest().lat(),
-            east: bounds.getNorthEast().lng(),
-            west: bounds.getSouthWest().lng()
-        };
-    }
-
     public showRect(bounds: google.maps.LatLngBoundsLiteral) {
         // Defines the rectangle and set its editable property to true.
         this.rectangle = new google.maps.Rectangle({
@@ -175,6 +103,39 @@ import { uiConfig } from '../ui-config';
             this.rectangle = null;
             this.rectangleInfoWindow = null;
         }
+    }
+
+    /**
+     * Shows the graph on the map.
+     */
+    public showGraph(): void {
+        const graph = this.network.getGraph();
+        const edges = graph.getEdges();
+        const nodes = graph.getOdNodes();
+        for (const edge of edges) {
+            this.showEdge(edge);
+        }
+        for (const node of nodes) {
+            this.showNode(node);
+        }
+    }
+
+    public hideGraph(): void {
+        const graph = this.network.getGraph();
+        if (graph) {
+            const edges = graph.getEdges();
+            for (const edge of edges) {
+                if (edge.drawingOptions.polyline) {
+                    edge.drawingOptions.polyline.setMap(null);
+                    edge.drawingOptions.marker.setMap(null);
+                }
+            }
+            const nodes = graph.getOdNodes();
+            for (const node of nodes) {
+                if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
+            }
+        }
+        google.maps.event.clearListeners(this.map, 'click');
     }
 
     public getCentroid(): google.maps.LatLngLiteral {
@@ -209,39 +170,6 @@ import { uiConfig } from '../ui-config';
     }
 
     /**
-     * Shows the graph on the map.
-     */
-    public showGraph(): void {
-        const graph = this.network.getGraph();
-        const edges = graph.getEdges();
-        const nodes = graph.getNodes();
-        for (const edge of edges) {
-            this.showEdge(edge);
-        }
-        for (const node of nodes) {
-            // Shows only O/D nodes.
-            if (node.label) {
-                this.showNode(node);
-            }
-        }
-    }
-
-    public hideGraph(): void {
-        const graph = this.network.getGraph();
-        if (graph) {
-            const edges = graph.getEdges();
-            for (const edge of edges) {
-                if (edge.drawingOptions.polyline) {
-                    edge.drawingOptions.polyline.setMap(null);
-                    edge.drawingOptions.marker.setMap(null);
-                }
-            }
-            this.hideNodes();
-        }
-        google.maps.event.clearListeners(this.map, 'click');
-    }
-
-    /**
      * Shows/hides nodes of O/D pairs.
      * @param odPairs The O/D pairs
      */
@@ -259,20 +187,10 @@ import { uiConfig } from '../ui-config';
         }
     }
 
-    public hideNodes(): void {
-        const graph = this.network.getGraph();
-        if (graph) {
-            const nodes = graph.getNodes();
-            for (const node of nodes) {
-                if (node.drawingOptions.marker) { node.drawingOptions.marker.setMap(null); }
-            }
-        }
-    }
-
     public clearNodesActions(): void {
         const graph = this.network.getGraph();
         if (graph) {
-            const nodes = graph.getNodes();
+            const nodes = graph.getOdNodes();
             for (const node of nodes) {
                 if (node.drawingOptions.marker) { google.maps.event.clearInstanceListeners(node.drawingOptions.marker); }
             }
@@ -284,10 +202,12 @@ import { uiConfig } from '../ui-config';
      * @param odPairs The O/D pairs
      */
     public showPaths(odPairs: any[]): void {
+        const graph = this.network.getGraph();
+        const polylines = graph.getPolylines();
         for (let i = 0; i < odPairs.length; i++) {
-            if (this.paths[i].length > 0) {
-                for (let n = 0; n < this.paths[i].length; n++) {
-                    const polyline = this.paths[i][n];
+            if (polylines[i].length > 0) {
+                for (let n = 0; n < polylines[i].length; n++) {
+                    const polyline = polylines[i][n];
                     if (odPairs[i].showPaths) {
                         polyline.setMap(this.map);
                     } else {
@@ -299,47 +219,14 @@ import { uiConfig } from '../ui-config';
     }
 
     public hidePaths(): void {
-        for (let z = 0; z < this.paths.length; z++) {
-            for (let n = 0; n < this.paths[z].length; n++) {
-                const polyline = this.paths[z][n];
+        const graph = this.network.getGraph();
+        const polylines = graph.getPolylines();
+        for (let z = 0; z < polylines.length; z++) {
+            for (let n = 0; n < polylines[z].length; n++) {
+                const polyline = polylines[z][n];
                 polyline.setMap(null);
             }
         }
-    }
-
-    private showEdge(edge: Edge): void {
-        if (edge.drawingOptions.polyline) {
-            edge.drawingOptions.polyline.setMap(this.map);
-            edge.drawingOptions.marker.setMap(this.map);
-            edge.drawingOptions.marker.addListener('click', () => {
-                edge.drawingOptions.infowindow.open(this.map, edge.drawingOptions.marker);
-            });
-        }
-    }
-
-    private showNode(node: Node): void {
-        node.drawingOptions.marker = new google.maps.Marker({
-            position: { lat: node.lat, lng: node.lon },
-            icon: '../../assets/images/twotone-add_location-24px.svg',
-            title: 'Node: ' + node.label,
-            map: this.map
-        });
-        // Adds listener.
-        node.drawingOptions.marker.addListener('click', () =>
-            // Updates map state.
-            this.store.dispatch({
-                type: MapActionTypes.MapChanged,
-                payload: { map: { data: { selectedNode: node } } }
-            })
-        );
-    }
-
-    private selectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/twotone-place-24px.svg');
-    }
-
-    private deselectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/twotone-add_location-24px.svg');
     }
 
     private checkRect(): void {
@@ -381,18 +268,6 @@ import { uiConfig } from '../ui-config';
     }
 
     /**
-     * Sets the rectangle info window's content and position.
-     * @param content Window's content
-     * @param position LatLng
-     */
-    private setRectangleInfoWindow(content: string, position: google.maps.LatLng): void {
-        this.rectangleInfoWindow.setContent(content);
-        this.rectangleInfoWindow.setPosition(position);
-
-        this.rectangleInfoWindow.open(this.map);
-    }
-
-    /**
      * Calculates the area in hectares.
      * @param ne north-est coordinates
      * @param sw south-west coordinates
@@ -404,6 +279,58 @@ import { uiConfig } from '../ui-config';
         let a = area(p) / 10000;
         a = round(a, 1);
         return a;
+    }
+
+    /**
+     * Sets the rectangle info window's content and position.
+     * @param content Window's content
+     * @param position LatLng
+     */
+    private setRectangleInfoWindow(content: string, position: google.maps.LatLng): void {
+        this.rectangleInfoWindow.setContent(content);
+        this.rectangleInfoWindow.setPosition(position);
+
+        this.rectangleInfoWindow.open(this.map);
+    }
+
+    private getBounds(): google.maps.LatLngBoundsLiteral {
+        const bounds: google.maps.LatLngBounds = this.rectangle.getBounds();
+        return {
+            north: bounds.getNorthEast().lat(),
+            south: bounds.getSouthWest().lat(),
+            east: bounds.getNorthEast().lng(),
+            west: bounds.getSouthWest().lng()
+        };
+    }
+
+    private showEdge(edge: Edge): void {
+        if (edge.drawingOptions.polyline) {
+            edge.drawingOptions.polyline.setMap(this.map);
+            edge.drawingOptions.marker.setMap(this.map);
+            edge.drawingOptions.marker.addListener('click', () => {
+                edge.drawingOptions.infowindow.open(this.map, edge.drawingOptions.marker);
+            });
+        }
+    }
+
+    private showNode(node: Node): void {
+        node.drawingOptions.marker.setMap(this.map);
+        // Adds listener.
+        node.drawingOptions.marker.addListener('click', () =>
+            // Updates map state.
+            this.store.dispatch({
+                type: MapActionTypes.MapChanged,
+                payload: { map: { data: { selectedNode: node } } }
+            })
+        );
+    }
+
+    private selectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon('../../assets/images/twotone-place-24px.svg');
+    }
+
+    private deselectNode(node: Node): void {
+        node.drawingOptions.marker.setIcon('../../assets/images/twotone-add_location-24px.svg');
     }
 
 }

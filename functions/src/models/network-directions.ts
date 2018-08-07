@@ -16,15 +16,24 @@ export function networkDirections(way: any[], mode: string, googleMapsClient: an
                         const leg = response.json.routes[0].legs[i];
 
                         // To avoid inconsistencies between data in the OpenStreetMap network and data from Google Maps.
-                        if (!isInconsistency(leg) && !isGreater(leg)) {
+                        if (!isInconsistent(leg) && !isGreater(leg)) {
+                            let legDistance: number = leg.distance ? leg.distance.value : null;
+                            let legDuration: number = leg.duration ? leg.duration.value : null;
                             // Gets polyline for each step.
-                            let polylines = [];
+                            let polylines: any[] = [];
                             for (const step of leg.steps) {
-                                polylines = polylines.concat(step.polyline);
+                                if (step.polyline && !isGreater(step)) {
+                                    polylines = polylines.concat(step.polyline);
+                                } else {
+                                    if (legDistance && step.distance && legDuration && step.duration) {
+                                        legDistance -= step.distance.value;
+                                        legDuration -= step.duration.value;
+                                    }
+                                }
                             }
                             observer.next({
-                                distance: leg.distance.value,
-                                duration: mode == 'driving' ? leg.duration.value : 0,
+                                distance: legDistance,
+                                duration: legDuration,
                                 polylines: polylines
                             });
                         } else {
@@ -67,19 +76,19 @@ export function buildRequest(way: any[], mode: string): any {
  * Checks inconsistency in the data.
  * @param leg The current leg in the waypoints
  */
-export function isInconsistency(leg: any): boolean {
+export function isInconsistent(leg: any): boolean {
     // The number of indications is greater than expected.
     if (!leg.steps || leg.steps.length > 3) return true;
 }
 
 /**
- * Checks if the distance of the leg is much greater than the geodesic distance.
- * @param leg The current leg in the waypoints
+ * Checks if the distance of the leg/step is much greater than the geodesic distance.
+ * @param line The current leg/step in the waypoints
  */
-export function isGreater(leg: any): any {
-    const from = point([leg.start_location.lng, leg.start_location.lat]);
-    const to = point([leg.end_location.lng, leg.end_location.lat]);
+export function isGreater(line: any): any {
+    const from = point([line.start_location.lng, line.start_location.lat]);
+    const to = point([line.end_location.lng, line.end_location.lat]);
     const geodesicDistance = distance(from, to) * 1000;
-    if (geodesicDistance > 0 && leg.distance.value > geodesicDistance * 3) return true;
+    if (geodesicDistance > 0 && line.distance && line.distance.value > geodesicDistance * 3) return true;
     return false;
 }

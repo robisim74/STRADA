@@ -174,7 +174,7 @@ import { round } from '../ui/utils';
         }
         // Receiving flows.
         for (const edge of node.outgoingEdges) {
-            edge.calcReceivingFlow(this.timePeriod, this.timeInterval, this.paths);
+            edge.calcReceivingFlow(this.timePeriod, this.timeInterval);
         }
     }
 

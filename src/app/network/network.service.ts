@@ -100,63 +100,63 @@ import { uiConfig } from '../ui/ui-config';
      * @param data Overpass API response
      */
     public createGraph(data: any): Observable<any> {
-        this.graph = new Graph();
+        try {
+            this.graph = new Graph();
 
-        // Gets the list of elements.
-        const elements: any[] = data.elements;
-        // Checks empty list.
-        if (elements.length == 0) { return throwError('createGraph'); }
+            // Gets the list of elements.
+            const elements: any[] = data.elements;
+            // Checks empty list.
+            if (elements.length == 0) { return throwError('createGraph'); }
 
-        // Create a degree list of nodes:
-        // a Map object that holds nodeId-degree as key-value pairs.
-        const nodesDegrees: Map<number, number> = new Map();
-        // Gets the list of ways.
-        let ways: any[] = this.extractWays(elements);
-        ways = this.reverseNoForward(ways);
-        // Merges continuous ways.
-        ways = this.mergeWays(ways, elements);
-        // Gets the list of nodes.
-        const nodes: any[] = this.extractNodes(elements);
+            // Create a degree list of nodes:
+            // a Map object that holds nodeId-degree as key-value pairs.
+            const nodesDegrees: Map<number, number> = new Map();
+            // Gets the list of ways.
+            let ways: any[] = this.extractWays(elements);
+            ways = this.reverseNoForward(ways);
+            // Merges continuous ways.
+            ways = this.mergeWays(ways, elements);
+            // Gets the list of nodes.
+            const nodes: any[] = this.extractNodes(elements);
 
-        // Creation of the graph algorithm.
-        return Observable.create((observer: Observer<any>) => {
-            try {
-                // First step.
-                for (const way of ways) {
-                    // Gets the list of nodes.
-                    const wayNodes: number[] = way['nodes'];
-                    for (const node of wayNodes) {
-                        const degree = nodesDegrees.get(node);
-                        nodesDegrees.set(node, degree ? degree + 1 : 1);
-                    }
+            // Creation of the graph algorithm.
+            // First step.
+            for (const way of ways) {
+                // Gets the list of nodes.
+                const wayNodes: number[] = way['nodes'];
+                for (const node of wayNodes) {
+                    const degree = nodesDegrees.get(node);
+                    nodesDegrees.set(node, degree ? degree + 1 : 1);
                 }
-                // Second step.
-                for (const way of ways) {
-                    // Gets the list of nodes.
-                    const wayNodes: number[] = way['nodes'];
-                    // Removes the nodes that have degree equal to one.
-                    const filteredWayNodes = wayNodes.filter((node: number, i: number, arr: number[]) => {
-                        return i == 0 || // first node
-                            i == arr.length - 1 || // last node
-                            nodesDegrees.get(node) > 1; // degree greater than one
-                    });
-                    const junction = way['tags']['junction'];
-                    const oneway = way['tags']['oneway'];
-                    // First direction.
-                    this.splitWay(filteredWayNodes, nodes, way);
-                    // Second direction (two-way).
-                    if ((!oneway || oneway == 'no') && (junction != 'roundabout' && junction != 'circular')) {
-                        // Reverse the order of filtered way nodes.
-                        this.splitWay(filteredWayNodes.reverse(), nodes, way);
-                    }
-                }
-            } catch (error) {
-                observer.error('createGraph');
-            } finally {
-                observer.next(null);
-                observer.complete();
             }
-        });
+            // Second step.
+            for (const way of ways) {
+                // Gets the list of nodes.
+                const wayNodes: number[] = way['nodes'];
+                // Removes the nodes that have degree equal to one.
+                const filteredWayNodes = wayNodes.filter((node: number, i: number, arr: number[]) => {
+                    return i == 0 || // first node
+                        i == arr.length - 1 || // last node
+                        nodesDegrees.get(node) > 1; // degree greater than one
+                });
+                const junction = way['tags']['junction'];
+                const oneway = way['tags']['oneway'];
+                // First direction.
+                this.splitWay(filteredWayNodes, nodes, way);
+                // Second direction (two-way).
+                if ((!oneway || oneway == 'no') && (junction != 'roundabout' && junction != 'circular')) {
+                    // Reverse the order of filtered way nodes.
+                    this.splitWay(filteredWayNodes.reverse(), nodes, way);
+                }
+            }
+        } catch (error) {
+            return throwError('createGraph');
+        }
+
+        // Sets O/D nodes.
+        this.setOdNodes();
+
+        return of(null);
     }
 
     /**
@@ -164,9 +164,19 @@ import { uiConfig } from '../ui/ui-config';
      * that reiterates the invocation of the Directions API to obtain links network data.
      */
     public getNetworkData(): Observable<any> {
-        const ways: any[][] = this.getWay();
+        const url: string = environment.functions.networkData.url;
+        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const ways: any[][] = this.getWays();
         const mode = 'driving';
-        return this.toNetworkData(ways, mode);
+        const body = JSON.stringify({
+            ways: ways,
+            mode: mode
+        });
+        // To networkData function.
+        return this.http.post(url, body, { headers: headers }).pipe(
+            map((response: any) => response),
+            catchError((error: any) => throwError('getNetworkData'))
+        );
     }
 
     /**
@@ -176,37 +186,41 @@ import { uiConfig } from '../ui/ui-config';
     public updateGraph(data: any[]): Observable<any> {
         const edges = this.graph.getEdges();
         for (let i = 0; i < edges.length; i++) {
-            this.assignNetworkData(edges[i], data[i]);
+            edges[i].distance = data[i].distance;
+            edges[i].duration = data[i].duration;
+
+            // Decodes polyline paths.
+            if (data[i].polylines && data[i].polylines.length > 0) {
+                const path = this.decodePolyline(data[i].polylines);
+                // Updates drawing options.
+                this.drawEdge(edges[i], path);
+            }
         }
         return of(null);
     }
 
     /**
-     * Corrects the graph data and create O/D nodes.
+     * Corrects the graph data.
      */
     public correctGraph(): Observable<any> {
         try {
             const edges = this.graph.getEdges();
-            const nodes = this.graph.getNodes();
 
             for (const edge of edges) {
                 if (!edge.distance || !edge.drawingOptions.polyline) {
                     // Assigns geodesic distance.
                     edge.distance = this.calcGeodesicDistance(edge);
                     edge.duration = 0;
+                    // Updates drawing options.
                     if (!environment.testing) {
                         const path = [
                             new google.maps.LatLng(edge.origin.lat, edge.origin.lon),
                             new google.maps.LatLng(edge.destination.lat, edge.destination.lon)
                         ];
-                        // Updates drawing options.
                         this.drawEdge(edge, path);
                     }
                 }
             }
-
-            // Sets O/D nodes.
-            this.setOdNodes();
         } catch (error) {
             return throwError('correctGraph');
         }
@@ -252,10 +266,9 @@ import { uiConfig } from '../ui/ui-config';
         const edges = this.graph.getPathsEdges();
         // Assigns traffic data.
         for (const edge of edges) {
-            edge.durationInTraffic = 0;
             for (const value of data) {
                 if (value.edgeId == edge.edgeId) {
-                    edge.durationInTraffic = value.durationInTraffic;
+                    edge.durationInTraffic = value.durationInTraffic || 0;
                     break;
                 }
             }
@@ -435,7 +448,25 @@ import { uiConfig } from '../ui/ui-config';
         }) : [];
     }
 
-    private getWay(): any[][] {
+    private setOdNodes(): void {
+        const nodes = this.graph.getNodes();
+        let count = 1;
+        for (const node of nodes) {
+            // Only nodes at the end of the ways.
+            if (node.incomingEdges.length + node.outgoingEdges.length <= 2) {
+                node.label = 'N' + count++;
+                if (!environment.testing) {
+                    node.drawingOptions.marker = new google.maps.Marker({
+                        position: { lat: node.lat, lng: node.lon },
+                        icon: '../../assets/images/twotone-add_location-24px.svg',
+                        title: 'Node: ' + node.label
+                    });
+                }
+            }
+        }
+    }
+
+    private getWays(): any[][] {
         const edges = this.graph.getEdges();
         const ways: any[][] = [];
         // Gets the ways.
@@ -459,32 +490,6 @@ import { uiConfig } from '../ui/ui-config';
             }
         }
         return ways;
-    }
-
-    private toNetworkData(ways: any[][], mode: string): Observable<any> {
-        const url: string = environment.functions.networkData.url;
-        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const body = JSON.stringify({
-            ways: ways,
-            mode: mode
-        });
-        // To networkData function.
-        return this.http.post(url, body, { headers: headers }).pipe(
-            map((response: any) => response),
-            catchError((error: any) => throwError('getNetworkData'))
-        );
-    }
-
-    private assignNetworkData(edge: Edge, value: any): void {
-        edge.distance = value.distance;
-        edge.duration = value.duration;
-
-        // Decodes polyline paths.
-        if (value.polylines && value.polylines.length > 0) {
-            const path = this.decodePolyline(value.polylines);
-            // Updates drawing options.
-            this.drawEdge(edge, path);
-        }
     }
 
     private decodePolyline(polylines: any[]): google.maps.LatLng[] {
@@ -582,17 +587,6 @@ import { uiConfig } from '../ui/ui-config';
         return coords.map((value: number[]) => {
             return new google.maps.LatLng(value[1], value[0]);
         });
-    }
-
-    private setOdNodes(): void {
-        const nodes = this.graph.getNodes();
-        let count = 1;
-        for (const node of nodes) {
-            // Only nodes at the end of the ways.
-            if (node.incomingEdges.length + node.outgoingEdges.length <= 2) {
-                node.label = 'N' + count++;
-            }
-        }
     }
 
 }

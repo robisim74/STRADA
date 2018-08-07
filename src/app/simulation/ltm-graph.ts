@@ -67,16 +67,18 @@ export class LtmNode extends Node {
         for (let i = 0; i < paths.length; i++) {
             this.transitionFlows[i] = {};
             for (const incomingEdge of this.incomingEdges) {
-                if (!this.transitionFlows[i][incomingEdge.label]) { this.transitionFlows[i][incomingEdge.label] = {}; }
+
                 // To destination.
                 if (this.destination) {
                     if (this.toDestination(i, incomingEdge, paths)) {
+                        if (!this.transitionFlows[i][incomingEdge.label]) { this.transitionFlows[i][incomingEdge.label] = {}; }
                         this.transitionFlows[i][incomingEdge.label][this.label] = this.calcOutflow(i, incomingEdge);
                     }
                 }
                 // Link to link.
                 for (const outgoingEdge of this.outgoingEdges) {
                     if (this.linkToLink(i, incomingEdge, outgoingEdge, paths)) {
+                        if (!this.transitionFlows[i][incomingEdge.label]) { this.transitionFlows[i][incomingEdge.label] = {}; }
                         this.transitionFlows[i][incomingEdge.label][outgoingEdge.label] =
                             this.calcTransitionFlow(i, incomingEdge, outgoingEdge, paths);
                     }
@@ -156,12 +158,16 @@ export class LtmNode extends Node {
     private calcTransitionFlow(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): number {
         let sendingFlow = 0;
         for (const edge of this.incomingEdges) {
-            sendingFlow += edge.sendingFlow;
+            if (this.linksOnPaths(edge, outgoingEdge, paths)) {
+                sendingFlow += edge.sendingFlow;
+            }
         }
         const receivingFlows: number[] = [];
         if (sendingFlow > 0) {
             for (const edge of this.outgoingEdges) {
-                receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
+                if (this.linksOnPaths(incomingEdge, edge, paths)) {
+                    receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
+                }
             }
         }
         let minFlow = 0;
@@ -206,6 +212,17 @@ export class LtmNode extends Node {
 
     private fromOrigin(index: number, outgoingEdge: LtmEdge, paths: any[]): boolean {
         return paths[index][this.label] == outgoingEdge.label;
+    }
+
+    private linksOnPaths(incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): boolean {
+        let exist = false;
+        for (let i = 0; i < paths.length; i++) {
+            if (this.linkToLink(i, incomingEdge, outgoingEdge, paths)) {
+                exist = true;
+                break;
+            }
+        }
+        return exist;
     }
 
 }
@@ -312,9 +329,8 @@ export class LtmEdge extends Edge {
      * Calculates the receiving flow of the outgoing link.
      * @param timePeriod The cumulated time period
      * @param timeInterval The time interval
-     * @param paths Existing paths
      */
-    public calcReceivingFlow(timePeriod: number[], timeInterval: number, paths: any[]): void {
+    public calcReceivingFlow(timePeriod: number[], timeInterval: number): void {
         const time = timePeriod[timePeriod.length - 1] + timeInterval + this.duration;
         const capacity = this.getCapacity(timeInterval);
         const maxCapacity = this.getCapacity(this.duration); // kjam * distance
@@ -339,7 +355,7 @@ export class LtmEdge extends Edge {
      * @param transitionFlow The transition flow from incoming link
      * @param upstream The upstream
      */
-    public updateUpstream(transitionFlow: number, upstream: any[]): void {
+    public updateUpstream(transitionFlow: number, upstream: number[]): void {
         upstream.push(upstream[upstream.length - 1] + transitionFlow);
     }
 
@@ -348,7 +364,7 @@ export class LtmEdge extends Edge {
      * @param transitionFlow The transition flow to outgoing link
      * @param downstream The downstream
      */
-    public updateDownstream(transitionFlow: number, downstream: any[]): void {
+    public updateDownstream(transitionFlow: number, downstream: number[]): void {
         downstream.push(downstream[downstream.length - 1] + transitionFlow);
     }
 
@@ -453,14 +469,6 @@ export class LtmGraph extends Graph {
 
     public addEdge(edge: LtmEdge): void {
         this.edges.push(edge);
-    }
-
-    public getOdNode(label: string): LtmNode {
-        return this.nodes.find((node: LtmNode) => node.label == label);
-    }
-
-    public getOdNodes(): LtmNode[] {
-        return this.nodes.filter((node: LtmNode) => node.label);
     }
 
     public getShortestPaths(): LtmEdge[][][] {

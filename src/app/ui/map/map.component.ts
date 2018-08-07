@@ -77,6 +77,13 @@ export class MapComponent extends BaseComponent implements OnInit {
                 case 2:
                     // Hides the rectangle.
                     this.map.hideRect();
+                    // Shows graph.
+                    this.map.showGraph();
+                    // Sets centroid.
+                    this.map.setCentroid();
+                    // Sets map.
+                    this.map.setCenter(this.map.getCentroid());
+                    this.map.setZoom(17);
                     break;
                 case 3:
                     // Clears nodes actions.

@@ -49,7 +49,6 @@ import { ClockService } from "../../simulation/clock.service";
      * - Associates data to the graph
      * - Corrects graph data
      * - Gets and updates weather data
-     * - Updates map
      */
     scheduleNetwork(data: any, index: number, nextIndex: number): void {
         this.wizard.putOnHold('Getting the network');
@@ -76,10 +75,6 @@ import { ClockService } from "../../simulation/clock.service";
             }),
             switchMap((response: any) => {
                 return this.weather.updateWeatherData(response, this.network.getTime());
-            }),
-            switchMap(() => {
-                this.wizard.putOnHold('Updating map');
-                return this.map.updateMap();
             })
         );
 
@@ -126,7 +121,6 @@ import { ClockService } from "../../simulation/clock.service";
      * - Gets and updates traffic data
      * - Calcs link flows
      * - Calcs O/D matrix
-     * - Draws the polyline for each shortest path
      */
     scheduleDemand(data: any, index: number, nextIndex: number): void {
         const graph = this.network.getGraph();
@@ -150,10 +144,6 @@ import { ClockService } from "../../simulation/clock.service";
             switchMap(() => {
                 this.wizard.putOnHold('Computing demand');
                 return this.demand.calcOdMatrix();
-            }),
-            switchMap(() => {
-                this.wizard.putOnHold('Drawing paths');
-                return this.map.drawPaths();
             })
         );
 
