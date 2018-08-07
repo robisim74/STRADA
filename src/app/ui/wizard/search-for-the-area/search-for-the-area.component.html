@@ -2,7 +2,7 @@
     <div fxLayout="column" fxLayoutGap="8px">
         <mat-form-field color="accent" class="full-width">
             <input matInput formControlName="address" placeholder="Address" (keyup.enter)="search(formGroup.get('address').value)">
-            <button mat-icon-button matSuffix (click)="search(formGroup.get('address').value)" title="Search">
+            <button type="button" mat-icon-button matSuffix (click)="search(formGroup.get('address').value)" title="Search">
                 <mat-icon>search</mat-icon>
             </button>
         </mat-form-field>

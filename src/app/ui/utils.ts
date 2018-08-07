@@ -16,3 +16,27 @@ export function round(value: number, decimals?: number): number {
     const digits = decimals ? Math.pow(10, decimals) : 1;
     return Math.round(value * digits) / digits;
 }
+
+export function toSeconds(value: number): number {
+    return value / 1000;
+}
+
+/**
+ * Format time to M:SS
+ * @param s Seconds
+ * @returns M:SS
+ */
+export function formatTimeFromSeconds(s: number): string {
+    return Math.floor(s / 60) + ':' + ('0' + Math.floor(s % 60)).slice(-2);
+}
+
+/**
+ * Format time to M:SS.mmm
+ * @param ms Milliseconds
+ * @returns M:SS.mmm
+ */
+export function formatTimeFromMilliseconds(ms: number): string {
+    return Math.floor(ms / 1000 / 60) + ':' +
+        ('0' + Math.floor((ms / 1000) % 60)).slice(-2) + '.' +
+        ('00' + (ms - Math.floor(ms / 1000) * 1000)).slice(-3);
+}

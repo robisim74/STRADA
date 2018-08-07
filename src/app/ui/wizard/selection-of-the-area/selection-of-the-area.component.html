@@ -2,7 +2,7 @@
     <div fxLayout="column" fxLayoutGap="8px">
         <mat-form-field color="accent" class="full-width">
             <input matInput formControlName="time" placeholder="Time" [min]="min" [max]="max" [owlDateTime]="t1">
-            <button mat-icon-button matSuffix [owlDateTimeTrigger]="t1" title="Open time picker">
+            <button type="button" mat-icon-button matSuffix [owlDateTimeTrigger]="t1" title="Open time picker">
                 <mat-icon>calendar_today</mat-icon>
             </button>
             <mat-hint align="start">Optional. Leave it empty for the current time</mat-hint>

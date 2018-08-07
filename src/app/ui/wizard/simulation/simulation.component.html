@@ -3,35 +3,39 @@
         <div fxLayout="column" fxLayoutGap="3px">
             <div fxLayout="row" fxLayoutGap="3px">
                 <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
-                    <button mat-icon-button color="accent" (click)="pressControl(control.stop)" title="Stop and reset" aria-label="Stop and reset">
+                    <button type="button" mat-icon-button color="accent" (click)="pressControl(control.stop)" title="Stop and reset" aria-label="Stop and reset">
                         <mat-icon>stop</mat-icon>
                     </button>
                 </div>
                 <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">
-                    <button mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.start)" title="Start" aria-label="Start">
+                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.start)" title="Start"
+                        aria-label="Start">
                         <mat-icon>play_arrow</mat-icon>
                     </button>
                 </div>
                 <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
-                    <button mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.pause)" title="Pause" aria-label="Pause">
+                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.pause)" title="Pause"
+                        aria-label="Pause">
                         <mat-icon>pause</mat-icon>
                     </button>
                 </div>
             </div>
             <div fxLayout="row" fxLayoutGap="3px">
                 <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
-                    <button mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.slow)" title="Slow" aria-label="Slow">
+                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.slow)" title="Slow"
+                        aria-label="Slow">
                         <mat-icon>fast_rewind</mat-icon>
                     </button>
                 </div>
                 <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">
-                    <button mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.step)" title="Next step"
+                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.step)" title="Next step"
                         aria-label="Next step">
                         <mat-icon>skip_next</mat-icon>
                     </button>
                 </div>
                 <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
-                    <button mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.quick)" title="Quick" aria-label="Quick">
+                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.quick)" title="Quick"
+                        aria-label="Quick">
                         <mat-icon>fast_forward</mat-icon>
                     </button>
                 </div>

@@ -7,6 +7,7 @@ import { WizardService } from '../wizard.service';
 import { ClockService, Control } from '../../../simulation/clock.service';
 import * as fromSimulation from '../../../simulation/models/reducers';
 import { Simulation, Counts } from '../../../simulation/models/simulation-state';
+import { toSeconds, formatTimeFromSeconds, formatTimeFromMilliseconds } from '../../utils';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -60,14 +61,14 @@ export class SimulationComponent extends BaseComponent implements OnInit {
                 if (typeof periods.timeInterval !== "undefined") {
                     this.timeInterval = periods.timeInterval;
                 }
-                if (typeof periods.timePeriod !== "undefined") {
-                    this.timePeriod = this.formatTimeFromSeconds(periods.timePeriod[periods.timePeriod.length - 1]);
+                if (typeof periods.timePeriods !== "undefined") {
+                    this.timePeriod = formatTimeFromSeconds(periods.timePeriods[periods.timePeriods.length - 1]);
                 }
                 if (typeof periods.simulatedTimeInterval !== "undefined") {
-                    this.simulatedTimeInterval = this.toSeconds(periods.simulatedTimeInterval);
+                    this.simulatedTimeInterval = toSeconds(periods.simulatedTimeInterval);
                 }
                 if (typeof periods.simulatedTimePeriod !== "undefined") {
-                    this.simulatedTimePeriod = this.formatTimeFromMilliseconds(periods.simulatedTimePeriod);
+                    this.simulatedTimePeriod = formatTimeFromMilliseconds(periods.simulatedTimePeriod);
                 }
             }
         }));
@@ -88,30 +89,6 @@ export class SimulationComponent extends BaseComponent implements OnInit {
 
     pressControl(control: Control): void {
         this.clock.pressControl(control);
-    }
-
-    toSeconds(value: number): number {
-        return value / 1000;
-    }
-
-    /**
-     * Format time to M:SS
-     * @param s Seconds
-     * @returns M:SS
-     */
-    formatTimeFromSeconds(s: number): string {
-        return Math.floor(s / 60) + ':' + ('0' + Math.floor(s % 60)).slice(-2);
-    }
-
-    /**
-     * Format time to M:SS.mmm
-     * @param ms Milliseconds
-     * @returns M:SS.mmm
-     */
-    formatTimeFromMilliseconds(ms: number): string {
-        return Math.floor(ms / 1000 / 60) + ':' +
-            ('0' + Math.floor((ms / 1000) % 60)).slice(-2) + '.' +
-            ('00' + (ms - Math.floor(ms / 1000) * 1000)).slice(-3);
     }
 
 }

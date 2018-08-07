@@ -1,1 +1,13 @@
-WIP
+<div [formGroup]="formGroup">
+    <div fxLayout="column" fxLayoutGap="8px">
+        <p>Total time: {{ totalTime }}</p>
+        <p>Total simulated time: {{ totalSimulatedTime }}</p>
+        <p>Total processing time: {{ totalProcessingTime }}</p>
+    </div>
+
+    <div class="navigation">
+        <button type="submit" mat-raised-button color="accent" [disabled]="formGroup.invalid">Exit
+            <mat-icon>navigate_next</mat-icon>
+        </button>
+    </div>
+</div>

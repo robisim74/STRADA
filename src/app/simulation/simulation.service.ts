@@ -25,7 +25,7 @@ import { round } from '../ui/utils';
     /**
      * The cumulated time period.
      */
-    private timePeriod: number[] = [];
+    private timePeriods: number[] = [];
 
     /**
      * The time period is divided into time intervals.
@@ -53,7 +53,7 @@ import { round } from '../ui/utils';
 
     public reset(): void {
         this.graph = null;
-        this.timePeriod = [];
+        this.timePeriods = [];
         this.timeInterval = 0;
         this.paths = [];
         this.pathsDemand = [];
@@ -74,7 +74,7 @@ import { round } from '../ui/utils';
         // Instances LTM graph from graph.
         this.graph = new LtmGraph(graph);
         // Sets the time period.
-        this.timePeriod[0] = 0;
+        this.timePeriods[0] = 0;
         // Initializes time interval.
         this.initTimeInterval();
         // Initializes existing paths.
@@ -88,8 +88,9 @@ import { round } from '../ui/utils';
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
-            payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+            payload: { timeInterval: this.timeInterval, timePeriods: this.timePeriods }
         });
+        console.log(this.paths);
         return of(null);
     }
 
@@ -102,11 +103,11 @@ import { round } from '../ui/utils';
         // Updates statistics.
         this.updateStatistics();
         // Updates time period.
-        this.updateTimePeriod();
+        this.updateTimePeriods();
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
-            payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+            payload: { timeInterval: this.timeInterval, timePeriods: this.timePeriods }
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
@@ -130,15 +131,15 @@ import { round } from '../ui/utils';
     public resetFlows(): void {
         // Resets.
         this.graph.reset();
-        this.timePeriod = [];
+        this.timePeriods = [];
         // Reinitializes.
-        this.timePeriod[0] = 0;
+        this.timePeriods[0] = 0;
         this.initOdNodes();
         this.initEdges();
         // Updates simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.PeriodsChanged,
-            payload: { timeInterval: this.timeInterval, timePeriod: this.timePeriod }
+            payload: { timeInterval: this.timeInterval, timePeriods: this.timePeriods }
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
@@ -146,8 +147,10 @@ import { round } from '../ui/utils';
         });
     }
 
-    public updateTimePeriod(): void {
-        this.timePeriod.push(this.timePeriod[this.timePeriod.length - 1] + this.timeInterval);
+    public getStatistics() {
+        return {
+            totalTime: this.timePeriods[this.timePeriods.length - 1]
+        };
     }
 
     /**
@@ -170,11 +173,11 @@ import { round } from '../ui/utils';
     private takeFirstStep(node: LtmNode): void {
         // Sending flows.
         for (const edge of node.incomingEdges) {
-            edge.calcSendingFlows(this.timePeriod, this.timeInterval, this.paths);
+            edge.calcSendingFlows(this.timePeriods, this.timeInterval, this.paths);
         }
         // Receiving flows.
         for (const edge of node.outgoingEdges) {
-            edge.calcReceivingFlow(this.timePeriod, this.timeInterval);
+            edge.calcReceivingFlow(this.timePeriods, this.timeInterval);
         }
     }
 
@@ -319,6 +322,10 @@ import { round } from '../ui/utils';
         for (const edge of edges) {
             edge.updateTrafficCounts();
         }
+    }
+
+    private updateTimePeriods(): void {
+        this.timePeriods.push(this.timePeriods[this.timePeriods.length - 1] + this.timeInterval);
     }
 
     private numericalSimulation(): NumericalSimulation[] {

@@ -23,6 +23,8 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 
     pending = false;
 
+    network = true;
+
     numerical = false;
 
     statistics = false;
@@ -52,6 +54,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         this.subscriptions.push(this.store.pipe(select(fromUi.currentStep)).subscribe((currentStep: number) => {
             switch (currentStep) {
                 case 0:
+                    this.network = true;
                     this.numerical = false;
                     this.statistics = false;
                     break;

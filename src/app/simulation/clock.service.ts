@@ -38,7 +38,9 @@ export enum Control {
     /**
      * PropagateFlow processing time (ms).
      */
-    public processingTime = 0;
+    private processingTime = 0;
+
+    private totalProcessingTime = 0;
 
     private endSimulation = false;
 
@@ -65,6 +67,7 @@ export enum Control {
         this.simulatedTimeInterval = uiConfig.simulatedTimeInterval;
         this.interval = null;
         this.processingTime = 0;
+        this.totalProcessingTime = 0;
         this.endSimulation = false;
         this.subscription = null;
     }
@@ -92,10 +95,17 @@ export enum Control {
         }
     }
 
+    public getStatistics() {
+        return {
+            totalSimulatedTime: this.simulatedTimePeriod,
+            totalProcessingTime: this.totalProcessingTime
+        };
+    }
+
     /**
      * Starts simulation.
      */
-    public start(): void {
+    private start(): void {
         if (!this.subscription || this.subscription.closed) {
             // Sets interval.
             this.interval = interval(this.simulatedTimeInterval);
@@ -107,13 +117,13 @@ export enum Control {
         }
     }
 
-    public pause(): void {
+    private pause(): void {
         if (this.subscription && !this.subscription.closed) {
             this.subscription.unsubscribe();
         }
     }
 
-    public stop(): void {
+    private stop(): void {
         if (this.subscription && !this.subscription.closed) {
             this.subscription.unsubscribe();
         }
@@ -133,14 +143,14 @@ export enum Control {
     /**
      * Performs one step.
      */
-    public step(): void {
+    private step(): void {
         if (this.subscription && !this.subscription.closed) {
             this.subscription.unsubscribe();
         }
         this.execute();
     }
 
-    public slow(): void {
+    private slow(): void {
         if (this.subscription && !this.subscription.closed) {
             this.subscription.unsubscribe();
             this.simulatedTimeInterval += uiConfig.timeIntervalIncrement;
@@ -155,7 +165,7 @@ export enum Control {
         });
     }
 
-    public quick(): void {
+    private quick(): void {
         if (this.simulatedTimeInterval - uiConfig.timeIntervalDecrement > this.processingTime) {
             if (this.subscription && !this.subscription.closed) {
                 this.subscription.unsubscribe();
@@ -178,6 +188,7 @@ export enum Control {
         const endTime = Date.now();
         // Updates processing time.
         this.processingTime = endTime - startTime;
+        this.totalProcessingTime += this.processingTime;
         this.updateSimulatedTimePeriod();
         // Updates simulation state.
         this.store.dispatch({

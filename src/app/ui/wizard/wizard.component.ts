@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
@@ -26,6 +27,7 @@ export class WizardComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
+        private router: Router,
         private wizard: WizardService,
         private scheduler: SchedulerService
     ) { }
@@ -76,9 +78,7 @@ export class WizardComponent implements OnInit {
                 this.formBuilder.group({
                     endSimulation: [false, [Validators.requiredTrue]]
                 }),
-                this.formBuilder.group({
-
-                })
+                this.formBuilder.group({})
             ])
         }, { updateOn: 'blur' });
 
@@ -117,7 +117,9 @@ export class WizardComponent implements OnInit {
     }
 
     exit(): void {
-        //
+        if (this.stepper.selectedIndex == 5) {
+            this.router.navigate(['/home']);
+        }
     }
 
 }

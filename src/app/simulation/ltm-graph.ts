@@ -67,7 +67,6 @@ export class LtmNode extends Node {
         for (let i = 0; i < paths.length; i++) {
             this.transitionFlows[i] = {};
             for (const incomingEdge of this.incomingEdges) {
-
                 // To destination.
                 if (this.destination) {
                     if (this.toDestination(i, incomingEdge, paths)) {
@@ -158,6 +157,7 @@ export class LtmNode extends Node {
     private calcTransitionFlow(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): number {
         let sendingFlow = 0;
         for (const edge of this.incomingEdges) {
+            // Links should exist on the route.
             if (this.linksOnPaths(edge, outgoingEdge, paths)) {
                 sendingFlow += edge.sendingFlow;
             }
@@ -165,23 +165,34 @@ export class LtmNode extends Node {
         const receivingFlows: number[] = [];
         if (sendingFlow > 0) {
             for (const edge of this.outgoingEdges) {
+                // Links should exist on the route.
                 if (this.linksOnPaths(incomingEdge, edge, paths)) {
-                    receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
+                    // The outgoing link should have a receiving flow greater than 0.
+                    if (edge.receivingFlow > 0 || (edge.receivingFlow == 0 && edge.edgeId == outgoingEdge.edgeId)) {
+                        receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
+                    }
                 }
             }
         }
-        let minFlow = 0;
+        let receivingFlow = 0;
         if (receivingFlows.length > 0) {
-            minFlow = Math.min(...receivingFlows);
+            receivingFlow = Math.min(...receivingFlows);
         }
         return Math.min(
-            minFlow,
+            receivingFlow,
             incomingEdge.sendingFlows[index]
         );
     }
 
     private calcReceivingFlow(receivingFlow: number, inflow: number, sendingFlow: number): number {
-        return round(receivingFlow * inflow / sendingFlow);
+        const flow = receivingFlow * inflow / sendingFlow;
+        if (flow < 0) {
+            return 0;
+        } else if (flow > 0 && flow < 1) {
+            return 1;
+        } else {
+            return round(flow);
+        }
     }
 
     /**
@@ -306,35 +317,35 @@ export class LtmEdge extends Edge {
 
     /**
      * Calculates disaggregated and aggregated sending flows of the incoming link.
-     * @param timePeriod The cumulated time period
+     * @param timePeriods The cumulated time period
      * @param timeInterval The time interval
      * @param paths Existing paths
      */
-    public calcSendingFlows(timePeriod: number[], timeInterval: number, paths: any[]): void {
-        const time = timePeriod[timePeriod.length - 1] + timeInterval - this.duration;
+    public calcSendingFlows(timePeriods: number[], timeInterval: number, paths: any[]): void {
+        const time = timePeriods[timePeriods.length - 1] + timeInterval - this.duration;
         const capacity = this.getCapacity(timeInterval);
 
         let interpolation: number[];
         // Disaggregated.
         for (let i = 0; i < paths.length; i++) {
-            interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstreams[i]) : [0];
+            interpolation = timePeriods.length > 1 ? linear([time], timePeriods, this.upstreams[i]) : [0];
             this.sendingFlows[i] = this.calcSendingFlow(interpolation, capacity, this.upstreams[i], this.downstreams[i]);
         }
         // Aggregated.
-        interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.upstream) : [0];
+        interpolation = timePeriods.length > 1 ? linear([time], timePeriods, this.upstream) : [0];
         this.sendingFlow = this.calcSendingFlow(interpolation, capacity, this.upstream, this.downstream);
     }
 
     /**
      * Calculates the receiving flow of the outgoing link.
-     * @param timePeriod The cumulated time period
+     * @param timePeriods The cumulated time period
      * @param timeInterval The time interval
      */
-    public calcReceivingFlow(timePeriod: number[], timeInterval: number): void {
-        const time = timePeriod[timePeriod.length - 1] + timeInterval + this.duration;
+    public calcReceivingFlow(timePeriods: number[], timeInterval: number): void {
+        const time = timePeriods[timePeriods.length - 1] + timeInterval + this.duration;
         const capacity = this.getCapacity(timeInterval);
         const maxCapacity = this.getCapacity(this.duration); // kjam * distance
-        const interpolation = timePeriod.length > 1 ? linear([time], timePeriod, this.downstream) : [0];
+        const interpolation = timePeriods.length > 1 ? linear([time], timePeriods, this.downstream) : [0];
         const receivingFlow = Math.min(
             (interpolation[0] > 0 ? interpolation[0] : 0) +
             maxCapacity -

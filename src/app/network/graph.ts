@@ -502,7 +502,8 @@ export class Graph {
 
     private filterPaths(shortestPaths: Path[]): void {
         if (shortestPaths.length > 1) {
-            for (let i = 0; i < shortestPaths.length - 1; i++) {
+            let i = 0;
+            do {
                 const pathA = shortestPaths[i].edges;
                 const pathB = shortestPaths[i + 1].edges;
                 const sharedEdges: Edge[] = pathA.filter((edgeOfA: Edge) =>
@@ -510,9 +511,11 @@ export class Graph {
                         edgeOfB.edgeId == edgeOfA.edgeId));
                 if (pathA.length - sharedEdges.length <= 1 && pathB.length - sharedEdges.length <= 2) {
                     shortestPaths.splice(i + 1, 1);
-                    break;
+                    i = 0;
+                } else {
+                    i++;
                 }
-            }
+            } while (i < shortestPaths.length - 1);
         }
     }
 
