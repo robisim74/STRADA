@@ -80,7 +80,7 @@ import { uiConfig } from '../ui-config';
         };
     }
 
-    public showRect(bounds: google.maps.LatLngBoundsLiteral) {
+    public showRect(bounds: google.maps.LatLngBoundsLiteral): void {
         // Defines the rectangle and set its editable property to true.
         this.rectangle = new google.maps.Rectangle({
             bounds: bounds,
@@ -220,11 +220,13 @@ import { uiConfig } from '../ui-config';
 
     public hidePaths(): void {
         const graph = this.network.getGraph();
-        const polylines = graph.getPolylines();
-        for (let z = 0; z < polylines.length; z++) {
-            for (let n = 0; n < polylines[z].length; n++) {
-                const polyline = polylines[z][n];
-                polyline.setMap(null);
+        if (graph) {
+            const polylines = graph.getPolylines();
+            for (let z = 0; z < polylines.length; z++) {
+                for (let n = 0; n < polylines[z].length; n++) {
+                    const polyline = polylines[z][n];
+                    polyline.setMap(null);
+                }
             }
         }
     }

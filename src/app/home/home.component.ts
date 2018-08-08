@@ -12,7 +12,7 @@ import { HOME_TRANSITION } from './home.transition';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
-    show = false;
+    show: boolean = false;
 
     constructor(private elementRef: ElementRef) { }
 

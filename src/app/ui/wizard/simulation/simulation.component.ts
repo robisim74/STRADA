@@ -34,7 +34,7 @@ export class SimulationComponent extends BaseComponent implements OnInit {
 
     endSimulation: boolean;
 
-    control = Control;
+    control: typeof Control = Control;
 
     constructor(
         private formBuilder: FormBuilder,

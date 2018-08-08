@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Subscription, Observable, of } from 'rxjs';
@@ -21,13 +21,13 @@ import { InfoDialogComponent } from '../shared/info-dialog.component';
 })
 export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 
-    pending = false;
+    pending: boolean = false;
 
-    network = true;
+    network: boolean = true;
 
-    numerical = false;
+    numerical: boolean = false;
 
-    statistics = false;
+    statistics: boolean = false;
 
     subscriptions: Subscription[] = [];
 
@@ -35,6 +35,7 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         private router: Router,
         private snackBar: MatSnackBar,
         private dialog: MatDialog,
+        private cdr: ChangeDetectorRef,
         private store: Store<fromUi.UiState>,
         private scheduler: SchedulerService
     ) { }
@@ -57,14 +58,17 @@ export class UiComponent implements OnInit, OnDestroy, CanComponentDeactivate {
                     this.network = true;
                     this.numerical = false;
                     this.statistics = false;
+                    this.cdr.detectChanges();
                     break;
                 case 4:
                     this.numerical = true;
                     this.statistics = false;
+                    this.cdr.detectChanges();
                     break;
                 case 5:
                     this.numerical = true;
                     this.statistics = true;
+                    this.cdr.detectChanges();
                     break;
             }
         }));

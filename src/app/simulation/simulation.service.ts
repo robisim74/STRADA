@@ -10,7 +10,8 @@ import { SimulationActionTypes } from './models/actions/simulation.actions';
 import { Graph, OdPair, Tag } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
 import { NumericalSimulation, Counts } from './models/simulation-state';
-import { round } from '../ui/utils';
+import { uiConfig } from '../ui/ui-config';
+import { round, formatTimeFromSeconds } from '../ui/utils';
 
 /**
  * Applies the traffic flow propagation algorithm.
@@ -90,7 +91,6 @@ import { round } from '../ui/utils';
             type: SimulationActionTypes.PeriodsChanged,
             payload: { timeInterval: this.timeInterval, timePeriods: this.timePeriods }
         });
-        console.log(this.paths);
         return of(null);
     }
 
@@ -121,8 +121,6 @@ import { round } from '../ui/utils';
                 payload: true
             });
         }
-
-        console.log(this.graph);
     }
 
     /**
@@ -147,9 +145,37 @@ import { round } from '../ui/utils';
         });
     }
 
-    public getStatistics() {
+    public getStatistics(): any {
+        const edges = this.graph.getEdges().filter((edge: LtmEdge) =>
+            edge.distance > uiConfig.minDistance && edge.duration > uiConfig.minDuration
+        );
+
+        const heavyTrafficEdges = edges.filter((edge: LtmEdge) => edge.heavyTrafficCount > 0);
+        const moderateTrafficEdges = edges.filter((edge: LtmEdge) => edge.moderateTrafficCount > 0);
+        const heavyTrafficLabels = heavyTrafficEdges.map((edge: LtmEdge) => edge.label);
+        const moderateTrafficLabels = moderateTrafficEdges.map((edge: LtmEdge) => edge.label);
+        const heavyTrafficData = heavyTrafficEdges.map((edge: LtmEdge) => edge.heavyTrafficCount * this.timeInterval);
+        const moderateTrafficData = moderateTrafficEdges.map((edge: LtmEdge) => edge.moderateTrafficCount * this.timeInterval);
+
+        const busiestEdge = edges.reduce((prev: LtmEdge, curr: LtmEdge) =>
+            prev.heavyTrafficCount + prev.moderateTrafficCount > curr.heavyTrafficCount + curr.moderateTrafficCount ? prev : curr
+        );
+        const busiestEdgeData = busiestEdge.upstream.map((value: number, i: number) => value - busiestEdge.downstream[i]);
+        const busiestEdgePeriods = this.timePeriods.map((value: number) => formatTimeFromSeconds(value));
+        const busiestMaxCapacity = round(busiestEdge.maxFlow * busiestEdge.duration) > 1 ?
+            round(busiestEdge.maxFlow * busiestEdge.duration) :
+            1;
+
         return {
-            totalTime: this.timePeriods[this.timePeriods.length - 1]
+            totalTime: this.timePeriods[this.timePeriods.length - 1],
+            heavyTrafficLabels: heavyTrafficLabels,
+            moderateTrafficLabels: moderateTrafficLabels,
+            heavyTrafficData: heavyTrafficData,
+            moderateTrafficData: moderateTrafficData,
+            busiestEdge: busiestEdge.label,
+            busiestEdgeData: busiestEdgeData,
+            busiestEdgePeriods: busiestEdgePeriods,
+            busiestMaxCapacity: busiestMaxCapacity
         };
     }
 

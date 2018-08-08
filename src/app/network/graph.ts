@@ -81,7 +81,7 @@ export class Node {
     /**
      * Used by the k shortest path routing.
      */
-    public count = 0;
+    public count: number = 0;
 
     constructor(nodeId: number) {
         this.nodeId = nodeId;
@@ -124,10 +124,19 @@ export class Edge {
      */
     public velocity: number;
 
+    /**
+     * Density calculated from traffic data.
+     */
     public density: number;
 
+    /**
+     * Flow calculated from traffic data.
+     */
     public flow: number;
 
+    /**
+     * Number of vehicles calculated from traffic data.
+     */
     public linkFlow: number;
 
     /**
@@ -198,7 +207,7 @@ export class Edge {
         return this.maxFlow * timeInterval;
     }
 
-    protected draw(color: string, zIndex = 10): void {
+    protected draw(color: string, zIndex: number = 10): void {
         this.drawingOptions.polyline.set('strokeColor', color);
         this.drawingOptions.polyline.set('zIndex', zIndex);
         this.drawingOptions.marker.set('visible', true);
@@ -415,7 +424,7 @@ export class Graph {
      * Gets shortest paths polylines.
      */
     public getPolylines(): google.maps.Polyline[][] {
-        return this.drawingOptions ? this.drawingOptions.polylines : [];
+        return this.drawingOptions.polylines ? this.drawingOptions.polylines : [];
     }
 
     /**
@@ -438,7 +447,7 @@ export class Graph {
      * @param k The number of shortest paths to compute
      * @returns The set of shortest paths
      */
-    private ksp(o: Node, d: Node, pathType: String, k: number): Path[] {
+    private ksp(o: Node, d: Node, pathType: string, k: number): Path[] {
         // Sets to zero the count property of the nodes.
         this.resetCount();
         // Instantiates the heap.
@@ -453,7 +462,7 @@ export class Graph {
      * Breadth First Search (BFS) algorithm for traversing and searching tree data
      * explores the neighbor nodes first, before moving to the next level neighbors.
      */
-    private walk(o: Node, d: Node, pathType, k): Path[] {
+    private walk(o: Node, d: Node, pathType: string, k: number): Path[] {
         // Set of shortest paths from origin to destination.
         const shortestPaths: Path[] = [];
 

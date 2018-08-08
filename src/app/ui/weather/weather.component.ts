@@ -18,7 +18,7 @@ import { BaseComponent } from '../models/base.component';
 })
 export class WeatherComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-    description = '-';
+    description: string = '-';
 
     iconContainer: HTMLElement;
 

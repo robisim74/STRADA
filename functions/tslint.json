@@ -37,6 +37,7 @@
       }
     ],
     "no-empty-interface": false,
+    "no-inferrable-types": true,
     "no-var-requires": false,
     "no-string-literal": false,
     "object-literal-shorthand": false,
@@ -64,8 +65,7 @@
       true,
       "ban-keywords",
       "check-format",
-      "allow-leading-underscore",
-      "allow-pascal-case"
+      "allow-leading-underscore"
     ],
     "whitespace": [
       true,

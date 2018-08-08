@@ -6,7 +6,7 @@ import { MapService } from './map.service';
 import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
 import { Step } from '../models/ui-state';
-import { MapStyle } from './map.style';
+import { mapStyle } from './map.style';
 import { OdPair } from '../../network/graph';
 import { uiConfig } from '../ui-config';
 
@@ -49,7 +49,7 @@ export class MapComponent extends BaseComponent implements OnInit {
         this.maxZoom = 18;
         this.minZoom = 4;
         this.gestureHandling = 'cooperative';
-        this.styles = MapStyle;
+        this.styles = mapStyle;
     }
 
     ngOnInit(): void {

@@ -10,6 +10,7 @@ import { DemandService } from '../../../demand/demand.service';
 import * as fromUi from '../../models/reducers';
 import { Step } from '../../models/ui-state';
 import { WeatherDescription, WeatherConditions } from '../../../network/weather/weather';
+import { OdPair } from '../../../network/graph';
 import { EnumValues } from '../../utils';
 import { uiConfig } from '../../ui-config';
 
@@ -115,7 +116,7 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
         return pair.value.showPaths ? 'visibility' : 'visibility_off';
     }
 
-    buildOdPair(odPair, demand): FormGroup {
+    buildOdPair(odPair: OdPair, demand: number): FormGroup {
         return this.formBuilder.group({
             origin: odPair.origin,
             destination: odPair.destination,

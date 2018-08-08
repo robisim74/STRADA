@@ -1,3 +1,13 @@
-<p>
-  charts works!
-</p>
+<div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px">
+    <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" style="height: 30vh">
+        <canvas id="heavyTrafficChart"></canvas>
+    </div>
+    <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 auto" fxFlexOrder="2" style="height: 30vh">
+        <canvas id="moderateTrafficChart"></canvas>
+    </div>
+</div>
+<div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="8px">
+    <div fxFlex="1 1 100%" fxFlex.lt-md="1 1 auto" fxFlexOrder="1" style="height: 50vh">
+        <canvas id="busiestChart" height="400"></canvas>
+    </div>
+</div>

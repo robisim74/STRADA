@@ -38,11 +38,11 @@ export enum Control {
     /**
      * PropagateFlow processing time (ms).
      */
-    private processingTime = 0;
+    private processingTime: number = 0;
 
-    private totalProcessingTime = 0;
+    private totalProcessingTime: number = 0;
 
-    private endSimulation = false;
+    private endSimulation: boolean = false;
 
     private subscription: Subscription;
 
@@ -95,7 +95,7 @@ export enum Control {
         }
     }
 
-    public getStatistics() {
+    public getStatistics(): any {
         return {
             totalSimulatedTime: this.simulatedTimePeriod,
             totalProcessingTime: this.totalProcessingTime

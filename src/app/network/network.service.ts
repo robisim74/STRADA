@@ -44,7 +44,7 @@ import { uiConfig } from '../ui/ui-config';
      */
     private odPairs: OdPair[] = [];
 
-    private edgeId = 0;
+    private edgeId: number = 0;
 
     constructor(private http: HttpClient, private weather: WeatherService) { }
 

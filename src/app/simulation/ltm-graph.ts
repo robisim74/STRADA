@@ -163,14 +163,12 @@ export class LtmNode extends Node {
             }
         }
         const receivingFlows: number[] = [];
-        if (sendingFlow > 0) {
-            for (const edge of this.outgoingEdges) {
-                // Links should exist on the route.
-                if (this.linksOnPaths(incomingEdge, edge, paths)) {
-                    // The outgoing link should have a receiving flow greater than 0.
-                    if (edge.receivingFlow > 0 || (edge.receivingFlow == 0 && edge.edgeId == outgoingEdge.edgeId)) {
-                        receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
-                    }
+        for (const edge of this.outgoingEdges) {
+            // Links should exist on the route.
+            if (this.linksOnPaths(incomingEdge, edge, paths)) {
+                // The outgoing link should have a receiving flow greater than 0.
+                if (edge.receivingFlow > 0 || (edge.receivingFlow == 0 && edge.edgeId == outgoingEdge.edgeId)) {
+                    receivingFlows.push(this.calcReceivingFlow(edge.receivingFlow, incomingEdge.sendingFlows[index], sendingFlow));
                 }
             }
         }
@@ -185,10 +183,10 @@ export class LtmNode extends Node {
     }
 
     private calcReceivingFlow(receivingFlow: number, inflow: number, sendingFlow: number): number {
-        const flow = receivingFlow * inflow / sendingFlow;
-        if (flow < 0) {
+        const flow = sendingFlow > 0 ? receivingFlow * inflow / sendingFlow : 0;
+        if (flow <= 0) {
             return 0;
-        } else if (flow > 0 && flow < 1) {
+        } else if (flow > 0 && flow <= 1) {
             return 1;
         } else {
             return round(flow);
@@ -285,22 +283,22 @@ export class LtmEdge extends Edge {
     /**
      * The vehicles number of the link.
      */
-    public trafficVolume = 0;
+    public trafficVolume: number = 0;
 
     /**
      * Count of vehicles crossing the link during the simulation.
      */
-    public trafficCount = 0;
+    public trafficCount: number = 0;
 
     /**
      * Count of how many times the link reaches a level of moderate traffic.
      */
-    public moderateTrafficCount = 0;
+    public moderateTrafficCount: number = 0;
 
     /**
      * Count of how many times the link reaches a level of heavy traffic.
      */
-    public heavyTrafficCount = 0;
+    public heavyTrafficCount: number = 0;
 
     public reset(): void {
         this.sendingFlows = [];
@@ -352,9 +350,9 @@ export class LtmEdge extends Edge {
             this.upstream[this.upstream.length - 1],
             capacity
         );
-        if (receivingFlow < 0) {
+        if (receivingFlow <= 0) {
             this.receivingFlow = 0;
-        } else if (receivingFlow > 0 && receivingFlow < 1) {
+        } else if (receivingFlow > 0 && receivingFlow <= 1) {
             this.receivingFlow = 1;
         } else {
             this.receivingFlow = round(receivingFlow);
@@ -415,9 +413,9 @@ export class LtmEdge extends Edge {
                 capacity
             );
         }
-        if (sendingFlow < 0) {
+        if (sendingFlow <= 0) {
             return 0;
-        } else if (sendingFlow > 0 && sendingFlow < 1) {
+        } else if (sendingFlow > 0 && sendingFlow <= 1) {
             return 1;
         } else {
             return round(sendingFlow);

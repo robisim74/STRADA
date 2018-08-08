@@ -93,11 +93,11 @@ export const uiConfig = {
     /**
      * Minimum fraction of the capacity of the moderate traffic level.
      */
-    moderateTraffic: 0.3,
+    moderateTraffic: 0.25,
     /**
      * Minimum fraction of the capacity of the heavy traffic level.
      */
-    heavyTraffic: 0.7,
+    heavyTraffic: 0.75,
     /**
      * Simulated time interval (ms).
      */
