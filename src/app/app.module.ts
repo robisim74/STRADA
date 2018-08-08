@@ -10,6 +10,8 @@ import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
+import { PrivacyComponent } from './privacy/privacy.component';
+import { TermsComponent } from './terms/terms.component';
 import { LocationModule } from './location/location.module';
 import { NetworkModule } from './network/network.module';
 import { DemandModule } from './demand/demand.module';
@@ -21,7 +23,9 @@ import { loadScripts } from './utils';
     declarations: [
         AppComponent,
         HomeComponent,
-        AboutComponent
+        AboutComponent,
+        PrivacyComponent,
+        TermsComponent
     ],
     imports: [
         BrowserModule,

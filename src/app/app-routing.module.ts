@@ -5,6 +5,8 @@ import { AppPreloadingStrategy } from './app-preloading-strategy';
 
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
+import { PrivacyComponent } from './privacy/privacy.component';
+import { TermsComponent } from './terms/terms.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -15,6 +17,8 @@ const routes: Routes = [
         loadChildren: './ui/ui.module#UiModule',
         data: { preload: false }
     },
+    { path: 'privacy', component: PrivacyComponent },
+    { path: 'terms', component: TermsComponent },
     { path: '**', redirectTo: 'home' }
 ];
 

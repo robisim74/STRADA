@@ -1,8 +1,12 @@
 @import '../../styles/variables';
 
 .app-home {
-    //background: url(../../assets/images/**.svg);
-    background-size: cover;
+    /* background: url(../../assets/images/**.svg);
+    background-size: cover; */
+
+    .mat-card {
+        margin: 8px;
+    }
 }
 
 header {
@@ -41,4 +45,10 @@ header {
 
 .subheading {
     height: 30vh;
+
+    .info {
+        font-size: 14px;
+        text-decoration: underline;
+        color: inherit;
+    }
 }

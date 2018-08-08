@@ -378,6 +378,7 @@ import { uiConfig } from '../ui/ui-config';
                 const wayOneway: string = ways[i]['tags']['oneway'];
                 const wayNodes: number[] = ways[i]['nodes'];
                 let n = i + 1;
+                let inverse = false;
                 do {
                     const nextWayName: string = ways[n]['tags']['name'];
                     const nextWayOneway: string = ways[n]['tags']['oneway'];
@@ -388,18 +389,25 @@ import { uiConfig } from '../ui/ui-config';
                         if (wayNodes[wayNodes.length - 1] == nextWayNodes[0]) {
                             this.fillWays(ways[i], ways[n]);
                             ways.splice(n, 1);
-                            n = i;
-                        }
-                        if (wayNodes[0] == nextWayNodes[nextWayNodes.length - 1]) {
+                            n = i + 1;
+                        } else if (wayNodes[0] == nextWayNodes[nextWayNodes.length - 1]) {
                             this.fillWays(ways[n], ways[i]);
                             ways.splice(i, 1);
-                            n = ways.length - 1;
-                            i = -1;
+                            n = ways.length;
+                            inverse = true;
+                        } else {
+                            n++;
                         }
+                    } else {
+                        n++;
                     }
-                    n++;
                 } while (n < ways.length);
-                i++;
+                if (inverse) {
+                    i = 0;
+                    inverse = false;
+                } else {
+                    i++;
+                }
             } while (i < ways.length - 1);
         }
         return ways;
@@ -437,7 +445,7 @@ import { uiConfig } from '../ui/ui-config';
             }
             this.graph.addOrUpdateNode(firstNode);
             this.graph.addOrUpdateNode(secondNode);
-            // Add edge.
+            // Adds edge.
             this.graph.addEdge(edge);
         }
     }

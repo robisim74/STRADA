@@ -167,6 +167,7 @@ export class Edge {
         }
         // Calculates free flow velocity (m/s).
         this.velocity = round(this.distance / this.duration, 2);
+        // Calculates link flow.
         if (this.durationInTraffic > 0 && this.durationInTraffic >= this.duration) {
             // Calculates velocity (m/s).
             const velocity = round(this.distance / this.durationInTraffic, 2);

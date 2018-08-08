@@ -29,8 +29,6 @@ import { environment } from '../../environments/environment';
     /**
      * Geocoding service.
      * Wraps the Google Maps API geocoding service into an observable.
-     * @param address The address to be searched
-     * @return An observable of GeocoderResult
      */
     public codeAddress(address: string): Observable<google.maps.GeocoderResult[]> {
         return Observable.create((observer: Observer<google.maps.GeocoderResult[]>) => {
@@ -51,8 +49,6 @@ import { environment } from '../../environments/environment';
     /**
      * Tries HTML5 geolocation.
      * Wraps the Geolocation API into an observable.
-     *
-     * @return An observable of Position
      */
     public getCurrentPosition(): Observable<Position> {
         return Observable.create((observer: Observer<Position>) => {
