@@ -10,8 +10,9 @@ import { SimulationActionTypes } from './models/actions/simulation.actions';
 import { Graph, OdPair, Tag } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
 import { NumericalSimulation, Counts } from './models/simulation-state';
+import { Statistics } from './statistics';
 import { uiConfig } from '../ui/ui-config';
-import { round, formatTimeFromSeconds } from '../ui/utils';
+import { round } from '../ui/utils';
 
 /**
  * Applies the traffic flow propagation algorithm.
@@ -145,37 +146,26 @@ import { round, formatTimeFromSeconds } from '../ui/utils';
         });
     }
 
+    /**
+     * Extracts the network statistics.
+     */
     public getStatistics(): any {
         const edges = this.graph.getEdges().filter((edge: LtmEdge) =>
             edge.distance > uiConfig.minDistance && edge.duration > uiConfig.minDuration
         );
-
-        const heavyTrafficEdges = edges.filter((edge: LtmEdge) => edge.heavyTrafficCount > 0);
-        const moderateTrafficEdges = edges.filter((edge: LtmEdge) => edge.moderateTrafficCount > 0);
-        const heavyTrafficLabels = heavyTrafficEdges.map((edge: LtmEdge) => edge.label);
-        const moderateTrafficLabels = moderateTrafficEdges.map((edge: LtmEdge) => edge.label);
-        const heavyTrafficData = heavyTrafficEdges.map((edge: LtmEdge) => edge.heavyTrafficCount * this.timeInterval);
-        const moderateTrafficData = moderateTrafficEdges.map((edge: LtmEdge) => edge.moderateTrafficCount * this.timeInterval);
-
-        const busiestEdge = edges.reduce((prev: LtmEdge, curr: LtmEdge) =>
-            prev.heavyTrafficCount + prev.moderateTrafficCount > curr.heavyTrafficCount + curr.moderateTrafficCount ? prev : curr
-        );
-        const busiestEdgeData = busiestEdge.upstream.map((value: number, i: number) => value - busiestEdge.downstream[i]);
-        const busiestEdgePeriods = this.timePeriods.map((value: number) => formatTimeFromSeconds(value));
-        const busiestMaxCapacity = round(busiestEdge.maxFlow * busiestEdge.duration) > 1 ?
-            round(busiestEdge.maxFlow * busiestEdge.duration) :
-            1;
+        const busiestEdge = Statistics.getBusiestEdge(edges);
 
         return {
             totalTime: this.timePeriods[this.timePeriods.length - 1],
-            heavyTrafficLabels: heavyTrafficLabels,
-            moderateTrafficLabels: moderateTrafficLabels,
-            heavyTrafficData: heavyTrafficData,
-            moderateTrafficData: moderateTrafficData,
-            busiestEdge: busiestEdge.label,
-            busiestEdgeData: busiestEdgeData,
-            busiestEdgePeriods: busiestEdgePeriods,
-            busiestMaxCapacity: busiestMaxCapacity
+            heavyTrafficLabels: Statistics.getHeavyTrafficLabels(edges),
+            moderateTrafficLabels: Statistics.getModerateTrafficLabels(edges),
+            heavyTrafficData: Statistics.getHeavyTrafficData(edges, this.timeInterval),
+            moderateTrafficData: Statistics.getModerateyTrafficData(edges, this.timeInterval),
+            busiestEdgeLabel: Statistics.getBusiestEdgeLabel(busiestEdge),
+            busiestEdgeData: Statistics.getBusiestEdgeData(busiestEdge),
+            busiestEdgeCapacity: Statistics.getBusiestEdgeCapacity(busiestEdge),
+            busiestEdgeDelay: Statistics.getBusiestEdgeDelay(busiestEdge, this.timePeriods),
+            periods: Statistics.getPeriods(this.timePeriods)
         };
     }
 
@@ -221,12 +211,6 @@ import { round, formatTimeFromSeconds } from '../ui/utils';
      */
     private takeThirdStep(node: LtmNode): void {
         node.updateCumulativeFlows(this.paths);
-
-        // Updates the traffic volume of the links.
-        const edges = this.graph.getEdges();
-        for (const edge of edges) {
-            edge.updateTrafficVolume();
-        }
     }
 
     /**
@@ -246,7 +230,11 @@ import { round, formatTimeFromSeconds } from '../ui/utils';
     private initTimeInterval(): void {
         const edges = this.graph.getEdges();
         const edge = edges.reduce((prev: LtmEdge, curr: LtmEdge) => prev.duration < curr.duration ? prev : curr);
-        this.timeInterval = edge.duration;
+        if (edge.duration > uiConfig.maxTimeInterval) {
+            this.timeInterval = uiConfig.maxTimeInterval;
+        } else {
+            this.timeInterval = edge.duration;
+        }
     }
 
     /**
@@ -346,7 +334,9 @@ import { round, formatTimeFromSeconds } from '../ui/utils';
     private updateStatistics(): void {
         const edges = this.graph.getEdges();
         for (const edge of edges) {
+            edge.updateTrafficVolume();
             edge.updateTrafficCounts();
+            edge.updateMoes(this.timeInterval);
         }
     }
 
@@ -366,7 +356,9 @@ import { round, formatTimeFromSeconds } from '../ui/utils';
                     edge: edge.label,
                     wayName: wayName,
                     trafficVolume: edge.trafficVolume,
-                    trafficCount: edge.trafficCount
+                    trafficCount: edge.trafficCount,
+                    delay: edge.delay,
+                    stops: edge.stops
                 }
             );
         }

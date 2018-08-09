@@ -138,12 +138,12 @@ export class ChartsComponent extends BaseComponent implements OnInit, AfterViewI
         this.heavyTrafficChart.data.labels = this.statistics.heavyTrafficLabels;
         this.moderateTrafficChart.options.title.text = 'Moderate traffic';
         this.moderateTrafficChart.data.labels = this.statistics.moderateTrafficLabels;
-        this.busiestChart.options.title.text = 'Busiest edge ' + this.statistics.busiestEdge;
+        this.busiestChart.options.title.text = 'Busiest edge ' + this.statistics.busiestEdgeLabel;
         this.busiestChart.options.annotation.annotations.push({
             type: 'line',
             mode: 'horizontal',
             scaleID: "y-axis-0",
-            value: this.statistics.busiestMaxCapacity,
+            value: this.statistics.busiestEdgeCapacity,
             borderColor: '#666',
             borderWidth: 2,
             label: {
@@ -151,12 +151,29 @@ export class ChartsComponent extends BaseComponent implements OnInit, AfterViewI
                 fontStyle: "normal",
                 fontColor: "#666",
                 position: "right",
-                yAdjust: -15,
+                yAdjust: 0,
                 content: "Capacity",
                 enabled: true
             }
         });
-        this.busiestChart.data.labels = this.statistics.busiestEdgePeriods;
+        this.busiestChart.options.annotation.annotations.push({
+            type: 'line',
+            mode: 'vertical',
+            scaleID: "x-axis-0",
+            value: this.statistics.busiestEdgeDelay,
+            borderColor: '#666',
+            borderWidth: 2,
+            label: {
+                backgroundColor: 'rgba(255,255,255,1.0)',
+                fontStyle: "normal",
+                fontColor: "#666",
+                position: "center",
+                xAdjust: 0,
+                content: "Delay",
+                enabled: true
+            }
+        });
+        this.busiestChart.data.labels = this.statistics.periods;
     }
 
     updateData(): void {

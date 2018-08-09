@@ -281,7 +281,7 @@ export class LtmEdge extends Edge {
     public downstream: number[] = [];
 
     /**
-     * The vehicles number of the link.
+     * The vehicles number on the link.
      */
     public trafficVolume: number = 0;
 
@@ -300,6 +300,26 @@ export class LtmEdge extends Edge {
      */
     public heavyTrafficCount: number = 0;
 
+    /**
+     * MOE: velocities (m/s).
+     */
+    public velocities: number[] = [];
+
+    /**
+     * MOE: travel time in seconds.
+     */
+    public travelTime: number | string;
+
+    /**
+     * MOE: delay is the difference between the travel time and the free flow travel time.
+     */
+    public delay: number | string;
+
+    /**
+     * MOE: stop time in seconds.
+     */
+    public stops: number = 0;
+
     public reset(): void {
         this.sendingFlows = [];
         this.upstreams = [];
@@ -310,6 +330,10 @@ export class LtmEdge extends Edge {
         this.trafficCount = 0;
         this.moderateTrafficCount = 0;
         this.heavyTrafficCount = 0;
+        this.velocities = [];
+        this.travelTime = 0;
+        this.delay = 0;
+        this.stops = 0;
         this.draw(uiConfig.links.baseColor);
     }
 
@@ -384,6 +408,9 @@ export class LtmEdge extends Edge {
         this.trafficVolume = this.upstream[this.upstream.length - 1] - this.downstream[this.downstream.length - 1];
     }
 
+    /**
+     * Updates traffic counts.
+     */
     public updateTrafficCounts(): void {
         // Traffic count is the cumulative flow at the upstream link end.
         this.trafficCount = this.upstream[this.upstream.length - 1];
@@ -398,6 +425,32 @@ export class LtmEdge extends Edge {
             // No traffic.
         } else if (this.trafficVolume > 0 || this.trafficCount > 0) {
             this.draw(uiConfig.links.noTrafficColor, 11);
+        }
+    }
+
+    /**
+     * Updates Measures of Effectiveness:
+     * - velocity
+     * - travel time
+     * - delay
+     * - stops
+     */
+    public updateMoes(timeInterval: number): void {
+        // Velocity.
+        this.velocity = round(this.freeFlowVelocity - (this.trafficVolume * this.freeFlowVelocity / (this.getKjam() * this.distance)), 2);
+        this.velocities.push(this.velocity);
+        if (this.velocity > 0) {
+            // Travel time.
+            this.travelTime = round(this.distance / this.velocity);
+            // Delay.
+            this.delay = this.travelTime - this.duration;
+        } else {
+            // Travel time.
+            this.travelTime = 'N/A';
+            // Delay.
+            this.delay = 'N/A';
+            // Stops.
+            this.stops += timeInterval;
         }
     }
 
@@ -527,6 +580,7 @@ export class LtmGraph extends Graph {
         edge.distance = graphEdge.distance;
         edge.duration = graphEdge.duration;
         edge.durationInTraffic = graphEdge.durationInTraffic;
+        edge.freeFlowVelocity = graphEdge.freeFlowVelocity;
         edge.velocity = graphEdge.velocity;
         edge.density = graphEdge.density;
         edge.flow = graphEdge.flow;

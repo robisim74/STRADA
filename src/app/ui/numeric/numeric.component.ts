@@ -16,7 +16,7 @@ export class NumericComponent extends BaseComponent implements OnInit {
 
     data: NumericalSimulation[] = [];
 
-    displayedColumns: string[] = ['edge', 'wayName', 'trafficVolume', 'trafficCount'];
+    displayedColumns: string[] = ['edge', 'wayName', 'trafficVolume', 'trafficCount', 'delay', 'stops'];
 
     constructor(
         private store: Store<fromSimulation.SimulationState>

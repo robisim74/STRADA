@@ -4,6 +4,8 @@ export interface NumericalSimulation {
     wayName: string;
     trafficVolume: number;
     trafficCount: number;
+    delay: number | string;
+    stops: number;
 
 }
 

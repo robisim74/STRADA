@@ -62,7 +62,7 @@ export const uiConfig = {
         ]
     },
     /**
-     * Max No. vehicles for O/D pair.
+     * Maximum No. vehicles for O/D pair.
      */
     maxDemand: 10000,
     /**
@@ -103,5 +103,9 @@ export const uiConfig = {
      */
     simulatedTimeInterval: 500,
     timeIntervalIncrement: 100,
-    timeIntervalDecrement: 100
+    timeIntervalDecrement: 100,
+    /**
+     * Maximum time interval in seconds for LTM.
+     */
+    maxTimeInterval: 10
 };

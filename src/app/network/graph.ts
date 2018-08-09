@@ -120,18 +120,17 @@ export class Edge {
     public durationInTraffic: number;
 
     /**
-     * Free flow velocity (m/s).
+     * Free flow speed (m/s).
+     */
+    public freeFlowVelocity: number;
+
+    /**
+     * Instant speed (m/s).
      */
     public velocity: number;
 
-    /**
-     * Density calculated from traffic data.
-     */
     public density: number;
 
-    /**
-     * Flow calculated from traffic data.
-     */
     public flow: number;
 
     /**
@@ -166,15 +165,15 @@ export class Edge {
             this.duration = round(this.distance / (50 / 3.6)) > 1 ? round(this.distance / (50 / 3.6)) : 1;
         }
         // Calculates free flow velocity (m/s).
-        this.velocity = round(this.distance / this.duration, 2);
+        this.freeFlowVelocity = round(this.distance / this.duration, 2);
         // Calculates link flow.
         if (this.durationInTraffic > 0 && this.durationInTraffic >= this.duration) {
             // Calculates velocity (m/s).
-            const velocity = round(this.distance / this.durationInTraffic, 2);
+            this.velocity = round(this.distance / this.durationInTraffic, 2);
             // Calculates density.
-            this.density = round(this.getKjam() * (this.velocity - velocity) / this.velocity, 2);
+            this.density = round(this.getKjam() * (this.freeFlowVelocity - this.velocity) / this.freeFlowVelocity, 2);
             // Calculates flow.
-            this.flow = round(this.density * velocity, 2);
+            this.flow = round(this.density * this.velocity, 2);
             // Calculates link flow.
             this.linkFlow = round(this.density * this.distance);
         } else {
@@ -189,7 +188,7 @@ export class Edge {
      * @param factor Weather Adjustment Factor
      */
     public calcMaxFlow(factor: number): void {
-        const maxFlow = this.getKjam() * this.velocity;
+        const maxFlow = this.getKjam() * this.freeFlowVelocity;
         this.maxFlow = round(maxFlow * factor, 2);
     }
 

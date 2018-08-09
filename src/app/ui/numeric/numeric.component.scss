@@ -1,3 +1,11 @@
 table {
     width: 100%;
+
+    tr.mat-row {
+        height: 36px;
+
+        td.mat-cell {
+            font-size: 12px;
+        }
+    }
 }

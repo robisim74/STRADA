@@ -39,6 +39,8 @@ export const busiestChartOptions = {
     maintainAspectRatio: false,
     scales: {
         xAxes: [{
+            id: 'x-axis-0',
+            type: 'category',
             scaleLabel: {
                 display: true,
                 labelString: 'Time'
