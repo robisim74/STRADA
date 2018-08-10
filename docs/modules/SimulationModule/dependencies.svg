@@ -22,29 +22,41 @@
 <text text-anchor="start" x="429.7258" y="-15.4" font-family="sans-serif" font-size="14.00" fill="#000000"> &#160;Exports</text>
 <g id="clust1" class="cluster">
 <title>cluster_SimulationModule</title>
-<polygon fill="none" stroke="#000000" stroke-dasharray="1,5" points="150,-70 150,-195 346,-195 346,-70 150,-70"/>
+<polygon fill="none" stroke="#000000" stroke-dasharray="1,5" points="78,-70 78,-195 418,-195 418,-70 78,-70"/>
 </g>
 <g id="clust6" class="cluster">
 <title>cluster_SimulationModule_providers</title>
-<polygon fill="none" stroke="#000000" points="158,-78 158,-130 338,-130 338,-78 158,-78"/>
+<polygon fill="none" stroke="#000000" points="86,-78 86,-130 410,-130 410,-78 86,-78"/>
 </g>
-<!-- SimulationService -->
+<!-- ClockService -->
 <g id="node1" class="node">
-<title>SimulationService</title>
-<ellipse fill="#fdb462" stroke="#000000" cx="248" cy="-104" rx="82.2584" ry="18"/>
-<text text-anchor="middle" x="248" y="-99.8" font-family="Times,serif" font-size="14.00" fill="#000000">SimulationService</text>
+<title>ClockService</title>
+<ellipse fill="#fdb462" stroke="#000000" cx="339" cy="-104" rx="63.1189" ry="18"/>
+<text text-anchor="middle" x="339" y="-99.8" font-family="Times,serif" font-size="14.00" fill="#000000">ClockService</text>
 </g>
 <!-- SimulationModule -->
-<g id="node2" class="node">
+<g id="node3" class="node">
 <title>SimulationModule</title>
-<polygon fill="#8dd3c7" stroke="#000000" points="308.5,-187 305.5,-191 284.5,-191 281.5,-187 187.5,-187 187.5,-151 308.5,-151 308.5,-187"/>
-<text text-anchor="middle" x="248" y="-164.8" font-family="Times,serif" font-size="14.00" fill="#000000">SimulationModule</text>
+<polygon fill="#8dd3c7" stroke="#000000" points="317.5,-187 314.5,-191 293.5,-191 290.5,-187 196.5,-187 196.5,-151 317.5,-151 317.5,-187"/>
+<text text-anchor="middle" x="257" y="-164.8" font-family="Times,serif" font-size="14.00" fill="#000000">SimulationModule</text>
+</g>
+<!-- ClockService&#45;&gt;SimulationModule -->
+<g id="edge1" class="edge">
+<title>ClockService&#45;&gt;SimulationModule</title>
+<path fill="none" stroke="#000000" d="M296.7203,-117.468C296.7203,-117.468 296.7203,-140.8642 296.7203,-140.8642"/>
+<polygon fill="#000000" stroke="#000000" points="293.2204,-140.8641 296.7203,-150.8642 300.2204,-140.8642 293.2204,-140.8641"/>
+</g>
+<!-- SimulationService -->
+<g id="node2" class="node">
+<title>SimulationService</title>
+<ellipse fill="#fdb462" stroke="#000000" cx="176" cy="-104" rx="82.2584" ry="18"/>
+<text text-anchor="middle" x="176" y="-99.8" font-family="Times,serif" font-size="14.00" fill="#000000">SimulationService</text>
 </g>
 <!-- SimulationService&#45;&gt;SimulationModule -->
-<g id="edge1" class="edge">
+<g id="edge2" class="edge">
 <title>SimulationService&#45;&gt;SimulationModule</title>
-<path fill="none" stroke="#000000" d="M248,-122.1061C248,-122.1061 248,-140.991 248,-140.991"/>
-<polygon fill="#000000" stroke="#000000" points="244.5001,-140.9909 248,-150.991 251.5001,-140.991 244.5001,-140.9909"/>
+<path fill="none" stroke="#000000" d="M227.4396,-118.104C227.4396,-118.104 227.4396,-140.7209 227.4396,-140.7209"/>
+<polygon fill="#000000" stroke="#000000" points="223.9397,-140.7209 227.4396,-150.7209 230.9397,-140.7209 223.9397,-140.7209"/>
 </g>
 </g>
 </svg>
