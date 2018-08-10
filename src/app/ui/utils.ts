@@ -12,11 +12,6 @@ export class EnumValues {
 
 }
 
-export function round(value: number, decimals?: number): number {
-    const digits = decimals ? Math.pow(10, decimals) : 1;
-    return Math.round(value * digits) / digits;
-}
-
 export function toSeconds(value: number): number {
     return value / 1000;
 }

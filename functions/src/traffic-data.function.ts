@@ -14,6 +14,7 @@ const googleMaps = _googleMaps;
 export function trafficDataFunction(request, response): void {
     const edges: any = request.body.edges;
     const time: Date = request.body.time ? new Date(request.body.time) : null;
+    const mode: string = request.body.mode;
 
     try {
         // Instances Google Maps.
@@ -26,7 +27,7 @@ export function trafficDataFunction(request, response): void {
         const stream = interval().pipe(
             take(edges.length),
             map((i: number) => edges[i]),
-            concatMap((edge: any) => trafficDirections(edge, time, googleMapsClient))
+            concatMap((edge: any) => trafficDirections(edge, time, mode, googleMapsClient))
         );
         // Executes the stream.
         stream.subscribe(

@@ -8,6 +8,7 @@ import { ClockService, Control } from '../../../simulation/clock.service';
 import * as fromSimulation from '../../../simulation/models/reducers';
 import { Simulation, Counts } from '../../../simulation/models/simulation-state';
 import { toSeconds, formatTimeFromSeconds, formatTimeFromMilliseconds } from '../../utils';
+import { uiConfig } from '../../ui-config';
 
 import { BaseComponent } from '../../models/base.component';
 
@@ -66,9 +67,13 @@ export class SimulationComponent extends BaseComponent implements OnInit {
                 }
                 if (typeof periods.simulatedTimeInterval !== "undefined") {
                     this.simulatedTimeInterval = toSeconds(periods.simulatedTimeInterval);
+                } else {
+                    this.simulatedTimeInterval = toSeconds(uiConfig.simulatedTimeInterval);
                 }
                 if (typeof periods.simulatedTimePeriod !== "undefined") {
                     this.simulatedTimePeriod = formatTimeFromMilliseconds(periods.simulatedTimePeriod);
+                } else {
+                    this.simulatedTimePeriod = formatTimeFromMilliseconds(0);
                 }
             }
         }));

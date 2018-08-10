@@ -55,11 +55,6 @@ export enum Control {
         });
         this.simulatedTimePeriod = 0;
         this.simulatedTimeInterval = uiConfig.simulatedTimeInterval;
-        // Updates simulation state.
-        this.store.dispatch({
-            type: SimulationActionTypes.PeriodsChanged,
-            payload: { simulatedTimeInterval: this.simulatedTimeInterval, simulatedTimePeriod: this.simulatedTimePeriod }
-        });
     }
 
     public reset(): void {

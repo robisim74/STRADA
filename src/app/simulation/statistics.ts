@@ -1,5 +1,5 @@
 import { LtmEdge } from "./ltm-graph";
-import { formatTimeFromSeconds, round } from "../ui/utils";
+import { round } from "../utils";
 
 /**
  * Extracts statistics from the graph.
@@ -42,7 +42,7 @@ export class Statistics {
             1;
     }
 
-    public static getBusiestEdgeDelay(edge: LtmEdge, timePeriods: number[]): string {
+    public static getBusiestEdgeDelay(edge: LtmEdge, timePeriods: number[]): number {
         const trafficVolumes = this.getTrafficVolumes(edge);
 
         let i = 0;
@@ -62,12 +62,8 @@ export class Statistics {
         const delay = travelTime - edge.duration;
         const targetTime = timePeriods[last] - delay;
         const period = timePeriods.reduce((prev, curr) => Math.abs(curr - targetTime) < Math.abs(prev - targetTime) ? curr : prev);
-        return formatTimeFromSeconds(period);
+        return period;
 
-    }
-
-    public static getPeriods(timePeriods: number[]): string[] {
-        return timePeriods.map((value: number) => formatTimeFromSeconds(value));
     }
 
     private static getHeavyTrafficEdges(edges: LtmEdge[]): LtmEdge[] {

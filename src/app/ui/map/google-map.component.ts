@@ -15,11 +15,6 @@ export class GoogleMapComponent implements OnInit, OnChanges {
      * Center map. Required.
      */
     @Input() center: google.maps.LatLngLiteral;
-
-    /*
-     * MapOptions object specification.
-     */
-
     /**
      * The initial map zoom level. Required.
      */

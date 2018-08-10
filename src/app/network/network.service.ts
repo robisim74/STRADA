@@ -14,7 +14,7 @@ import { point, lineString } from '@turf/helpers';
 
 import { WeatherService } from './weather/weather.service';
 import { Graph, Node, Edge, Tag, OdPair, LinkFlow } from './graph';
-import { round } from '../ui/utils';
+import { round } from '../utils';
 import { environment } from '../../environments/environment';
 import { appConfig } from '../app-config';
 import { uiConfig } from '../ui/ui-config';
@@ -85,8 +85,8 @@ import { uiConfig } from '../ui/ui-config';
     public getNetwork(): Observable<any> {
         const url: string = appConfig.apis.overpassApi.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        const query: string = this.buildQuery();
-        const body: string = this.buildBody(query);
+        const query = this.buildQuery();
+        const body = this.buildBody(query);
 
         return this.http.post(url, body, { headers: headers }).pipe(
             map((response: any) => response),
@@ -95,7 +95,7 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * With the data obtained from the Interpreter resource instantiate the Graph class
+     * With the data obtained from the Interpreter resource instantiates the Graph class
      * and the associated classes Node and Edge that model the network graph.
      * @param data Overpass API response
      */
@@ -108,16 +108,16 @@ import { uiConfig } from '../ui/ui-config';
             // Checks empty list.
             if (elements.length == 0) { return throwError('createGraph'); }
 
-            // Create a degree list of nodes:
+            // Creates a degree list of nodes:
             // a Map object that holds nodeId-degree as key-value pairs.
             const nodesDegrees: Map<number, number> = new Map();
             // Gets the list of ways.
-            let ways: any[] = this.extractWays(elements);
+            let ways = this.extractWays(elements);
             ways = this.reverseNoForward(ways);
             // Merges continuous ways.
             ways = this.mergeWays(ways, elements);
             // Gets the list of nodes.
-            const nodes: any[] = this.extractNodes(elements);
+            const nodes = this.extractNodes(elements);
 
             // Creation of the graph algorithm.
             // First step.
@@ -145,7 +145,7 @@ import { uiConfig } from '../ui/ui-config';
                 this.splitWay(filteredWayNodes, nodes, way);
                 // Second direction (two-way).
                 if ((!oneway || oneway == 'no') && (junction != 'roundabout' && junction != 'circular')) {
-                    // Reverse the order of filtered way nodes.
+                    // Reverses the order of filtered way nodes.
                     this.splitWay(filteredWayNodes.reverse(), nodes, way);
                 }
             }
@@ -160,13 +160,13 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Call the networkData cloud function,
+     * Calls the networkData cloud function,
      * that reiterates the invocation of the Directions API to obtain links network data.
      */
     public getNetworkData(): Observable<any> {
         const url: string = environment.functions.networkData.url;
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-        const ways: any[][] = this.getWays();
+        const ways = this.getWays();
         const mode = 'driving';
         const body = JSON.stringify({
             ways: ways,
@@ -228,7 +228,7 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Call the trafficData cloud function,
+     * Calls the trafficData cloud function,
      * that reiterates the invocation of the Directions API to obtain links traffic data.
      */
     public getTrafficData(): Observable<any> {
@@ -246,9 +246,11 @@ import { uiConfig } from '../ui/ui-config';
                 durationInTraffic: null
             };
         });
+        const mode = 'driving';
         const body = JSON.stringify({
             edges: data,
-            time: this.time
+            time: this.time,
+            mode: mode
         });
 
         // To trafficData function.
@@ -279,7 +281,7 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Returns the values of the link flow and the corresponding variance of the paths.
+     * Returns the value of the link flow and the corresponding variance of the paths.
      */
     public getLinkFlows(): LinkFlow[] {
         const edges = this.graph.getPathsEdges();
@@ -424,7 +426,7 @@ import { uiConfig } from '../ui/ui-config';
             const firstNode = this.graph.getNode(filteredWayNodes[i]) || new Node(filteredWayNodes[i]);
             const secondNode = this.graph.getNode(filteredWayNodes[i + 1]) || new Node(filteredWayNodes[i + 1]);
             // Creates the edge.
-            const edge: Edge = new Edge(this.edgeId++);
+            const edge = new Edge(this.edgeId++);
             edge.origin = firstNode;
             edge.destination = secondNode;
             edge.tags = this.extractTags(way['tags']);
@@ -466,7 +468,7 @@ import { uiConfig } from '../ui/ui-config';
                 if (!environment.testing) {
                     node.drawingOptions.marker = new google.maps.Marker({
                         position: { lat: node.lat, lng: node.lon },
-                        icon: '../../assets/images/twotone-add_location-24px.svg',
+                        icon: { url: '../../assets/images/twotone-add_location-24px.svg', scaledSize: new google.maps.Size(21, 30) },
                         title: 'Node: ' + node.label
                     });
                 }
@@ -560,7 +562,7 @@ import { uiConfig } from '../ui/ui-config';
             });
             edge.drawingOptions.marker = new google.maps.Marker({
                 position: path[Math.round(path.length / 2)],
-                icon: '../../assets/images/twotone-info-24px.svg',
+                icon: { url: '../../assets/images/twotone-info-24px.svg', scaledSize: new google.maps.Size(24, 24) },
                 visible: false
             });
             edge.drawingOptions.infowindow = new google.maps.InfoWindow({
@@ -580,8 +582,8 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Convert a list of LatLng to a GeoJSON LineString.
-     * @param path  Array of google.maps.LatLng
+     * Converts a list of LatLng to a GeoJSON LineString.
+     * @param path Array of google.maps.LatLng
      */
     private toLineString(path: google.maps.LatLng[]): any {
         const points = path.map((value: google.maps.LatLng) => {

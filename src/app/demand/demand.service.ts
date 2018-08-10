@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 
 import { NetworkService } from '../network/network.service';
 import { LinkFlow } from '../network/graph';
-import { round } from '../ui/utils';
+import { round } from '../utils';
 import { uiConfig } from '../ui/ui-config';
 
 /**

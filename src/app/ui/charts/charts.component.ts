@@ -6,6 +6,7 @@ import { Chart } from 'chart.js';
 
 import { SimulationService } from '../../simulation/simulation.service';
 import * as fromUi from '../models/reducers';
+import { formatTimeFromSeconds } from '../utils';
 import { trafficChartOptions, busiestChartOptions, busiestColor } from './charts-config';
 import { uiConfig } from '../ui-config';
 
@@ -160,7 +161,7 @@ export class ChartsComponent extends BaseComponent implements OnInit, AfterViewI
             type: 'line',
             mode: 'vertical',
             scaleID: "x-axis-0",
-            value: this.statistics.busiestEdgeDelay,
+            value: formatTimeFromSeconds(this.statistics.busiestEdgeDelay),
             borderColor: '#666',
             borderWidth: 2,
             label: {
@@ -173,7 +174,7 @@ export class ChartsComponent extends BaseComponent implements OnInit, AfterViewI
                 enabled: true
             }
         });
-        this.busiestChart.data.labels = this.statistics.periods;
+        this.busiestChart.data.labels = this.statistics.periods.map((value: number) => formatTimeFromSeconds(value));
     }
 
     updateData(): void {

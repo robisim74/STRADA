@@ -13,8 +13,8 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "firebase-admin": "5.13.1",
-    "firebase-functions": "2.0.1",
+    "firebase-admin": "6.0.0",
+    "firebase-functions": "2.0.4",
     "cors": "2.8.4",
     "rxjs": "6.2.2",
     "@google/maps": "0.5.5",
@@ -27,7 +27,7 @@
     "rxjs-tslint": "0.1.5",
     "typescript": "2.9.2",
     "concurrently": "3.6.1",
-    "rollup": "0.63.4",
+    "rollup": "0.64.1",
     "rollup-plugin-node-resolve": "3.3.0",
     "rimraf": "2.6.2"
   },

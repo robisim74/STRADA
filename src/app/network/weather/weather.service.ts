@@ -5,7 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 
 import { LocationService } from '../../location/location.service';
 import { WeatherConditions } from './weather';
-import { round } from '../../ui/utils';
+import { round } from '../../utils';
 import { appConfig } from '../../app-config';
 import { uiConfig } from '../../ui/ui-config';
 
@@ -53,10 +53,10 @@ import { uiConfig } from '../../ui/ui-config';
      */
     public updateWeatherData(data: any, time?: Date): Observable<any> {
         if (time != null && data.list.length > 0) {
-            const timezoneOffset: number = time.getTimezoneOffset() * 60 * 1000; // Timezone offset in milliseconds
-            const utcTime: number = time.getTime() + timezoneOffset;
+            const timezoneOffset = time.getTimezoneOffset() * 60 * 1000; // Timezone offset in milliseconds
+            const utcTime = time.getTime() + timezoneOffset;
 
-            let preDt: number = data.list[0].dt * 1000; // Converts Unix UTC in millisencods
+            let preDt: number = data.list[0].dt * 1000; // Converts Unix UTC in milliseconds
             let forecast: any = data.list[0];
             for (let i = 1; i < data.list.length; i++) {
                 const nextDt: number = data.list[i].dt * 1000;

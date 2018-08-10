@@ -112,7 +112,7 @@ export class EstimateOfDemandComponent extends BaseComponent implements OnInit {
                 this.addOrigin(control, node.label);
                 // Checks if same node.
             } else if (odPair.origin == node.label) {
-                error = `The origin and destination nodes can not be the same`;
+                error = `The origin and destination nodes cannot be the same`;
             } else {
                 // Checks if the pair is valid.
                 if (odPairs.filter(pair => pair.origin == odPair.origin && pair.destination == node.label).length > 0) {

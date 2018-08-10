@@ -11,8 +11,8 @@ import { Graph, OdPair, Tag } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
 import { NumericalSimulation, Counts } from './models/simulation-state';
 import { Statistics } from './statistics';
+import { round } from '../utils';
 import { uiConfig } from '../ui/ui-config';
-import { round } from '../ui/utils';
 
 /**
  * Applies the traffic flow propagation algorithm.
@@ -165,7 +165,7 @@ import { round } from '../ui/utils';
             busiestEdgeData: Statistics.getBusiestEdgeData(busiestEdge),
             busiestEdgeCapacity: Statistics.getBusiestEdgeCapacity(busiestEdge),
             busiestEdgeDelay: Statistics.getBusiestEdgeDelay(busiestEdge, this.timePeriods),
-            periods: Statistics.getPeriods(this.timePeriods)
+            periods: this.timePeriods
         };
     }
 

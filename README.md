@@ -3,7 +3,7 @@
 
 > STRADA (_Simulation of TRAffic DAta_) is an urban traffic web simulator that uses data in real time.
 
-> This project is under active development for the dissertation of my bachelor's degree in computer engineering.
+> Project developed for the dissertation of my bachelor's degree in computer engineering.
 
 ## Documentation
 Official docs: [STRADA documentation](https://robisim74.github.io/STRADA/)

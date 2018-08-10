@@ -1,11 +1,9 @@
 import { linear } from 'everpolate';
-
 import * as combine from 'mout/array/combine';
 
 import { Node, Edge, Graph } from "../network/graph";
-import { round } from "../ui/utils";
+import { round } from "../utils";
 import { uiConfig } from "../ui/ui-config";
-import { encodeUriSegment } from '@angular/router/src/url_tree';
 
 /**
  * Simulation (LTM) node.
@@ -281,7 +279,7 @@ export class LtmEdge extends Edge {
     public downstream: number[] = [];
 
     /**
-     * The vehicles number on the link.
+     * The vehicles number of the link.
      */
     public trafficVolume: number = 0;
 
@@ -301,12 +299,7 @@ export class LtmEdge extends Edge {
     public heavyTrafficCount: number = 0;
 
     /**
-     * MOE: velocities (m/s).
-     */
-    public velocities: number[] = [];
-
-    /**
-     * MOE: travel time in seconds.
+     * MOE: travel time in seconds or 'N/A'.
      */
     public travelTime: number | string;
 
@@ -330,7 +323,6 @@ export class LtmEdge extends Edge {
         this.trafficCount = 0;
         this.moderateTrafficCount = 0;
         this.heavyTrafficCount = 0;
-        this.velocities = [];
         this.travelTime = 0;
         this.delay = 0;
         this.stops = 0;
@@ -438,7 +430,6 @@ export class LtmEdge extends Edge {
     public updateMoes(timeInterval: number): void {
         // Velocity.
         this.velocity = round(this.freeFlowVelocity - (this.trafficVolume * this.freeFlowVelocity / (this.getKjam() * this.distance)), 2);
-        this.velocities.push(this.velocity);
         if (this.velocity > 0) {
             // Travel time.
             this.travelTime = round(this.distance / this.velocity);

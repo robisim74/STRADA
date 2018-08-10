@@ -13,7 +13,7 @@ import { Edge, Node, OdPair } from '../../network/graph';
 import * as fromUi from '../models/reducers';
 import { MapActionTypes } from '../models/actions/map.actions';
 import { WizardActionTypes } from '../models/actions/wizard.actions';
-import { round } from '../utils';
+import { round } from '../../utils';
 import { uiConfig } from '../ui-config';
 
 /**
@@ -170,7 +170,7 @@ import { uiConfig } from '../ui-config';
     }
 
     /**
-     * Shows/hides nodes of O/D pairs.
+     * Shows/hides the nodes of O/D pairs.
      * @param odPairs The O/D pairs
      */
     public showNodes(odPairs: OdPair[]): void {
@@ -238,10 +238,10 @@ import { uiConfig } from '../ui-config';
             const sw: google.maps.LatLng = this.rectangle.getBounds().getSouthWest();
 
             // Area.
-            const a: number = this.calcArea(ne, sw);
+            const a = this.calcArea(ne, sw);
 
             // Info window.
-            const content: string = '<b>Area</b><br>' +
+            const content = '<b>Area</b><br>' +
                 a + ' ha';
             this.setRectangleInfoWindow(content, ne);
 
@@ -328,11 +328,17 @@ import { uiConfig } from '../ui-config';
     }
 
     private selectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/twotone-place-24px.svg');
+        node.drawingOptions.marker.setIcon({
+            url: '../../assets/images/twotone-place-24px.svg',
+            scaledSize: new google.maps.Size(21, 30)
+        });
     }
 
     private deselectNode(node: Node): void {
-        node.drawingOptions.marker.setIcon('../../assets/images/twotone-add_location-24px.svg');
+        node.drawingOptions.marker.setIcon({
+            url: '../../assets/images/twotone-add_location-24px.svg',
+            scaledSize: new google.maps.Size(21, 30)
+        });
     }
 
 }

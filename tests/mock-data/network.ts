@@ -1,3 +1,4 @@
+/* tslint:disable */
 /**
  * Response from Overpass API for testing the creation of graph.
  * Request:

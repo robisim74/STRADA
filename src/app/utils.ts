@@ -1,5 +1,3 @@
-import filter from 'mout/object/filter';
-
 import { appConfig } from './app-config';
 
 export function loadScripts(): Function {
@@ -22,4 +20,9 @@ export function getScript(src: string): Promise<any> {
         };
         document.getElementsByTagName('head')[0].appendChild(script);
     });
+}
+
+export function round(value: number, decimals?: number): number {
+    const digits = decimals ? Math.pow(10, decimals) : 1;
+    return Math.round(value * digits) / digits;
 }

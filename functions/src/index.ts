@@ -3,13 +3,11 @@ import * as _cors from 'cors';
 
 import { trafficDataFunction } from './traffic-data.function';
 import { networkDataFunction } from './network-data.function';
+import { functionsConfig } from './functions-config';
 
 // CORS configuration.
-const whitelist: string[] = [
-    'http://localhost:4200'
-];
 const options: _cors.CorsOptions = {
-    origin: whitelist
+    origin: functionsConfig.whitelist
 };
 const cors = _cors;
 

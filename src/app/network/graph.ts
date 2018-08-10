@@ -3,7 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import * as combine from 'mout/array/combine';
 
 import { Heap, Path } from './k-shortest-path';
-import { round } from '../ui/utils';
+import { round } from '../utils';
 import { environment } from '../../environments/environment';
 import { uiConfig } from '../ui/ui-config';
 
@@ -177,6 +177,7 @@ export class Edge {
             // Calculates link flow.
             this.linkFlow = round(this.density * this.distance);
         } else {
+            this.velocity = 0;
             this.density = 0;
             this.flow = 0;
             this.linkFlow = 0;
@@ -509,13 +510,17 @@ export class Graph {
         }
     }
 
+    /**
+     * Removes the alternative paths that differ only for two links.
+     * @param shortestPaths The shortest paths as created by the algorithm
+     */
     private filterPaths(shortestPaths: Path[]): void {
         if (shortestPaths.length > 1) {
             let i = 0;
             do {
                 const pathA = shortestPaths[i].edges;
                 const pathB = shortestPaths[i + 1].edges;
-                const sharedEdges: Edge[] = pathA.filter((edgeOfA: Edge) =>
+                const sharedEdges = pathA.filter((edgeOfA: Edge) =>
                     pathB.find((edgeOfB: Edge) =>
                         edgeOfB.edgeId == edgeOfA.edgeId));
                 if (pathA.length - sharedEdges.length <= 1 && pathB.length - sharedEdges.length <= 2) {
@@ -591,10 +596,10 @@ export class Graph {
      * @param odPairs The O/D pairs
      */
     private calcShortestPathsProbabilities(odPairs: OdPair[]): number[][] {
-        // Gets the the total cost of paths.
+        // Gets the total cost of paths.
         const pathCosts = this.calcPathCosts(odPairs);
         const shortestPathsProbabilities: number[][] = [];
-        // Theta parameter.
+        // Theta parameter adjustment.
         const parameter = uiConfig.theta * 100;
         // Calculates numerator.
         const exps: number[][] = [];

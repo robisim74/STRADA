@@ -1,10 +1,10 @@
 import { Observable, Observer } from "rxjs";
+
 import distance from '@turf/distance';
 import { point } from '@turf/helpers';
 
 /**
- * Makes the request to Google Maps Directions API
- * to retrieve network data.
+ * Makes the request to Google Maps Directions API to retrieve network data.
  */
 export function networkDirections(way: any[], mode: string, googleMapsClient: any): Observable<any> {
     return Observable.create((observer: Observer<any>) => {
@@ -55,7 +55,7 @@ export function networkDirections(way: any[], mode: string, googleMapsClient: an
 }
 
 /**
- * Builds a Directions Request object
+ * Builds a Directions Request object.
  * @param way The current way with waypoints
  * @param mode Mode of transport
  */

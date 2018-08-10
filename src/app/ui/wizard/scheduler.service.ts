@@ -94,7 +94,7 @@ import { ClockService } from "../../simulation/clock.service";
                             'This is an open source project: install your own version of it';
                         break;
                     case 'correctGraph':
-                        message = 'Graph data is not available. Please, try with another area';
+                        message = 'Graph data are not available. Please, try with another area';
                         break;
                     case 'getWeatherData':
                         message = 'Weather data cannot be retrieved. Please, try at another time';
@@ -118,7 +118,7 @@ import { ClockService } from "../../simulation/clock.service";
      * - Calcs shortest paths
      * - Calcs incidence matrix
      * - Calcs assignment matrix
-     * - Gets and updates traffic data
+     * - Gets traffic data
      * - Calcs link flows
      * - Calcs O/D matrix
      */
