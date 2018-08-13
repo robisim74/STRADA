@@ -33,6 +33,8 @@ export class SimulationComponent extends BaseComponent implements OnInit {
 
     counts: Counts;
 
+    avgSpeed: number;
+
     endSimulation: boolean;
 
     control: typeof Control = Control;
@@ -81,9 +83,13 @@ export class SimulationComponent extends BaseComponent implements OnInit {
             if (simulation && simulation.counts) {
                 this.counts = simulation.counts;
             }
+            if (simulation && simulation.speed) {
+                this.avgSpeed = simulation.speed;
+            }
         }));
         this.subscriptions.push(this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) => {
             this.endSimulation = end;
+            this.avgSpeed = 0;
             this.formGroup.get('endSimulation').setValue(end);
         }));
     }

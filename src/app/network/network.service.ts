@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, Observer, of, from, interval } from 'rxjs';
-import { map, catchError, take, concatMap } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import * as qs from 'qs';
 import * as deepFillIn from 'mout/object/deepFillIn';

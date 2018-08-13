@@ -5,7 +5,6 @@ import { Store, select } from '@ngrx/store';
 import { WeatherService } from '../../network/weather/weather.service';
 import { NetworkService } from '../../network/network.service';
 import * as fromUi from '../models/reducers';
-import { Step } from '../models/ui-state';
 import { WeatherConditions } from '../../network/weather/weather';
 import { appConfig } from '../../app-config';
 

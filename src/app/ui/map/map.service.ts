@@ -1,5 +1,4 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, of } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 import area from '@turf/area';

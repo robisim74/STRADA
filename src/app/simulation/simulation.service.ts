@@ -7,7 +7,7 @@ import { NetworkService } from '../network/network.service';
 import { DemandService } from '../demand/demand.service';
 import * as fromSimulation from './models/reducers';
 import { SimulationActionTypes } from './models/actions/simulation.actions';
-import { Graph, OdPair, Tag } from '../network/graph';
+import { Tag } from '../network/graph';
 import { LtmGraph, LtmEdge, LtmNode } from './ltm-graph';
 import { NumericalSimulation, Counts } from './models/simulation-state';
 import { Statistics } from './statistics';
@@ -112,7 +112,7 @@ import { uiConfig } from '../ui/ui-config';
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts() } }
+            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts(), speed: this.getSpeed() } }
         });
         // Checks if the simulation is finished.
         if (this.endLtm()) {
@@ -142,7 +142,7 @@ import { uiConfig } from '../ui/ui-config';
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: [], counts: {} } }
+            payload: { simulation: { data: [], counts: {}, speed: null } }
         });
     }
 
@@ -382,6 +382,25 @@ import { uiConfig } from '../ui/ui-config';
             startedVehicles: startedVehicles,
             arrivedVehicles: arrivedVehicles
         };
+    }
+
+    /**
+     * The sum of the densities for the velocity square divided by the sum of the flows.
+     */
+    private getSpeed(): number {
+        const edges = this.graph.getEdges();
+
+        let sum = 0;
+        let flow = 0;
+        for (const edge of edges) {
+            sum += edge.velocity > 0 ?
+                (edge.getKjam() * (edge.freeFlowVelocity - edge.velocity) / edge.freeFlowVelocity) * Math.pow(edge.velocity, 2)
+                : 0;
+            flow += edge.velocity > 0 ?
+                (edge.getKjam() * (edge.freeFlowVelocity - edge.velocity) / edge.freeFlowVelocity) * edge.velocity
+                : 0;
+        }
+        return round(sum / flow, 2);
     }
 
 }

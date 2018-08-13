@@ -200,7 +200,7 @@ export class Edge {
         return this.density > 0 ? round(1 / this.density, 2) : 1;
     }
 
-    protected getKjam(): number {
+    public getKjam(): number {
         return round(1 / uiConfig.sp, 2);
     }
 

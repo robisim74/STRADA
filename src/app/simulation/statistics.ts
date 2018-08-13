@@ -1,5 +1,4 @@
 import { LtmEdge } from "./ltm-graph";
-import { round } from "../utils";
 
 /**
  * Extracts statistics from the graph.
@@ -37,8 +36,8 @@ export class Statistics {
     }
 
     public static getBusiestEdgeCapacity(edge: LtmEdge): number {
-        return round(edge.maxFlow * edge.duration) > 1 ?
-            round(edge.maxFlow * edge.duration) :
+        return Math.trunc(edge.maxFlow * edge.duration) > 1 ?
+            Math.trunc(edge.maxFlow * edge.duration) + 1 :
             1;
     }
 

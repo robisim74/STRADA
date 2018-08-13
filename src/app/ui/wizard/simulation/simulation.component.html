@@ -53,6 +53,10 @@
             <p>Started vehicles: {{ counts?.startedVehicles || 0 }}</p>
             <p>Arrived vehicles: {{ counts?.arrivedVehicles || 0 }}</p>
         </div>
+        <br>
+        <div fxLayout="column" fxLayoutGap="8px">
+            <p>Avg. speed: {{ avgSpeed || 0 }} m/s</p>
+        </div>
     </div>
 
     <div class="navigation">

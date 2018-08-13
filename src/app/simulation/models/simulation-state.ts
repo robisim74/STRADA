@@ -26,5 +26,9 @@ export interface Simulation {
      * Simulation counts.
      */
     counts: Counts;
+    /**
+     * Simulation avg. speed.
+     */
+    speed: number;
 
 }
