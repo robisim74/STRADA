@@ -5,9 +5,9 @@
                 <div fxLayout="row" fxLayoutGap="3px">
                     <div fxFlex="1 1 15%" class="header">O</div>
                     <div fxFlex="1 1 15%" class="header">D</div>
-                    <div fxFlex="1 1 30%" class="header">Path</div>
                     <div fxFlex="1 1 20%" class="header">Demand</div>
-                    <div fxFlex="1 1 20%" class="header"></div>
+                    <div fxFlex="1 1 20%" class="header">Time</div>
+                    <div fxFlex="1 1 30%" class="header"></div>
                 </div>
                 <div *ngFor="let pair of odPairs.controls; let i=index" [formGroupName]="i" fxLayout="row" fxLayoutGap="3px">
                     <div fxFlex="1 1 15%" class="cell" fxLayout="column" fxLayoutAlign="center">
@@ -15,9 +15,6 @@
                     </div>
                     <div fxFlex="1 1 15%" class="cell" fxLayout="column" fxLayoutAlign="center">
                         <span>{{ pair.value.destination }}</span>
-                    </div>
-                    <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center">
-                        <span>{{ pair.value.pathType }}</span>
                     </div>
                     <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center">
                         <mat-form-field color="accent" class="full-width">
@@ -27,7 +24,15 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                    <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center center">
+                    <div fxFlex="1 1 20%" class="cell" fxLayout="column" fxLayoutAlign="center">
+                        <mat-form-field color="accent" class="full-width">
+                            <input matInput type="number" min="0" step="1" formControlName="startingTime" placeholder="Starting (s)">
+                            <mat-error *ngIf="pair.get('startingTime').hasError('required') || pair.get('startingTime').hasError('min') || pair.get('startingTime').hasError('pattern')">
+                                Invalid value
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">
                         <button type="button" mat-icon-button color="accent" (click)="toggleValue(pair)" title="Show paths" aria-label="Show paths">
                             <mat-icon>{{ getVisibility(pair) }}</mat-icon>
                         </button>

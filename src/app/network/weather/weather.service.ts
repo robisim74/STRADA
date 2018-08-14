@@ -112,8 +112,8 @@ import { uiConfig } from '../../ui/ui-config';
             description: data.weather[0] ? data.weather[0].description : '-',
             icon: data.weather[0] ? data.weather[0].icon : null,
             visibility: data.visibility ? data.visibility : uiConfig.visibility.default,
-            rainIntensity: data.rain ? data.rain['3h'] : 0,
-            snowIntensity: data.snow ? data.snow['3h'] : 0
+            rainIntensity: data.rain && data.rain['3h'] ? round(data.rain['3h']) : 0,
+            snowIntensity: data.snow && data.snow['3h'] ? round(data.snow['3h']) : 0
         };
     }
 

@@ -89,6 +89,6 @@ export function isGreater(line: any): any {
     const from = point([line.start_location.lng, line.start_location.lat]);
     const to = point([line.end_location.lng, line.end_location.lat]);
     const geodesicDistance = distance(from, to) * 1000;
-    if (geodesicDistance > 0 && line.distance && line.distance.value > geodesicDistance * 3) return true;
+    if (geodesicDistance > 0 && line.distance && line.distance.value > geodesicDistance * 2) return true;
     return false;
 }

@@ -5,7 +5,6 @@ import { map, catchError } from 'rxjs/operators';
 
 import * as qs from 'qs';
 import * as deepFillIn from 'mout/object/deepFillIn';
-import * as combine from 'mout/array/combine';
 import transformTranslate from '@turf/transform-translate';
 import bearing from '@turf/bearing';
 import distance from '@turf/distance';
@@ -417,7 +416,9 @@ import { uiConfig } from '../ui/ui-config';
 
     private fillWays(way: any, nextWay: any): void {
         way = deepFillIn(way, nextWay);
-        way['nodes'] = combine(way['nodes'], nextWay['nodes']);
+        // Removes the shared node.
+        nextWay['nodes'].splice(0, 1);
+        way['nodes'] = way['nodes'].concat(nextWay['nodes']);
     }
 
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
@@ -561,7 +562,7 @@ import { uiConfig } from '../ui/ui-config';
                 zIndex: 5
             });
             edge.drawingOptions.marker = new google.maps.Marker({
-                position: path[Math.round(path.length / 2)],
+                position: path[round(path.length / 2)],
                 icon: { url: '../../assets/images/twotone-info-24px.svg', scaledSize: new google.maps.Size(24, 24) },
                 visible: false
             });

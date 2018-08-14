@@ -30,6 +30,10 @@ export class LtmNode extends Node {
          * Traffic demand.
          */
         expectedInflow: number;
+        /**
+         * Starting time of each route.
+         */
+        startingTimes: number[];
     };
 
     /**
@@ -59,9 +63,11 @@ export class LtmNode extends Node {
 
     /**
      * Calculates disaggregated transition flows of the node.
+     * @param timePeriods The cumulated time period
+     * @param timeInterval The time interval
      * @param paths Existing paths
      */
-    public calcTransitionFlows(paths: any[]): void {
+    public calcTransitionFlows(timePeriods: number[], timeInterval: number, paths: any[]): void {
         for (let i = 0; i < paths.length; i++) {
             this.transitionFlows[i] = {};
             for (const incomingEdge of this.incomingEdges) {
@@ -69,7 +75,8 @@ export class LtmNode extends Node {
                 if (this.destination) {
                     if (this.toDestination(i, incomingEdge, paths)) {
                         if (!this.transitionFlows[i][incomingEdge.label]) { this.transitionFlows[i][incomingEdge.label] = {}; }
-                        this.transitionFlows[i][incomingEdge.label][this.label] = this.calcOutflow(i, incomingEdge);
+                        this.transitionFlows[i][incomingEdge.label][this.label] =
+                            this.calcOutflow(i, incomingEdge);
                     }
                 }
                 // Link to link.
@@ -86,7 +93,8 @@ export class LtmNode extends Node {
                 for (const outgoingEdge of this.outgoingEdges) {
                     if (this.fromOrigin(i, outgoingEdge, paths)) {
                         if (!this.transitionFlows[i][this.label]) { this.transitionFlows[i][this.label] = {}; }
-                        this.transitionFlows[i][this.label][outgoingEdge.label] = this.calcInflow(i, outgoingEdge);
+                        this.transitionFlows[i][this.label][outgoingEdge.label] =
+                            this.calcInflow(i, outgoingEdge, timePeriods, timeInterval);
                     }
                 }
             }
@@ -201,12 +209,15 @@ export class LtmNode extends Node {
     /**
      * Calculates inflow from origin node.
      */
-    private calcInflow(index: number, outgoingEdge: LtmEdge): number {
-        return Math.min(
-            this.origin.expectedInflows[index] -
-            outgoingEdge.upstreams[index][outgoingEdge.upstreams[index].length - 1],
-            this.calcReceivingFlow(outgoingEdge.receivingFlow, this.origin.expectedInflows[index], this.origin.expectedInflow)
-        );
+    private calcInflow(index: number, outgoingEdge: LtmEdge, timePeriods: number[], timeInterval: number): number {
+        if (timePeriods[timePeriods.length - 1] + timeInterval > this.origin.startingTimes[index]) {
+            return Math.min(
+                this.origin.expectedInflows[index] -
+                outgoingEdge.upstreams[index][outgoingEdge.upstreams[index].length - 1],
+                this.calcReceivingFlow(outgoingEdge.receivingFlow, this.origin.expectedInflows[index], this.origin.expectedInflow)
+            );
+        }
+        return 0;
     }
 
     private linkToLink(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): boolean {

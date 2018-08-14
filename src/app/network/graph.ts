@@ -433,7 +433,8 @@ export class Graph {
      * @param factor Weather Adjustment Factor
      */
     public calcMaxflows(factor: number): Observable<any> {
-        for (const edge of this.edges) {
+        const edges = this.getPathsEdges();
+        for (const edge of edges) {
             edge.calcMaxFlow(factor);
         }
         return of(null);

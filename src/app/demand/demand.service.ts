@@ -16,6 +16,11 @@ import { uiConfig } from '../ui/ui-config';
      */
     private odMatrix: number[] = [];
 
+    /**
+     * Starting time in seconds for each O/D pair.
+     */
+    private startingTimes: number[] = [];
+
     constructor(private network: NetworkService) { }
 
     public reset(): void {
@@ -32,6 +37,8 @@ import { uiConfig } from '../ui/ui-config';
         const assignmentMatrix = this.network.getAssignmentMatrix();
         // Calculates demand.
         this.odMatrix = this.gls(linkFlows, assignmentMatrix);
+        // Initializes starting times.
+        this.startingTimes = Array(this.odMatrix.length).fill(0);
         return of(null);
     }
 
@@ -42,6 +49,16 @@ import { uiConfig } from '../ui/ui-config';
     public changeDemand(demand: number[]): void {
         if (demand.length > 0) {
             this.odMatrix = demand;
+        }
+    }
+
+    public getStartingTimes(): number[] {
+        return this.startingTimes;
+    }
+
+    public changeStartingTimes(startingTimes: number[]): void {
+        if (startingTimes.length > 0) {
+            this.startingTimes = startingTimes;
         }
     }
 

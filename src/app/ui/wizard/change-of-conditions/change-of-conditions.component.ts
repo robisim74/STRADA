@@ -58,7 +58,11 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                 const demand = odPairs.map((pair: any) => {
                     return pair.demand;
                 });
+                const startingTimes = odPairs.map((pair: any) => {
+                    return pair.startingTime;
+                });
                 this.demand.changeDemand(demand);
+                this.demand.changeStartingTimes(startingTimes);
             }
         ));
         // Updates weather service data on value changes.
@@ -90,8 +94,9 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                 case this.index:
                     const odPairs = this.network.getOdPairs();
                     const demand = this.demand.getOdMatrix();
+                    const startingTimes = this.demand.getStartingTimes();
                     for (let i = 0; i < odPairs.length; i++) {
-                        odPairsControl.push(this.buildOdPair(odPairs[i], demand[i]));
+                        odPairsControl.push(this.buildOdPair(odPairs[i], demand[i], startingTimes[i]));
                     }
                     const weatherConditions = this.weather.getWeatherConditions();
                     weatherConditionsControl.patchValue(weatherConditions, { emitEvent: false });
@@ -115,7 +120,7 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
         return pair.value.showPaths ? 'visibility' : 'visibility_off';
     }
 
-    buildOdPair(odPair: OdPair, demand: number): FormGroup {
+    buildOdPair(odPair: OdPair, demand: number, startingTime: number): FormGroup {
         return this.formBuilder.group({
             origin: odPair.origin,
             destination: odPair.destination,
@@ -123,6 +128,10 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
             demand: [
                 { value: demand, disabled: demand == null },
                 [Validators.required, Validators.min(0), Validators.max(uiConfig.maxDemand), Validators.pattern('^[0-9]*$')]
+            ],
+            startingTime: [
+                { value: startingTime, disabled: demand == null },
+                [Validators.required, Validators.min(0), Validators.pattern('^[0-9]*$')]
             ],
             showPaths: false
         });

@@ -47,6 +47,11 @@ import { uiConfig } from '../ui/ui-config';
      */
     private pathsDemand: number[] = [];
 
+    /**
+     * Starting time of each path.
+     */
+    private pathsStartingTimes: number[] = [];
+
     constructor(
         private store: Store<fromSimulation.SimulationState>,
         private network: NetworkService,
@@ -73,6 +78,8 @@ import { uiConfig } from '../ui/ui-config';
         const graph = this.network.getGraph();
         // Gets O/D matrix from demand.
         const demand = this.demand.getOdMatrix();
+        // Gets starting times from demand.
+        const startingTimes = this.demand.getStartingTimes();
         // Instances LTM graph from graph.
         this.graph = new LtmGraph(graph);
         // Sets the time period.
@@ -82,7 +89,7 @@ import { uiConfig } from '../ui/ui-config';
         // Initializes existing paths.
         this.initPaths();
         // Initializes paths demand.
-        this.initPathsDemand(demand);
+        this.initPathsDemand(demand, startingTimes);
         // Initializes O/D nodes expected flows.
         this.initOdNodes();
         // Initializes edges upstream and downstream.
@@ -202,7 +209,7 @@ import { uiConfig } from '../ui/ui-config';
      * @param node The node on the paths
      */
     private takeSecondStep(node: LtmNode): void {
-        node.calcTransitionFlows(this.paths);
+        node.calcTransitionFlows(this.timePeriods, this.timeInterval, this.paths);
     }
 
     /**
@@ -267,8 +274,9 @@ import { uiConfig } from '../ui/ui-config';
     /**
      * Initializes the demand for paths as the rate of the total demand.
      * @param odMatrix The O/D matrix
+     * @param startingTimes The starting times of O/D pairs
      */
-    private initPathsDemand(odMatrix: number[]): void {
+    private initPathsDemand(odMatrix: number[], startingTimes: number[]): void {
         const assignmentMatrix = this.graph.getAssignmentMatrix();
 
         let i = 0;
@@ -280,6 +288,8 @@ import { uiConfig } from '../ui/ui-config';
                 for (let n = 0; n < assignmentMatrix[z].length; n++) {
                     const p = assignmentMatrix[z][n].find(value => value > 0) || 0;
                     this.pathsDemand[i] = round(p * odMatrix[z]);
+                    this.pathsStartingTimes[i] = startingTimes[z];
+
                     sum += this.pathsDemand[i];
                     i++;
                 }
@@ -300,11 +310,13 @@ import { uiConfig } from '../ui/ui-config';
                     origin.origin = {
                         sendingFlow: 0,
                         expectedInflows: [],
-                        expectedInflow: 0
+                        expectedInflow: 0,
+                        startingTimes: []
                     };
                 }
                 origin.origin.expectedInflows[i] = this.pathsDemand[i];
                 origin.origin.expectedInflow += this.pathsDemand[i];
+                origin.origin.startingTimes[i] = this.pathsStartingTimes[i];
                 if (!destination.destination) {
                     destination.destination = {
                         receivingFlow: 0,
