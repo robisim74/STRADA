@@ -1319,7 +1319,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/simulation/ltm-graph.ts:38</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/simulation/ltm-graph.ts:42</a></div>
                             </td>
                         </tr>
 
@@ -1487,7 +1487,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/simulation/ltm-graph.ts:52</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/simulation/ltm-graph.ts:56</a></div>
                             </td>
                         </tr>
 
@@ -1924,14 +1924,14 @@
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>calcInflow(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, outgoingEdge: <a href="../classes/LtmEdge.html">LtmEdge</a>)</code>
+                        <code>calcInflow(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, outgoingEdge: <a href="../classes/LtmEdge.html">LtmEdge</a>, timePeriods: number[], timeInterval: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
                     </td>
                 </tr>
 
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="204" class="link-to-prism">src/app/simulation/ltm-graph.ts:204</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="212" class="link-to-prism">src/app/simulation/ltm-graph.ts:212</a></div>
                             </td>
                         </tr>
 
@@ -1968,6 +1968,30 @@
                                                         <td>outgoingEdge</td>
                                                         <td>
                                                                     <code><a href="../classes/LtmEdge.html" target="_self" >LtmEdge</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>timePeriods</td>
+                                                        <td>
+                                                                    <code>number[]</code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>timeInterval</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
                                                         </td>
                                                     
                                                     <td>
@@ -2016,7 +2040,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="197" class="link-to-prism">src/app/simulation/ltm-graph.ts:197</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="205" class="link-to-prism">src/app/simulation/ltm-graph.ts:205</a></div>
                             </td>
                         </tr>
 
@@ -2101,7 +2125,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="183" class="link-to-prism">src/app/simulation/ltm-graph.ts:183</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="191" class="link-to-prism">src/app/simulation/ltm-graph.ts:191</a></div>
                             </td>
                         </tr>
 
@@ -2196,7 +2220,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="155" class="link-to-prism">src/app/simulation/ltm-graph.ts:155</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="163" class="link-to-prism">src/app/simulation/ltm-graph.ts:163</a></div>
                             </td>
                         </tr>
 
@@ -2298,14 +2322,14 @@
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>calcTransitionFlows(paths: any[])</code>
+                        <code>calcTransitionFlows(timePeriods: number[], timeInterval: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, paths: any[])</code>
                     </td>
                 </tr>
 
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/simulation/ltm-graph.ts:64</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/simulation/ltm-graph.ts:70</a></div>
                             </td>
                         </tr>
 
@@ -2327,6 +2351,38 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                                <tr>
+                                                        <td>timePeriods</td>
+                                                        <td>
+                                                                    <code>number[]</code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>The cumulated time period</p>
+</code>
+                                                        </td>
+                                                </tr>
+                                                <tr>
+                                                        <td>timeInterval</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                        <td>
+                                                                <code><p>The time interval</p>
+</code>
+                                                        </td>
+                                                </tr>
                                                 <tr>
                                                         <td>paths</td>
                                                         <td>
@@ -2383,7 +2439,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="220" class="link-to-prism">src/app/simulation/ltm-graph.ts:220</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="231" class="link-to-prism">src/app/simulation/ltm-graph.ts:231</a></div>
                             </td>
                         </tr>
 
@@ -2478,7 +2534,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="224" class="link-to-prism">src/app/simulation/ltm-graph.ts:224</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="235" class="link-to-prism">src/app/simulation/ltm-graph.ts:235</a></div>
                             </td>
                         </tr>
 
@@ -2573,7 +2629,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="212" class="link-to-prism">src/app/simulation/ltm-graph.ts:212</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="223" class="link-to-prism">src/app/simulation/ltm-graph.ts:223</a></div>
                             </td>
                         </tr>
 
@@ -2680,7 +2736,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/simulation/ltm-graph.ts:54</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/simulation/ltm-graph.ts:58</a></div>
                             </td>
                         </tr>
 
@@ -2720,7 +2776,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="216" class="link-to-prism">src/app/simulation/ltm-graph.ts:216</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="227" class="link-to-prism">src/app/simulation/ltm-graph.ts:227</a></div>
                             </td>
                         </tr>
 
@@ -2815,7 +2871,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="100" class="link-to-prism">src/app/simulation/ltm-graph.ts:100</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="108" class="link-to-prism">src/app/simulation/ltm-graph.ts:108</a></div>
                             </td>
                         </tr>
 
@@ -2912,6 +2968,10 @@ export class LtmNode extends Node {
          * Traffic demand.
          */
         expectedInflow: number;
+        /**
+         * Starting time of each route.
+         */
+        startingTimes: number[];
     };
 
     /**
@@ -2941,9 +3001,11 @@ export class LtmNode extends Node {
 
     /**
      * Calculates disaggregated transition flows of the node.
+     * @param timePeriods The cumulated time period
+     * @param timeInterval The time interval
      * @param paths Existing paths
      */
-    public calcTransitionFlows(paths: any[]): void {
+    public calcTransitionFlows(timePeriods: number[], timeInterval: number, paths: any[]): void {
         for (let i &#x3D; 0; i &lt; paths.length; i++) {
             this.transitionFlows[i] &#x3D; {};
             for (const incomingEdge of this.incomingEdges) {
@@ -2951,7 +3013,8 @@ export class LtmNode extends Node {
                 if (this.destination) {
                     if (this.toDestination(i, incomingEdge, paths)) {
                         if (!this.transitionFlows[i][incomingEdge.label]) { this.transitionFlows[i][incomingEdge.label] &#x3D; {}; }
-                        this.transitionFlows[i][incomingEdge.label][this.label] &#x3D; this.calcOutflow(i, incomingEdge);
+                        this.transitionFlows[i][incomingEdge.label][this.label] &#x3D;
+                            this.calcOutflow(i, incomingEdge);
                     }
                 }
                 // Link to link.
@@ -2968,7 +3031,8 @@ export class LtmNode extends Node {
                 for (const outgoingEdge of this.outgoingEdges) {
                     if (this.fromOrigin(i, outgoingEdge, paths)) {
                         if (!this.transitionFlows[i][this.label]) { this.transitionFlows[i][this.label] &#x3D; {}; }
-                        this.transitionFlows[i][this.label][outgoingEdge.label] &#x3D; this.calcInflow(i, outgoingEdge);
+                        this.transitionFlows[i][this.label][outgoingEdge.label] &#x3D;
+                            this.calcInflow(i, outgoingEdge, timePeriods, timeInterval);
                     }
                 }
             }
@@ -3083,12 +3147,15 @@ export class LtmNode extends Node {
     /**
      * Calculates inflow from origin node.
      */
-    private calcInflow(index: number, outgoingEdge: LtmEdge): number {
-        return Math.min(
-            this.origin.expectedInflows[index] -
-            outgoingEdge.upstreams[index][outgoingEdge.upstreams[index].length - 1],
-            this.calcReceivingFlow(outgoingEdge.receivingFlow, this.origin.expectedInflows[index], this.origin.expectedInflow)
-        );
+    private calcInflow(index: number, outgoingEdge: LtmEdge, timePeriods: number[], timeInterval: number): number {
+        if (timePeriods[timePeriods.length - 1] + timeInterval &gt; this.origin.startingTimes[index]) {
+            return Math.min(
+                this.origin.expectedInflows[index] -
+                outgoingEdge.upstreams[index][outgoingEdge.upstreams[index].length - 1],
+                this.calcReceivingFlow(outgoingEdge.receivingFlow, this.origin.expectedInflows[index], this.origin.expectedInflow)
+            );
+        }
+        return 0;
     }
 
     private linkToLink(index: number, incomingEdge: LtmEdge, outgoingEdge: LtmEdge, paths: any[]): boolean {

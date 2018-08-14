@@ -1843,7 +1843,7 @@ and provides reduction factors for graph values based on weather conditions.</p>
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
-import { HttpClient, HttpHeaders, HttpParams } from &#x27;@angular/common/http&#x27;;
+import { HttpClient, HttpParams } from &#x27;@angular/common/http&#x27;;
 import { Observable, throwError, of } from &#x27;rxjs&#x27;;
 import { map, catchError } from &#x27;rxjs/operators&#x27;;
 
@@ -1956,8 +1956,8 @@ import { uiConfig } from &#x27;../../ui/ui-config&#x27;;
             description: data.weather[0] ? data.weather[0].description : &#x27;-&#x27;,
             icon: data.weather[0] ? data.weather[0].icon : null,
             visibility: data.visibility ? data.visibility : uiConfig.visibility.default,
-            rainIntensity: data.rain ? data.rain[&#x27;3h&#x27;] : 0,
-            snowIntensity: data.snow ? data.snow[&#x27;3h&#x27;] : 0
+            rainIntensity: data.rain &amp;&amp; data.rain[&#x27;3h&#x27;] ? round(data.rain[&#x27;3h&#x27;]) : 0,
+            snowIntensity: data.snow &amp;&amp; data.snow[&#x27;3h&#x27;] ? round(data.snow[&#x27;3h&#x27;]) : 0
         };
     }
 

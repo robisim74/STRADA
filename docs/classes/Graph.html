@@ -2028,7 +2028,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="628" class="link-to-prism">src/app/network/graph.ts:628</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="629" class="link-to-prism">src/app/network/graph.ts:629</a></div>
                             </td>
                         </tr>
 
@@ -2177,7 +2177,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="598" class="link-to-prism">src/app/network/graph.ts:598</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="599" class="link-to-prism">src/app/network/graph.ts:599</a></div>
                             </td>
                         </tr>
 
@@ -2255,7 +2255,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="539" class="link-to-prism">src/app/network/graph.ts:539</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="540" class="link-to-prism">src/app/network/graph.ts:540</a></div>
                             </td>
                         </tr>
 
@@ -2297,7 +2297,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="517" class="link-to-prism">src/app/network/graph.ts:517</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="518" class="link-to-prism">src/app/network/graph.ts:518</a></div>
                             </td>
                         </tr>
 
@@ -3106,7 +3106,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="503" class="link-to-prism">src/app/network/graph.ts:503</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="504" class="link-to-prism">src/app/network/graph.ts:504</a></div>
                             </td>
                         </tr>
 
@@ -3189,7 +3189,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="451" class="link-to-prism">src/app/network/graph.ts:451</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="452" class="link-to-prism">src/app/network/graph.ts:452</a></div>
                             </td>
                         </tr>
 
@@ -3317,7 +3317,7 @@ k Shortest Paths algorithm in the Eppstein version.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="507" class="link-to-prism">src/app/network/graph.ts:507</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="508" class="link-to-prism">src/app/network/graph.ts:508</a></div>
                             </td>
                         </tr>
 
@@ -3357,7 +3357,7 @@ k Shortest Paths algorithm in the Eppstein version.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="576" class="link-to-prism">src/app/network/graph.ts:576</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="577" class="link-to-prism">src/app/network/graph.ts:577</a></div>
                             </td>
                         </tr>
 
@@ -3397,7 +3397,7 @@ k Shortest Paths algorithm in the Eppstein version.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="466" class="link-to-prism">src/app/network/graph.ts:466</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="467" class="link-to-prism">src/app/network/graph.ts:467</a></div>
                             </td>
                         </tr>
 
@@ -3696,7 +3696,7 @@ export class Edge {
         return this.density &gt; 0 ? round(1 / this.density, 2) : 1;
     }
 
-    protected getKjam(): number {
+    public getKjam(): number {
         return round(1 / uiConfig.sp, 2);
     }
 
@@ -3929,7 +3929,8 @@ export class Graph {
      * @param factor Weather Adjustment Factor
      */
     public calcMaxflows(factor: number): Observable&lt;any&gt; {
-        for (const edge of this.edges) {
+        const edges &#x3D; this.getPathsEdges();
+        for (const edge of edges) {
             edge.calcMaxFlow(factor);
         }
         return of(null);

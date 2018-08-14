@@ -1438,7 +1438,7 @@ export class Edge {
         return this.density &gt; 0 ? round(1 / this.density, 2) : 1;
     }
 
-    protected getKjam(): number {
+    public getKjam(): number {
         return round(1 / uiConfig.sp, 2);
     }
 
@@ -1671,7 +1671,8 @@ export class Graph {
      * @param factor Weather Adjustment Factor
      */
     public calcMaxflows(factor: number): Observable&lt;any&gt; {
-        for (const edge of this.edges) {
+        const edges &#x3D; this.getPathsEdges();
+        for (const edge of edges) {
             edge.calcMaxFlow(factor);
         }
         return of(null);

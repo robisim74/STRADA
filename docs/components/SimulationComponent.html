@@ -1195,6 +1195,9 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                <a href="#avgSpeed">avgSpeed</a>
+                            </li>
+                            <li>
                                 <a href="#control">control</a>
                             </li>
                             <li>
@@ -1304,7 +1307,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:38</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:40</a></div>
                             </td>
                         </tr>
 
@@ -1453,7 +1456,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:49</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:51</a></div>
                             </td>
                         </tr>
 
@@ -1491,7 +1494,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="95" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:95</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="101" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:101</a></div>
                             </td>
                         </tr>
 
@@ -1560,7 +1563,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:59</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:61</a></div>
                             </td>
                         </tr>
 
@@ -1598,7 +1601,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="91" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:91</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="97" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:97</a></div>
                             </td>
                         </tr>
 
@@ -1636,7 +1639,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:55</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:57</a></div>
                             </td>
                         </tr>
 
@@ -1897,6 +1900,40 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="avgSpeed"></a>
+                        <span class="name">
+                            <b>
+                            avgSpeed
+                            </b>
+                            <a href="#avgSpeed"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <code>avgSpeed:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:36</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="control"></a>
                         <span class="name">
                             <b>
@@ -1919,7 +1956,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:38</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:40</a></div>
                             </td>
                         </tr>
 
@@ -1987,7 +2024,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:36</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:38</a></div>
                             </td>
                         </tr>
 
@@ -2216,6 +2253,8 @@ export class SimulationComponent extends BaseComponent implements OnInit {
 
     counts: Counts;
 
+    avgSpeed: number;
+
     endSimulation: boolean;
 
     control: typeof Control &#x3D; Control;
@@ -2264,9 +2303,13 @@ export class SimulationComponent extends BaseComponent implements OnInit {
             if (simulation &amp;&amp; simulation.counts) {
                 this.counts &#x3D; simulation.counts;
             }
+            if (simulation &amp;&amp; simulation.speed) {
+                this.avgSpeed &#x3D; simulation.speed;
+            }
         }));
         this.subscriptions.push(this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) &#x3D;&gt; {
             this.endSimulation &#x3D; end;
+            this.avgSpeed &#x3D; 0;
             this.formGroup.get(&#x27;endSimulation&#x27;).setValue(end);
         }));
     }
@@ -2339,6 +2382,10 @@ export class SimulationComponent extends BaseComponent implements OnInit {
             &lt;p&gt;Started vehicles: {{ counts?.startedVehicles || 0 }}&lt;/p&gt;
             &lt;p&gt;Arrived vehicles: {{ counts?.arrivedVehicles || 0 }}&lt;/p&gt;
         &lt;/div&gt;
+        &lt;br&gt;
+        &lt;div fxLayout&#x3D;&quot;column&quot; fxLayoutGap&#x3D;&quot;8px&quot;&gt;
+            &lt;p&gt;Avg. speed: {{ avgSpeed || 0 }} m/s&lt;/p&gt;
+        &lt;/div&gt;
     &lt;/div&gt;
 
     &lt;div class&#x3D;&quot;navigation&quot;&gt;
@@ -2374,7 +2421,7 @@ export class SimulationComponent extends BaseComponent implements OnInit {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><div [formGroup]="formGroup">    <div fxLayout="column" fxLayoutGap="8px">        <div fxLayout="column" fxLayoutGap="3px">            <div fxLayout="row" fxLayoutGap="3px">                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button color="accent" (click)="pressControl(control.stop)" title="Stop and reset" aria-label="Stop and reset">                        <mat-icon>stop</mat-icon>                    </button>                </div>                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.start)" title="Start"                        aria-label="Start">                        <mat-icon>play_arrow</mat-icon>                    </button>                </div>                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.pause)" title="Pause"                        aria-label="Pause">                        <mat-icon>pause</mat-icon>                    </button>                </div>            </div>            <div fxLayout="row" fxLayoutGap="3px">                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.slow)" title="Slow"                        aria-label="Slow">                        <mat-icon>fast_rewind</mat-icon>                    </button>                </div>                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.step)" title="Next step"                        aria-label="Next step">                        <mat-icon>skip_next</mat-icon>                    </button>                </div>                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.quick)" title="Quick"                        aria-label="Quick">                        <mat-icon>fast_forward</mat-icon>                    </button>                </div>            </div>        </div>        <br>        <div fxLayout="column" fxLayoutGap="8px">            <p>Time interval: {{ timeInterval }} s</p>            <p>Time period: {{ timePeriod }}</p>            <p>Simulated time interval: {{ simulatedTimeInterval }} s</p>            <p>Simulated time period: {{ simulatedTimePeriod }}</p>        </div>        <br>        <div fxLayout="column" fxLayoutGap="8px">            <p>Started vehicles: {{ counts?.startedVehicles || 0 }}</p>            <p>Arrived vehicles: {{ counts?.arrivedVehicles || 0 }}</p>        </div>    </div>    <div class="navigation">        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue            <mat-icon>navigate_next</mat-icon>        </button>    </div></div></div>'
+        var COMPONENT_TEMPLATE = '<div><div [formGroup]="formGroup">    <div fxLayout="column" fxLayoutGap="8px">        <div fxLayout="column" fxLayoutGap="3px">            <div fxLayout="row" fxLayoutGap="3px">                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button color="accent" (click)="pressControl(control.stop)" title="Stop and reset" aria-label="Stop and reset">                        <mat-icon>stop</mat-icon>                    </button>                </div>                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.start)" title="Start"                        aria-label="Start">                        <mat-icon>play_arrow</mat-icon>                    </button>                </div>                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.pause)" title="Pause"                        aria-label="Pause">                        <mat-icon>pause</mat-icon>                    </button>                </div>            </div>            <div fxLayout="row" fxLayoutGap="3px">                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.slow)" title="Slow"                        aria-label="Slow">                        <mat-icon>fast_rewind</mat-icon>                    </button>                </div>                <div fxFlex="1 1 40%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.step)" title="Next step"                        aria-label="Next step">                        <mat-icon>skip_next</mat-icon>                    </button>                </div>                <div fxFlex="1 1 30%" class="cell" fxLayout="column" fxLayoutAlign="center center">                    <button type="button" mat-icon-button [disabled]="endSimulation" color="accent" (click)="pressControl(control.quick)" title="Quick"                        aria-label="Quick">                        <mat-icon>fast_forward</mat-icon>                    </button>                </div>            </div>        </div>        <br>        <div fxLayout="column" fxLayoutGap="8px">            <p>Time interval: {{ timeInterval }} s</p>            <p>Time period: {{ timePeriod }}</p>            <p>Simulated time interval: {{ simulatedTimeInterval }} s</p>            <p>Simulated time period: {{ simulatedTimePeriod }}</p>        </div>        <br>        <div fxLayout="column" fxLayoutGap="8px">            <p>Started vehicles: {{ counts?.startedVehicles || 0 }}</p>            <p>Arrived vehicles: {{ counts?.arrivedVehicles || 0 }}</p>        </div>        <br>        <div fxLayout="column" fxLayoutGap="8px">            <p>Avg. speed: {{ avgSpeed || 0 }} m/s</p>        </div>    </div>    <div class="navigation">        <button type="button" mat-raised-button color="accent" matStepperNext [disabled]="formGroup.invalid">Continue            <mat-icon>navigate_next</mat-icon>        </button>    </div></div></div>'
     var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ChangeOfConditionsComponent', 'selector': 'wizard-change-of-conditions'},{'name': 'ChartsComponent', 'selector': 'ui-charts'},{'name': 'EstimateOfDemandComponent', 'selector': 'wizard-estimate-of-demand'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'GoogleMapComponent', 'selector': 'google-map'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'InfoDialogComponent', 'selector': 'info-dialog'},{'name': 'MapComponent', 'selector': 'ui-map'},{'name': 'MessageArchivedComponent', 'selector': 'snack-bar'},{'name': 'NumericComponent', 'selector': 'ui-numeric'},{'name': 'PrivacyComponent', 'selector': 'app-privacy'},{'name': 'SearchForTheAreaComponent', 'selector': 'wizard-search-for-the-area'},{'name': 'SelectionOfTheAreaComponent', 'selector': 'wizard-selection-of-the-area'},{'name': 'SimulationComponent', 'selector': 'wizard-simulation'},{'name': 'StatisticsComponent', 'selector': 'wizard-statistics'},{'name': 'TermsComponent', 'selector': 'app-terms'},{'name': 'UiComponent', 'selector': 'app-ui'},{'name': 'WeatherComponent', 'selector': 'ui-weather'},{'name': 'WizardComponent', 'selector': 'ui-wizard'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SimulationComponent'};
