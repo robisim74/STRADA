@@ -1149,6 +1149,10 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier">Private</span>
+                                <a href="#avgSpeeds">avgSpeeds</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
                                 <a href="#graph">graph</a>
                             </li>
                             <li>
@@ -1189,15 +1193,19 @@
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
-                                <a href="#getCounts">getCounts</a>
+                                <a href="#getAvgSpeed">getAvgSpeed</a>
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
-                                <a href="#getSpeed">getSpeed</a>
+                                <a href="#getCounts">getCounts</a>
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
                                 <a href="#getStatistics">getStatistics</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getTotalAvgSpeed">getTotalAvgSpeed</a>
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
@@ -1286,7 +1294,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/simulation/simulation.service.ts:53</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/simulation/simulation.service.ts:55</a></div>
                             </td>
                         </tr>
 
@@ -1377,18 +1385,61 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="226" class="link-to-prism">src/app/simulation/simulation.service.ts:226</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="232" class="link-to-prism">src/app/simulation/simulation.service.ts:232</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>The algorithm ends when there is no more traffic volume on the links.</p>
+                            <div class="io-description"><p>The algorithm ends when all the vehicles are started
+and there is no more traffic volume on the links.</p>
 </div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getAvgSpeed"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            getAvgSpeed
+                            </b>
+                            <a href="#getAvgSpeed"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getAvgSpeed()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="413" class="link-to-prism">src/app/simulation/simulation.service.ts:413</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>The sum of the densities for the velocity square divided by the sum of the flows.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
 
                             </div>
                     </td>
@@ -1419,7 +1470,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="380" class="link-to-prism">src/app/simulation/simulation.service.ts:380</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="391" class="link-to-prism">src/app/simulation/simulation.service.ts:391</a></div>
                             </td>
                         </tr>
 
@@ -1429,48 +1480,6 @@
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="../interfaces/Counts.html" target="_self" >Counts</a></code>
-
-                            </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="getSpeed"></a>
-                        <span class="name">
-                            <b>
-                                <span class="modifier">Private</span>
-                            getSpeed
-                            </b>
-                            <a href="#getSpeed"><span class="fa fa-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
-                            <span class="modifier-icon fa fa-reset"></span>
-                        <code>getSpeed()</code>
-                    </td>
-                </tr>
-
-
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="402" class="link-to-prism">src/app/simulation/simulation.service.ts:402</a></div>
-                            </td>
-                        </tr>
-
-
-                <tr>
-                    <td class="col-md-4">
-                            <div class="io-description"><p>The sum of the densities for the velocity square divided by the sum of the flows.</p>
-</div>
-
-                            <div class="io-description">
-                                <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
 
                             </div>
                     </td>
@@ -1501,7 +1510,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="159" class="link-to-prism">src/app/simulation/simulation.service.ts:159</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="163" class="link-to-prism">src/app/simulation/simulation.service.ts:163</a></div>
                             </td>
                         </tr>
 
@@ -1513,6 +1522,46 @@
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="getTotalAvgSpeed"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            getTotalAvgSpeed
+                            </b>
+                            <a href="#getTotalAvgSpeed"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>getTotalAvgSpeed()</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="431" class="link-to-prism">src/app/simulation/simulation.service.ts:431</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
 
                             </div>
                     </td>
@@ -1543,7 +1592,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="76" class="link-to-prism">src/app/simulation/simulation.service.ts:76</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="80" class="link-to-prism">src/app/simulation/simulation.service.ts:80</a></div>
                             </td>
                         </tr>
 
@@ -1585,7 +1634,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="332" class="link-to-prism">src/app/simulation/simulation.service.ts:332</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="343" class="link-to-prism">src/app/simulation/simulation.service.ts:343</a></div>
                             </td>
                         </tr>
 
@@ -1625,7 +1674,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="301" class="link-to-prism">src/app/simulation/simulation.service.ts:301</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="312" class="link-to-prism">src/app/simulation/simulation.service.ts:312</a></div>
                             </td>
                         </tr>
 
@@ -1665,7 +1714,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="250" class="link-to-prism">src/app/simulation/simulation.service.ts:250</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="261" class="link-to-prism">src/app/simulation/simulation.service.ts:261</a></div>
                             </td>
                         </tr>
 
@@ -1707,7 +1756,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="279" class="link-to-prism">src/app/simulation/simulation.service.ts:279</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="290" class="link-to-prism">src/app/simulation/simulation.service.ts:290</a></div>
                             </td>
                         </tr>
 
@@ -1801,7 +1850,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="237" class="link-to-prism">src/app/simulation/simulation.service.ts:237</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="248" class="link-to-prism">src/app/simulation/simulation.service.ts:248</a></div>
                             </td>
                         </tr>
 
@@ -1843,7 +1892,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="182" class="link-to-prism">src/app/simulation/simulation.service.ts:182</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="187" class="link-to-prism">src/app/simulation/simulation.service.ts:187</a></div>
                             </td>
                         </tr>
 
@@ -1885,7 +1934,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="359" class="link-to-prism">src/app/simulation/simulation.service.ts:359</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="370" class="link-to-prism">src/app/simulation/simulation.service.ts:370</a></div>
                             </td>
                         </tr>
 
@@ -1925,7 +1974,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="108" class="link-to-prism">src/app/simulation/simulation.service.ts:108</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="112" class="link-to-prism">src/app/simulation/simulation.service.ts:112</a></div>
                             </td>
                         </tr>
 
@@ -1967,7 +2016,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/simulation/simulation.service.ts:61</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="63" class="link-to-prism">src/app/simulation/simulation.service.ts:63</a></div>
                             </td>
                         </tr>
 
@@ -2007,7 +2056,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="137" class="link-to-prism">src/app/simulation/simulation.service.ts:137</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="141" class="link-to-prism">src/app/simulation/simulation.service.ts:141</a></div>
                             </td>
                         </tr>
 
@@ -2049,7 +2098,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="196" class="link-to-prism">src/app/simulation/simulation.service.ts:196</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="201" class="link-to-prism">src/app/simulation/simulation.service.ts:201</a></div>
                             </td>
                         </tr>
 
@@ -2127,7 +2176,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="211" class="link-to-prism">src/app/simulation/simulation.service.ts:211</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="216" class="link-to-prism">src/app/simulation/simulation.service.ts:216</a></div>
                             </td>
                         </tr>
 
@@ -2205,7 +2254,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="219" class="link-to-prism">src/app/simulation/simulation.service.ts:219</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="224" class="link-to-prism">src/app/simulation/simulation.service.ts:224</a></div>
                             </td>
                         </tr>
 
@@ -2283,7 +2332,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="346" class="link-to-prism">src/app/simulation/simulation.service.ts:346</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="357" class="link-to-prism">src/app/simulation/simulation.service.ts:357</a></div>
                             </td>
                         </tr>
 
@@ -2323,7 +2372,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="355" class="link-to-prism">src/app/simulation/simulation.service.ts:355</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="366" class="link-to-prism">src/app/simulation/simulation.service.ts:366</a></div>
                             </td>
                         </tr>
 
@@ -2346,6 +2395,46 @@
         <h3 id="inputs">
             Properties
         </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="avgSpeeds"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            avgSpeeds
+                            </b>
+                            <a href="#avgSpeeds"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <span class="modifier-icon fa fa-reset"></span><code>avgSpeeds:     <code>number[]</code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>number[]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/simulation/simulation.service.ts:55</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
@@ -2677,6 +2766,8 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
      */
     private pathsStartingTimes: number[] &#x3D; [];
 
+    private avgSpeeds: number[] &#x3D; [];
+
     constructor(
         private store: Store&lt;fromSimulation.SimulationState&gt;,
         private network: NetworkService,
@@ -2689,6 +2780,8 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         this.timeInterval &#x3D; 0;
         this.paths &#x3D; [];
         this.pathsDemand &#x3D; [];
+        this.pathsStartingTimes &#x3D; [];
+        this.avgSpeeds &#x3D; [];
         // Simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.Reset
@@ -2744,7 +2837,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts(), speed: this.getSpeed() } }
+            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts(), avgSpeed: this.getAvgSpeed() } }
         });
         // Checks if the simulation is finished.
         if (this.endLtm()) {
@@ -2774,7 +2867,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: [], counts: {}, speed: null } }
+            payload: { simulation: { data: [], counts: {}, avgSpeed: null } }
         });
     }
 
@@ -2789,6 +2882,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
 
         return {
             totalTime: this.timePeriods[this.timePeriods.length - 1],
+            totalAvgSpeed: this.getTotalAvgSpeed(),
             heavyTrafficLabels: Statistics.getHeavyTrafficLabels(edges),
             moderateTrafficLabels: Statistics.getModerateTrafficLabels(edges),
             heavyTrafficData: Statistics.getHeavyTrafficData(edges, this.timeInterval),
@@ -2846,14 +2940,20 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
     }
 
     /**
-     * The algorithm ends when there is no more traffic volume on the links.
+     * The algorithm ends when all the vehicles are started
+     * and there is no more traffic volume on the links.
      */
     private endLtm(): boolean {
+        const originNodes &#x3D; this.graph.getOriginNodes();
         const edges &#x3D; this.graph.getEdges();
-        return edges.filter(
+        const started &#x3D; originNodes.filter((node: LtmNode) &#x3D;&gt;
+            node.origin.sendingFlow &#x3D;&#x3D; node.origin.expectedInflow
+        ).length &#x3D;&#x3D; originNodes.length;
+        const busy &#x3D; edges.filter(
             (edge: LtmEdge) &#x3D;&gt;
                 edge.trafficVolume &gt; 0
-        ).length &gt; 0 ? false : true;
+        ).length &gt; 0;
+        return started &amp;&amp; !busy;
     }
 
     /**
@@ -3024,7 +3124,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
     /**
      * The sum of the densities for the velocity square divided by the sum of the flows.
      */
-    private getSpeed(): number {
+    private getAvgSpeed(): number {
         const edges &#x3D; this.graph.getEdges();
 
         let sum &#x3D; 0;
@@ -3037,7 +3137,14 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
                 (edge.getKjam() * (edge.freeFlowVelocity - edge.velocity) / edge.freeFlowVelocity) * edge.velocity
                 : 0;
         }
-        return round(sum / flow, 2);
+        const speed &#x3D; flow &gt; 0 ? round(sum / flow, 2) : 0;
+        this.avgSpeeds.push(speed);
+        return speed;
+    }
+
+    private getTotalAvgSpeed(): number {
+        const sum &#x3D; this.avgSpeeds.reduce((a, b) &#x3D;&gt; a + b, 0);
+        return round(sum / this.avgSpeeds.length, 2);
     }
 
 }

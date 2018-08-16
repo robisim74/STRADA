@@ -1195,6 +1195,9 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                <a href="#totalAvgSpeed">totalAvgSpeed</a>
+                            </li>
+                            <li>
                                 <a href="#totalProcessingTime">totalProcessingTime</a>
                             </li>
                             <li>
@@ -1289,7 +1292,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:29</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:31</a></div>
                             </td>
                         </tr>
 
@@ -1438,7 +1441,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:40</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:42</a></div>
                             </td>
                         </tr>
 
@@ -1476,7 +1479,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:50</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:52</a></div>
                             </td>
                         </tr>
 
@@ -1514,7 +1517,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:64</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="67" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:67</a></div>
                             </td>
                         </tr>
 
@@ -1552,7 +1555,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:46</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:48</a></div>
                             </td>
                         </tr>
 
@@ -1813,6 +1816,40 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="totalAvgSpeed"></a>
+                        <span class="name">
+                            <b>
+                            totalAvgSpeed
+                            </b>
+                            <a href="#totalAvgSpeed"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <code>totalAvgSpeed:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/app/ui/wizard/statistics/statistics.component.ts:31</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="totalProcessingTime"></a>
                         <span class="name">
                             <b>
@@ -1992,6 +2029,8 @@ export class StatisticsComponent extends BaseComponent implements OnInit {
 
     totalProcessingTime: string;
 
+    totalAvgSpeed: number;
+
     constructor(
         private store: Store&lt;fromUi.UiState&gt;,
         private wizard: WizardService,
@@ -2020,6 +2059,7 @@ export class StatisticsComponent extends BaseComponent implements OnInit {
                     this.totalTime &#x3D; formatTimeFromSeconds(simulationStatistics.totalTime);
                     this.totalSimulatedTime &#x3D; formatTimeFromMilliseconds(clockStatistics.totalSimulatedTime);
                     this.totalProcessingTime &#x3D; formatTimeFromMilliseconds(clockStatistics.totalProcessingTime);
+                    this.totalAvgSpeed &#x3D; simulationStatistics.totalAvgSpeed;
                     break;
             }
         }));
@@ -2035,9 +2075,15 @@ export class StatisticsComponent extends BaseComponent implements OnInit {
     <div class="tab-pane fade " id="c-templateData">
         <pre class="line-numbers"><code class="language-html">&lt;div [formGroup]&#x3D;&quot;formGroup&quot;&gt;
     &lt;div fxLayout&#x3D;&quot;column&quot; fxLayoutGap&#x3D;&quot;8px&quot;&gt;
-        &lt;p&gt;Total time: {{ totalTime }}&lt;/p&gt;
-        &lt;p&gt;Total simulated time: {{ totalSimulatedTime }}&lt;/p&gt;
-        &lt;p&gt;Total processing time: {{ totalProcessingTime }}&lt;/p&gt;
+        &lt;div fxLayout&#x3D;&quot;column&quot; fxLayoutGap&#x3D;&quot;8px&quot;&gt;
+            &lt;p&gt;Total time: {{ totalTime }}&lt;/p&gt;
+            &lt;p&gt;Total simulated time: {{ totalSimulatedTime }}&lt;/p&gt;
+            &lt;p&gt;Total processing time: {{ totalProcessingTime }}&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;br&gt;
+        &lt;div fxLayout&#x3D;&quot;column&quot; fxLayoutGap&#x3D;&quot;8px&quot;&gt;
+            &lt;p&gt;Total avg. speed: {{ totalAvgSpeed || 0 }} m/s&lt;/p&gt;
+        &lt;/div&gt;
     &lt;/div&gt;
 
     &lt;div class&#x3D;&quot;navigation&quot;&gt;
@@ -2073,7 +2119,7 @@ export class StatisticsComponent extends BaseComponent implements OnInit {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><div [formGroup]="formGroup">    <div fxLayout="column" fxLayoutGap="8px">        <p>Total time: {{ totalTime }}</p>        <p>Total simulated time: {{ totalSimulatedTime }}</p>        <p>Total processing time: {{ totalProcessingTime }}</p>    </div>    <div class="navigation">        <button type="submit" mat-raised-button color="accent" [disabled]="formGroup.invalid">Exit            <mat-icon>navigate_next</mat-icon>        </button>    </div></div></div>'
+        var COMPONENT_TEMPLATE = '<div><div [formGroup]="formGroup">    <div fxLayout="column" fxLayoutGap="8px">        <div fxLayout="column" fxLayoutGap="8px">            <p>Total time: {{ totalTime }}</p>            <p>Total simulated time: {{ totalSimulatedTime }}</p>            <p>Total processing time: {{ totalProcessingTime }}</p>        </div>        <br>        <div fxLayout="column" fxLayoutGap="8px">            <p>Total avg. speed: {{ totalAvgSpeed || 0 }} m/s</p>        </div>    </div>    <div class="navigation">        <button type="submit" mat-raised-button color="accent" [disabled]="formGroup.invalid">Exit            <mat-icon>navigate_next</mat-icon>        </button>    </div></div></div>'
     var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ChangeOfConditionsComponent', 'selector': 'wizard-change-of-conditions'},{'name': 'ChartsComponent', 'selector': 'ui-charts'},{'name': 'EstimateOfDemandComponent', 'selector': 'wizard-estimate-of-demand'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'GoogleMapComponent', 'selector': 'google-map'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'InfoDialogComponent', 'selector': 'info-dialog'},{'name': 'MapComponent', 'selector': 'ui-map'},{'name': 'MessageArchivedComponent', 'selector': 'snack-bar'},{'name': 'NumericComponent', 'selector': 'ui-numeric'},{'name': 'PrivacyComponent', 'selector': 'app-privacy'},{'name': 'SearchForTheAreaComponent', 'selector': 'wizard-search-for-the-area'},{'name': 'SelectionOfTheAreaComponent', 'selector': 'wizard-selection-of-the-area'},{'name': 'SimulationComponent', 'selector': 'wizard-simulation'},{'name': 'StatisticsComponent', 'selector': 'wizard-statistics'},{'name': 'TermsComponent', 'selector': 'app-terms'},{'name': 'UiComponent', 'selector': 'app-ui'},{'name': 'WeatherComponent', 'selector': 'ui-weather'},{'name': 'WizardComponent', 'selector': 'ui-wizard'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'StatisticsComponent'};

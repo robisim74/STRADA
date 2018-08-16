@@ -3472,7 +3472,7 @@
                             </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in Edge:160</div>
+                                    <div class="io-line">Defined in Edge:161</div>
                             </td>
                         </tr>
 
@@ -3520,7 +3520,7 @@
                             </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in Edge:191</div>
+                                    <div class="io-line">Defined in Edge:192</div>
                             </td>
                         </tr>
 
@@ -3604,7 +3604,7 @@
                             </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in Edge:211</div>
+                                    <div class="io-line">Defined in Edge:212</div>
                             </td>
                         </tr>
 
@@ -3699,7 +3699,7 @@
                             </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in Edge:207</div>
+                                    <div class="io-line">Defined in Edge:208</div>
                             </td>
                         </tr>
 
@@ -3776,7 +3776,7 @@
                             </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in Edge:203</div>
+                                    <div class="io-line">Defined in Edge:204</div>
                             </td>
                         </tr>
 
@@ -3822,7 +3822,7 @@
                             </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in Edge:199</div>
+                                    <div class="io-line">Defined in Edge:200</div>
                             </td>
                         </tr>
 
@@ -4378,6 +4378,10 @@ export class LtmGraph extends Graph {
         } else {
             this.nodes.push(node);
         }
+    }
+
+    public getOriginNodes(): LtmNode[] {
+        return this.nodes.filter((node: LtmNode) &#x3D;&gt; node.origin);
     }
 
     public getEdge(edgeId: number): LtmEdge {

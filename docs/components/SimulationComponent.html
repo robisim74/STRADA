@@ -1302,7 +1302,7 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(formBuilder: <a href="https://angular.io/api/forms/FormBuilder" target="_blank">FormBuilder</a>, store: <a href="../interfaces/SimulationState.html">Store<fromSimulation.SimulationState></a>, wizard: <a href="../injectables/WizardService.html">WizardService</a>, clock: <a href="../injectables/ClockService.html">ClockService</a>)</code>
+<code>constructor(store: <a href="../interfaces/SimulationState.html">Store<fromSimulation.SimulationState></a>, wizard: <a href="../injectables/WizardService.html">WizardService</a>, clock: <a href="../injectables/ClockService.html">ClockService</a>)</code>
                     </td>
                 </tr>
                         <tr>
@@ -1324,18 +1324,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                                <tr>
-                                                        <td>formBuilder</td>
-                                                  
-                                                        <td>
-                                                                    <code><a href="https://angular.io/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-                                                </tr>
                                                 <tr>
                                                         <td>store</td>
                                                   
@@ -1456,7 +1444,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:51</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:50</a></div>
                             </td>
                         </tr>
 
@@ -1494,7 +1482,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="101" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:101</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="100" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:100</a></div>
                             </td>
                         </tr>
 
@@ -1563,7 +1551,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:61</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:60</a></div>
                             </td>
                         </tr>
 
@@ -1601,7 +1589,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="97" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:97</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="96" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:96</a></div>
                             </td>
                         </tr>
 
@@ -1639,7 +1627,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:57</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/ui/wizard/simulation/simulation.component.ts:56</a></div>
                             </td>
                         </tr>
 
@@ -2219,7 +2207,7 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, Input } from &#x27;@angular/core&#x27;;
-import { FormGroup, FormBuilder } from &#x27;@angular/forms&#x27;;
+import { FormGroup } from &#x27;@angular/forms&#x27;;
 
 import { Store, select } from &#x27;@ngrx/store&#x27;;
 
@@ -2260,7 +2248,6 @@ export class SimulationComponent extends BaseComponent implements OnInit {
     control: typeof Control &#x3D; Control;
 
     constructor(
-        private formBuilder: FormBuilder,
         private store: Store&lt;fromSimulation.SimulationState&gt;,
         private wizard: WizardService,
         private clock: ClockService
@@ -2303,8 +2290,8 @@ export class SimulationComponent extends BaseComponent implements OnInit {
             if (simulation &amp;&amp; simulation.counts) {
                 this.counts &#x3D; simulation.counts;
             }
-            if (simulation &amp;&amp; simulation.speed) {
-                this.avgSpeed &#x3D; simulation.speed;
+            if (simulation &amp;&amp; simulation.avgSpeed) {
+                this.avgSpeed &#x3D; simulation.avgSpeed;
             }
         }));
         this.subscriptions.push(this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) &#x3D;&gt; {

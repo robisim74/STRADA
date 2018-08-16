@@ -1135,13 +1135,13 @@
                             <a href="#end" title="src/app/simulation/models/reducers.ts"><b>end</b>&nbsp;&nbsp;&nbsp;(src/.../reducers.ts)</a>
                         </li>
                         <li>
-                            <a href="#environment" title="src/environments/environment.test.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(src/.../environment.test.ts)</a>
+                            <a href="#environment" title="src/environments/environment.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(src/.../environment.ts)</a>
                         </li>
                         <li>
                             <a href="#environment" title="src/environments/environment.prod.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(src/.../environment.prod.ts)</a>
                         </li>
                         <li>
-                            <a href="#environment" title="src/environments/environment.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(src/.../environment.ts)</a>
+                            <a href="#environment" title="src/environments/environment.test.ts"><b>environment</b>&nbsp;&nbsp;&nbsp;(src/.../environment.test.ts)</a>
                         </li>
                         <li>
                             <a href="#error" title="src/app/ui/models/reducers.ts"><b>error</b>&nbsp;&nbsp;&nbsp;(src/.../reducers.ts)</a>
@@ -2013,7 +2013,7 @@
             </tbody>
         </table>
 </section>
-    <h3>src/environments/environment.test.ts</h3>
+    <h3>src/environments/environment.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
             <tbody>
@@ -2044,13 +2044,13 @@
                         <td class="col-md-4">
                             <i>Default value : </i><code>{
     production: false,
-    testing: true,
+    testing: false,
     functions: {
         networkData: {
-            url: &#x27;&#x27;
+            url: &#x27;http://localhost:4201/&#x27; + appConfig.firebase.projectId + &#x27;/us-central1/networkData&#x27;
         },
         trafficData: {
-            url: &#x27;&#x27;
+            url: &#x27;http://localhost:4201/&#x27; + appConfig.firebase.projectId + &#x27;/us-central1/trafficData&#x27;
         }
     }
 }</code>
@@ -2109,7 +2109,7 @@
             </tbody>
         </table>
 </section>
-    <h3>src/environments/environment.ts</h3>
+    <h3>src/environments/environment.test.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
             <tbody>
@@ -2140,13 +2140,13 @@
                         <td class="col-md-4">
                             <i>Default value : </i><code>{
     production: false,
-    testing: false,
+    testing: true,
     functions: {
         networkData: {
-            url: &#x27;http://localhost:4201/&#x27; + appConfig.firebase.projectId + &#x27;/us-central1/networkData&#x27;
+            url: &#x27;&#x27;
         },
         trafficData: {
-            url: &#x27;http://localhost:4201/&#x27; + appConfig.firebase.projectId + &#x27;/us-central1/trafficData&#x27;
+            url: &#x27;&#x27;
         }
     }
 }</code>

@@ -3465,6 +3465,10 @@ export class LtmGraph extends Graph {
         }
     }
 
+    public getOriginNodes(): LtmNode[] {
+        return this.nodes.filter((node: LtmNode) &#x3D;&gt; node.origin);
+    }
+
     public getEdge(edgeId: number): LtmEdge {
         return this.edges.find((edge: LtmEdge) &#x3D;&gt; edge.edgeId &#x3D;&#x3D; edgeId);
     }
