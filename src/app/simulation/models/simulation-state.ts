@@ -29,6 +29,6 @@ export interface Simulation {
     /**
      * Simulation avg. speed.
      */
-    speed: number;
+    avgSpeed: number;
 
 }

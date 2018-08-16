@@ -1,8 +1,14 @@
 <div [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutGap="8px">
-        <p>Total time: {{ totalTime }}</p>
-        <p>Total simulated time: {{ totalSimulatedTime }}</p>
-        <p>Total processing time: {{ totalProcessingTime }}</p>
+        <div fxLayout="column" fxLayoutGap="8px">
+            <p>Total time: {{ totalTime }}</p>
+            <p>Total simulated time: {{ totalSimulatedTime }}</p>
+            <p>Total processing time: {{ totalProcessingTime }}</p>
+        </div>
+        <br>
+        <div fxLayout="column" fxLayoutGap="8px">
+            <p>Total avg. speed: {{ totalAvgSpeed || 0 }} m/s</p>
+        </div>
     </div>
 
     <div class="navigation">

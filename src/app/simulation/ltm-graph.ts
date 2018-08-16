@@ -527,6 +527,10 @@ export class LtmGraph extends Graph {
         }
     }
 
+    public getOriginNodes(): LtmNode[] {
+        return this.nodes.filter((node: LtmNode) => node.origin);
+    }
+
     public getEdge(edgeId: number): LtmEdge {
         return this.edges.find((edge: LtmEdge) => edge.edgeId == edgeId);
     }

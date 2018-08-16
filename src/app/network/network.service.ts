@@ -5,11 +5,13 @@ import { map, catchError } from 'rxjs/operators';
 
 import * as qs from 'qs';
 import * as deepFillIn from 'mout/object/deepFillIn';
+import * as append from 'mout/array/append';
 import transformTranslate from '@turf/transform-translate';
 import bearing from '@turf/bearing';
 import distance from '@turf/distance';
 import { getCoords } from '@turf/invariant';
 import { point, lineString } from '@turf/helpers';
+import deepClone from 'mout/lang/deepClone';
 
 import { WeatherService } from './weather/weather.service';
 import { Graph, Node, Edge, Tag, OdPair, LinkFlow } from './graph';
@@ -207,16 +209,27 @@ import { uiConfig } from '../ui/ui-config';
 
             for (const edge of edges) {
                 if (!edge.distance || !edge.drawingOptions.polyline) {
-                    // Assigns geodesic distance.
-                    edge.distance = this.calcGeodesicDistance(edge);
-                    edge.duration = 0;
-                    // Updates drawing options.
-                    if (!environment.testing) {
-                        const path = [
-                            new google.maps.LatLng(edge.origin.lat, edge.origin.lon),
-                            new google.maps.LatLng(edge.destination.lat, edge.destination.lon)
-                        ];
-                        this.drawEdge(edge, path);
+                    // Tries to find the opposite edge.
+                    const oppositeEdge = this.findOppositeEdge(edge.destination.nodeId, edge.origin.nodeId);
+                    if (oppositeEdge && oppositeEdge.distance && oppositeEdge.drawingOptions.originalPath) {
+                        edge.distance = oppositeEdge.distance;
+                        edge.duration = 0;
+                        // Updates drawing options.
+                        if (!environment.testing) {
+                            this.drawEdge(edge, oppositeEdge.drawingOptions.originalPath.reverse());
+                        }
+                    } else {
+                        // Assigns geodesic distance.
+                        edge.distance = this.calcGeodesicDistance(edge);
+                        edge.duration = 0;
+                        // Updates drawing options.
+                        if (!environment.testing) {
+                            const path = [
+                                new google.maps.LatLng(edge.origin.lat, edge.origin.lon),
+                                new google.maps.LatLng(edge.destination.lat, edge.destination.lon)
+                            ];
+                            this.drawEdge(edge, path);
+                        }
                     }
                 }
             }
@@ -385,7 +398,7 @@ import { uiConfig } from '../ui/ui-config';
                     const nextWayOneway: string = ways[n]['tags']['oneway'];
                     const nextWayNodes: number[] = ways[n]['nodes'];
                     // Checks that they have the same name and direction.
-                    if (wayName === nextWayName && wayOneway === nextWayOneway) {
+                    if (wayName === nextWayName && this.isSameOneway(wayOneway, nextWayOneway)) {
                         // Checks the first and last node.
                         if (wayNodes[wayNodes.length - 1] == nextWayNodes[0]) {
                             this.fillWays(ways[i], ways[n]);
@@ -414,11 +427,17 @@ import { uiConfig } from '../ui/ui-config';
         return ways;
     }
 
+    private isSameOneway(wayOneway: string, nextWayOneway: string): boolean {
+        return wayOneway === nextWayOneway ||
+            (typeof wayOneway === 'undefined' && nextWayOneway == 'no') ||
+            (wayOneway == 'no' && typeof nextWayOneway === 'undefined');
+    }
+
     private fillWays(way: any, nextWay: any): void {
-        way = deepFillIn(way, nextWay);
+        deepFillIn(way, nextWay);
         // Removes the shared node.
         nextWay['nodes'].splice(0, 1);
-        way['nodes'] = way['nodes'].concat(nextWay['nodes']);
+        append(way['nodes'], nextWay['nodes']);
     }
 
     private splitWay(filteredWayNodes: number[], nodes: any[], way: any): void {
@@ -511,13 +530,6 @@ import { uiConfig } from '../ui/ui-config';
         return this.cleanPath(path);
     }
 
-    private calcGeodesicDistance(edge: Edge): number {
-        const origin = point([edge.origin.lon, edge.origin.lat]);
-        const destination = point([edge.destination.lon, edge.destination.lat]);
-        const geodesicDistance = round(distance(origin, destination) * 1000);
-        return geodesicDistance;
-    }
-
     /**
      * Removes duplicates from path.
      * @param path Array of google.maps.LatLng
@@ -539,6 +551,8 @@ import { uiConfig } from '../ui/ui-config';
                 offset: '100%'
             }] : null;
 
+            edge.drawingOptions.originalPath = deepClone(path);
+
             // Two-way streets.
             if (!this.graph.isOneway(edge.edgeId)) {
                 // Gets bearing.
@@ -548,7 +562,7 @@ import { uiConfig } from '../ui/ui-config';
                 const poly = this.toLineString(path);
                 // Translates the polyline.
                 const translatedPoly = transformTranslate(poly, 0.004, angle);
-                // converts to LatLng points.
+                // Converts to LatLng points.
                 path = this.toLatLng(translatedPoly);
             }
 
@@ -598,6 +612,20 @@ import { uiConfig } from '../ui/ui-config';
         return coords.map((value: number[]) => {
             return new google.maps.LatLng(value[1], value[0]);
         });
+    }
+
+    private calcGeodesicDistance(edge: Edge): number {
+        const origin = point([edge.origin.lon, edge.origin.lat]);
+        const destination = point([edge.destination.lon, edge.destination.lat]);
+        const geodesicDistance = round(distance(origin, destination) * 1000);
+        return geodesicDistance;
+    }
+
+    private findOppositeEdge(origin: number, destination: number): Edge {
+        const edges = this.graph.getEdges();
+        return edges.find((edge: Edge) =>
+            edge.origin.nodeId == origin && edge.destination.nodeId == destination
+        );
     }
 
 }

@@ -52,6 +52,8 @@ import { uiConfig } from '../ui/ui-config';
      */
     private pathsStartingTimes: number[] = [];
 
+    private avgSpeeds: number[] = [];
+
     constructor(
         private store: Store<fromSimulation.SimulationState>,
         private network: NetworkService,
@@ -64,6 +66,8 @@ import { uiConfig } from '../ui/ui-config';
         this.timeInterval = 0;
         this.paths = [];
         this.pathsDemand = [];
+        this.pathsStartingTimes = [];
+        this.avgSpeeds = [];
         // Simulation state.
         this.store.dispatch({
             type: SimulationActionTypes.Reset
@@ -119,7 +123,7 @@ import { uiConfig } from '../ui/ui-config';
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts(), speed: this.getSpeed() } }
+            payload: { simulation: { data: this.numericalSimulation(), counts: this.getCounts(), avgSpeed: this.getAvgSpeed() } }
         });
         // Checks if the simulation is finished.
         if (this.endLtm()) {
@@ -149,7 +153,7 @@ import { uiConfig } from '../ui/ui-config';
         });
         this.store.dispatch({
             type: SimulationActionTypes.SimulationChanged,
-            payload: { simulation: { data: [], counts: {}, speed: null } }
+            payload: { simulation: { data: [], counts: {}, avgSpeed: null } }
         });
     }
 
@@ -164,6 +168,7 @@ import { uiConfig } from '../ui/ui-config';
 
         return {
             totalTime: this.timePeriods[this.timePeriods.length - 1],
+            totalAvgSpeed: this.getTotalAvgSpeed(),
             heavyTrafficLabels: Statistics.getHeavyTrafficLabels(edges),
             moderateTrafficLabels: Statistics.getModerateTrafficLabels(edges),
             heavyTrafficData: Statistics.getHeavyTrafficData(edges, this.timeInterval),
@@ -221,14 +226,20 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * The algorithm ends when there is no more traffic volume on the links.
+     * The algorithm ends when all the vehicles are started
+     * and there is no more traffic volume on the links.
      */
     private endLtm(): boolean {
+        const originNodes = this.graph.getOriginNodes();
         const edges = this.graph.getEdges();
-        return edges.filter(
+        const started = originNodes.filter((node: LtmNode) =>
+            node.origin.sendingFlow == node.origin.expectedInflow
+        ).length == originNodes.length;
+        const busy = edges.filter(
             (edge: LtmEdge) =>
                 edge.trafficVolume > 0
-        ).length > 0 ? false : true;
+        ).length > 0;
+        return started && !busy;
     }
 
     /**
@@ -399,7 +410,7 @@ import { uiConfig } from '../ui/ui-config';
     /**
      * The sum of the densities for the velocity square divided by the sum of the flows.
      */
-    private getSpeed(): number {
+    private getAvgSpeed(): number {
         const edges = this.graph.getEdges();
 
         let sum = 0;
@@ -412,7 +423,14 @@ import { uiConfig } from '../ui/ui-config';
                 (edge.getKjam() * (edge.freeFlowVelocity - edge.velocity) / edge.freeFlowVelocity) * edge.velocity
                 : 0;
         }
-        return round(sum / flow, 2);
+        const speed = flow > 0 ? round(sum / flow, 2) : 0;
+        this.avgSpeeds.push(speed);
+        return speed;
+    }
+
+    private getTotalAvgSpeed(): number {
+        const sum = this.avgSpeeds.reduce((a, b) => a + b, 0);
+        return round(sum / this.avgSpeeds.length, 2);
     }
 
 }

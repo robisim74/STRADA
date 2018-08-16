@@ -28,6 +28,8 @@ export class StatisticsComponent extends BaseComponent implements OnInit {
 
     totalProcessingTime: string;
 
+    totalAvgSpeed: number;
+
     constructor(
         private store: Store<fromUi.UiState>,
         private wizard: WizardService,
@@ -56,6 +58,7 @@ export class StatisticsComponent extends BaseComponent implements OnInit {
                     this.totalTime = formatTimeFromSeconds(simulationStatistics.totalTime);
                     this.totalSimulatedTime = formatTimeFromMilliseconds(clockStatistics.totalSimulatedTime);
                     this.totalProcessingTime = formatTimeFromMilliseconds(clockStatistics.totalProcessingTime);
+                    this.totalAvgSpeed = simulationStatistics.totalAvgSpeed;
                     break;
             }
         }));

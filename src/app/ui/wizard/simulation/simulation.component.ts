@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 import { Store, select } from '@ngrx/store';
 
@@ -40,7 +40,6 @@ export class SimulationComponent extends BaseComponent implements OnInit {
     control: typeof Control = Control;
 
     constructor(
-        private formBuilder: FormBuilder,
         private store: Store<fromSimulation.SimulationState>,
         private wizard: WizardService,
         private clock: ClockService
@@ -83,8 +82,8 @@ export class SimulationComponent extends BaseComponent implements OnInit {
             if (simulation && simulation.counts) {
                 this.counts = simulation.counts;
             }
-            if (simulation && simulation.speed) {
-                this.avgSpeed = simulation.speed;
+            if (simulation && simulation.avgSpeed) {
+                this.avgSpeed = simulation.avgSpeed;
             }
         }));
         this.subscriptions.push(this.store.pipe(select(fromSimulation.end)).subscribe((end: boolean) => {
