@@ -3591,7 +3591,7 @@
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>draw(color: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, zIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                        <code>draw(color: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, zIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, visible: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
                     </td>
                 </tr>
 
@@ -3649,7 +3649,21 @@
                                                     </td>
                                                     
                                                         <td>
-                                                                <code>10</code>
+                                                        </td>
+
+                                                </tr>
+                                                <tr>
+                                                        <td>visible</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                        <td>
+                                                                <code>true</code>
                                                         </td>
 
                                                 </tr>
@@ -4190,7 +4204,7 @@ export class LtmEdge extends Edge {
         this.travelTime &#x3D; 0;
         this.delay &#x3D; 0;
         this.stops &#x3D; 0;
-        this.draw(uiConfig.links.baseColor);
+        this.draw(uiConfig.links.baseColor, 10, false);
     }
 
     /**

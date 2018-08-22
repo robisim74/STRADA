@@ -1200,6 +1200,10 @@
                                 <a href="#cleanPath">cleanPath</a>
                             </li>
                             <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#compareOneway">compareOneway</a>
+                            </li>
+                            <li>
                                     <span class="modifier">Public</span>
                                 <a href="#correctGraph">correctGraph</a>
                             </li>
@@ -1230,10 +1234,6 @@
                             <li>
                                     <span class="modifier">Private</span>
                                 <a href="#fillWays">fillWays</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#findOppositeEdge">findOppositeEdge</a>
                             </li>
                             <li>
                                     <span class="modifier">Public</span>
@@ -1281,7 +1281,7 @@
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
-                                <a href="#isSameOneway">isSameOneway</a>
+                                <a href="#isOneway">isOneway</a>
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
@@ -1429,7 +1429,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="355" class="link-to-prism">src/app/network/network.service.ts:355</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="350" class="link-to-prism">src/app/network/network.service.ts:350</a></div>
                             </td>
                         </tr>
 
@@ -1507,7 +1507,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="323" class="link-to-prism">src/app/network/network.service.ts:323</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="318" class="link-to-prism">src/app/network/network.service.ts:318</a></div>
                             </td>
                         </tr>
 
@@ -1549,7 +1549,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="617" class="link-to-prism">src/app/network/network.service.ts:617</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="622" class="link-to-prism">src/app/network/network.service.ts:622</a></div>
                             </td>
                         </tr>
 
@@ -1620,14 +1620,14 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="279" class="link-to-prism">src/app/network/network.service.ts:279</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="282" class="link-to-prism">src/app/network/network.service.ts:282</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>Calculates link flow of paths.</p>
+                            <div class="io-description"><p>Calculates link flow of edges using the data obtained from trafficData cloud function.</p>
 </div>
 
                             <div class="io-description">
@@ -1698,7 +1698,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="537" class="link-to-prism">src/app/network/network.service.ts:537</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="542" class="link-to-prism">src/app/network/network.service.ts:542</a></div>
                             </td>
                         </tr>
 
@@ -1756,6 +1756,89 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="compareOneway"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Private</span>
+                            compareOneway
+                            </b>
+                            <a href="#compareOneway"><span class="fa fa-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span>
+                        <code>compareOneway(way: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, nextWay: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="422" class="link-to-prism">src/app/network/network.service.ts:422</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>way</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
+                                                        <td>nextWay</td>
+                                                        <td>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
                         <a name="correctGraph"></a>
                         <span class="name">
                             <b>
@@ -1776,7 +1859,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="206" class="link-to-prism">src/app/network/network.service.ts:206</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="209" class="link-to-prism">src/app/network/network.service.ts:209</a></div>
                             </td>
                         </tr>
 
@@ -1818,7 +1901,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="103" class="link-to-prism">src/app/network/network.service.ts:103</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="107" class="link-to-prism">src/app/network/network.service.ts:107</a></div>
                             </td>
                         </tr>
 
@@ -1897,7 +1980,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="525" class="link-to-prism">src/app/network/network.service.ts:525</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="530" class="link-to-prism">src/app/network/network.service.ts:530</a></div>
                             </td>
                         </tr>
 
@@ -1968,7 +2051,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="543" class="link-to-prism">src/app/network/network.service.ts:543</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="548" class="link-to-prism">src/app/network/network.service.ts:548</a></div>
                             </td>
                         </tr>
 
@@ -2051,7 +2134,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="363" class="link-to-prism">src/app/network/network.service.ts:363</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="358" class="link-to-prism">src/app/network/network.service.ts:358</a></div>
                             </td>
                         </tr>
 
@@ -2122,7 +2205,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="475" class="link-to-prism">src/app/network/network.service.ts:475</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="480" class="link-to-prism">src/app/network/network.service.ts:480</a></div>
                             </td>
                         </tr>
 
@@ -2193,7 +2276,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="359" class="link-to-prism">src/app/network/network.service.ts:359</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="354" class="link-to-prism">src/app/network/network.service.ts:354</a></div>
                             </td>
                         </tr>
 
@@ -2264,13 +2347,15 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="436" class="link-to-prism">src/app/network/network.service.ts:436</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="439" class="link-to-prism">src/app/network/network.service.ts:439</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Fills a previous way with the next way.</p>
+</div>
 
                             <div class="io-description">
                                     <b>Parameters :</b>
@@ -2327,89 +2412,6 @@ and the associated classes Node and Edge that model the network graph.</p>
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="findOppositeEdge"></a>
-                        <span class="name">
-                            <b>
-                                <span class="modifier">Private</span>
-                            findOppositeEdge
-                            </b>
-                            <a href="#findOppositeEdge"><span class="fa fa-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
-                            <span class="modifier-icon fa fa-reset"></span>
-                        <code>findOppositeEdge(origin: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, destination: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
-                    </td>
-                </tr>
-
-
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="624" class="link-to-prism">src/app/network/network.service.ts:624</a></div>
-                            </td>
-                        </tr>
-
-
-                <tr>
-                    <td class="col-md-4">
-
-                            <div class="io-description">
-                                    <b>Parameters :</b>
-                                    <table class="params">
-                                        <thead>
-                                            <tr>
-                                                <td>Name</td>
-                                                    <td>Type</td>
-                                                <td>Optional</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                                <tr>
-                                                        <td>origin</td>
-                                                        <td>
-                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
-                                                        </td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                </tr>
-                                                <tr>
-                                                        <td>destination</td>
-                                                        <td>
-                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
-                                                        </td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                </tr>
-                                        </tbody>
-                                    </table>
-                            </div>
-                            <div>
-                            </div>
-                            <div class="io-description">
-                                <b>Returns : </b>    <code><a href="../classes/Edge.html" target="_self" >Edge</a></code>
-
-                            </div>
-                                <div class="io-description">
-                                    
-                                </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
                         <a name="getAssignmentMatrix"></a>
                         <span class="name">
                             <b>
@@ -2430,7 +2432,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="308" class="link-to-prism">src/app/network/network.service.ts:308</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="307" class="link-to-prism">src/app/network/network.service.ts:307</a></div>
                             </td>
                         </tr>
 
@@ -2472,7 +2474,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="593" class="link-to-prism">src/app/network/network.service.ts:593</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="598" class="link-to-prism">src/app/network/network.service.ts:598</a></div>
                             </td>
                         </tr>
 
@@ -2550,7 +2552,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/network/network.service.ts:60</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="311" class="link-to-prism">src/app/network/network.service.ts:311</a></div>
                             </td>
                         </tr>
 
@@ -2590,14 +2592,14 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="298" class="link-to-prism">src/app/network/network.service.ts:298</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="297" class="link-to-prism">src/app/network/network.service.ts:297</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>Returns the value of the link flow and the corresponding variance of the paths.</p>
+                            <div class="io-description"><p>Returns the value of the link flow and the corresponding variance of the edges.</p>
 </div>
 
                             <div class="io-description">
@@ -2632,7 +2634,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="86" class="link-to-prism">src/app/network/network.service.ts:86</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="90" class="link-to-prism">src/app/network/network.service.ts:90</a></div>
                             </td>
                         </tr>
 
@@ -2674,7 +2676,7 @@ and the associated classes Node and Edge that model the network graph.</p>
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="167" class="link-to-prism">src/app/network/network.service.ts:167</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="170" class="link-to-prism">src/app/network/network.service.ts:170</a></div>
                             </td>
                         </tr>
 
@@ -2717,7 +2719,7 @@ that reiterates the invocation of the Directions API to obtain links network dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="312" class="link-to-prism">src/app/network/network.service.ts:312</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="79" class="link-to-prism">src/app/network/network.service.ts:79</a></div>
                             </td>
                         </tr>
 
@@ -2757,7 +2759,7 @@ that reiterates the invocation of the Directions API to obtain links network dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="68" class="link-to-prism">src/app/network/network.service.ts:68</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/network/network.service.ts:64</a></div>
                             </td>
                         </tr>
 
@@ -2797,7 +2799,7 @@ that reiterates the invocation of the Directions API to obtain links network dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="76" class="link-to-prism">src/app/network/network.service.ts:76</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="72" class="link-to-prism">src/app/network/network.service.ts:72</a></div>
                             </td>
                         </tr>
 
@@ -2837,7 +2839,7 @@ that reiterates the invocation of the Directions API to obtain links network dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="246" class="link-to-prism">src/app/network/network.service.ts:246</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="249" class="link-to-prism">src/app/network/network.service.ts:249</a></div>
                             </td>
                         </tr>
 
@@ -2880,7 +2882,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="499" class="link-to-prism">src/app/network/network.service.ts:499</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="504" class="link-to-prism">src/app/network/network.service.ts:504</a></div>
                             </td>
                         </tr>
 
@@ -2900,20 +2902,20 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="isSameOneway"></a>
+                        <a name="isOneway"></a>
                         <span class="name">
                             <b>
                                 <span class="modifier">Private</span>
-                            isSameOneway
+                            isOneway
                             </b>
-                            <a href="#isSameOneway"><span class="fa fa-link"></span></a>
+                            <a href="#isOneway"><span class="fa fa-link"></span></a>
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>isSameOneway(wayOneway: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, nextWayOneway: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                        <code>isOneway(way: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
                     </td>
                 </tr>
 
@@ -2940,21 +2942,9 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
                                         </thead>
                                         <tbody>
                                                 <tr>
-                                                        <td>wayOneway</td>
+                                                        <td>way</td>
                                                         <td>
-                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
-                                                        </td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                </tr>
-                                                <tr>
-                                                        <td>nextWayOneway</td>
-                                                        <td>
-                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                                                    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
                                                         </td>
                                                     
                                                     <td>
@@ -2996,14 +2986,14 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>mergeWays(ways: any[], elements: any[])</code>
+                        <code>mergeWays(ways: any[])</code>
                     </td>
                 </tr>
 
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="387" class="link-to-prism">src/app/network/network.service.ts:387</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="381" class="link-to-prism">src/app/network/network.service.ts:381</a></div>
                             </td>
                         </tr>
 
@@ -3038,22 +3028,6 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                                                         <td>
                                                                 <code><p>Array of OpenStreetMap ways</p>
-</code>
-                                                        </td>
-                                                </tr>
-                                                <tr>
-                                                        <td>elements</td>
-                                                        <td>
-                                                                    <code>any[]</code>
-                                                        </td>
-                                                    
-                                                    <td>
-                                                            no
-                                                    </td>
-                                                    
-
-                                                        <td>
-                                                                <code><p>Array of OpenStreetMap elements</p>
 </code>
                                                         </td>
                                                 </tr>
@@ -3137,7 +3111,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="371" class="link-to-prism">src/app/network/network.service.ts:371</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="366" class="link-to-prism">src/app/network/network.service.ts:366</a></div>
                             </td>
                         </tr>
 
@@ -3215,7 +3189,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/network/network.service.ts:64</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/network/network.service.ts:60</a></div>
                             </td>
                         </tr>
 
@@ -3286,7 +3260,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="481" class="link-to-prism">src/app/network/network.service.ts:481</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="486" class="link-to-prism">src/app/network/network.service.ts:486</a></div>
                             </td>
                         </tr>
 
@@ -3326,7 +3300,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="316" class="link-to-prism">src/app/network/network.service.ts:316</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="83" class="link-to-prism">src/app/network/network.service.ts:83</a></div>
                             </td>
                         </tr>
 
@@ -3397,7 +3371,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="72" class="link-to-prism">src/app/network/network.service.ts:72</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="68" class="link-to-prism">src/app/network/network.service.ts:68</a></div>
                             </td>
                         </tr>
 
@@ -3468,7 +3442,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="443" class="link-to-prism">src/app/network/network.service.ts:443</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="448" class="link-to-prism">src/app/network/network.service.ts:448</a></div>
                             </td>
                         </tr>
 
@@ -3563,7 +3537,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="610" class="link-to-prism">src/app/network/network.service.ts:610</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="615" class="link-to-prism">src/app/network/network.service.ts:615</a></div>
                             </td>
                         </tr>
 
@@ -3634,7 +3608,7 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="603" class="link-to-prism">src/app/network/network.service.ts:603</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="608" class="link-to-prism">src/app/network/network.service.ts:608</a></div>
                             </td>
                         </tr>
 
@@ -3712,14 +3686,14 @@ that reiterates the invocation of the Directions API to obtain links traffic dat
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="187" class="link-to-prism">src/app/network/network.service.ts:187</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="190" class="link-to-prism">src/app/network/network.service.ts:190</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>Updates graph using the data obtained from Directions API.</p>
+                            <div class="io-description"><p>Updates graph using the data obtained from networkData cloud function.</p>
 </div>
 
                             <div class="io-description">
@@ -4047,10 +4021,6 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         this.edgeId &#x3D; 0;
     }
 
-    public getGraph(): Graph {
-        return this.graph;
-    }
-
     public setBounds(bounds: google.maps.LatLngBoundsLiteral): void {
         this.bounds &#x3D; bounds;
     }
@@ -4068,6 +4038,14 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         return this.time ?
             this.time.toLocaleTimeString(&#x27;en&#x27;, { hour: &#x27;2-digit&#x27;, minute: &#x27;2-digit&#x27; }) :
             time.toLocaleTimeString(&#x27;en&#x27;, { hour: &#x27;2-digit&#x27;, minute: &#x27;2-digit&#x27; });
+    }
+
+    public getOdPairs(): OdPair[] {
+        return this.odPairs;
+    }
+
+    public setOdPairs(odPairs: OdPair[]): void {
+        this.odPairs &#x3D; odPairs;
     }
 
     /**
@@ -4104,9 +4082,10 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
             const nodesDegrees: Map&lt;number, number&gt; &#x3D; new Map();
             // Gets the list of ways.
             let ways &#x3D; this.extractWays(elements);
+            // Reverses no forward ways.
             ways &#x3D; this.reverseNoForward(ways);
             // Merges continuous ways.
-            ways &#x3D; this.mergeWays(ways, elements);
+            ways &#x3D; this.mergeWays(ways);
             // Gets the list of nodes.
             const nodes &#x3D; this.extractNodes(elements);
 
@@ -4130,12 +4109,10 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
                         i &#x3D;&#x3D; arr.length - 1 || // last node
                         nodesDegrees.get(node) &gt; 1; // degree greater than one
                 });
-                const junction &#x3D; way[&#x27;tags&#x27;][&#x27;junction&#x27;];
-                const oneway &#x3D; way[&#x27;tags&#x27;][&#x27;oneway&#x27;];
                 // First direction.
                 this.splitWay(filteredWayNodes, nodes, way);
                 // Second direction (two-way).
-                if ((!oneway || oneway &#x3D;&#x3D; &#x27;no&#x27;) &amp;&amp; (junction !&#x3D; &#x27;roundabout&#x27; &amp;&amp; junction !&#x3D; &#x27;circular&#x27;)) {
+                if (!this.isOneway(way)) {
                     // Reverses the order of filtered way nodes.
                     this.splitWay(filteredWayNodes.reverse(), nodes, way);
                 }
@@ -4171,7 +4148,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
     }
 
     /**
-     * Updates graph using the data obtained from Directions API.
+     * Updates graph using the data obtained from networkData cloud function.
      * @param data Network data
      */
     public updateGraph(data: any[]): Observable&lt;any&gt; {
@@ -4200,7 +4177,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
             for (const edge of edges) {
                 if (!edge.distance || !edge.drawingOptions.polyline) {
                     // Tries to find the opposite edge.
-                    const oppositeEdge &#x3D; this.findOppositeEdge(edge.destination.nodeId, edge.origin.nodeId);
+                    const oppositeEdge &#x3D; this.graph.findOppositeEdge(edge);
                     if (oppositeEdge &amp;&amp; oppositeEdge.distance &amp;&amp; oppositeEdge.drawingOptions.originalPath) {
                         edge.distance &#x3D; oppositeEdge.distance;
                         edge.duration &#x3D; 0;
@@ -4263,19 +4240,15 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
     }
 
     /**
-     * Calculates link flow of paths.
+     * Calculates link flow of edges using the data obtained from trafficData cloud function.
      * @param data Traffic data
      */
     public calcLinkFlows(data: any[]): Observable&lt;any&gt; {
         const edges &#x3D; this.graph.getPathsEdges();
-        // Assigns traffic data.
         for (const edge of edges) {
-            for (const value of data) {
-                if (value.edgeId &#x3D;&#x3D; edge.edgeId) {
-                    edge.durationInTraffic &#x3D; value.durationInTraffic || 0;
-                    break;
-                }
-            }
+            // Assigns traffic data.
+            const edgeData &#x3D; data.find(value &#x3D;&gt; value.edgeId &#x3D;&#x3D; edge.edgeId);
+            edge.durationInTraffic &#x3D; edgeData &amp;&amp; edgeData.durationInTraffic ? edgeData.durationInTraffic : 0;
             // Calculates link flow.
             edge.calcLinkFlow();
         }
@@ -4283,7 +4256,7 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
     }
 
     /**
-     * Returns the value of the link flow and the corresponding variance of the paths.
+     * Returns the value of the link flow and the corresponding variance of the edges.
      */
     public getLinkFlows(): LinkFlow[] {
         const edges &#x3D; this.graph.getPathsEdges();
@@ -4299,12 +4272,8 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         return this.graph.getAssignmentMatrix();
     }
 
-    public getOdPairs(): OdPair[] {
-        return this.odPairs;
-    }
-
-    public setOdPairs(odPairs: OdPair[]): void {
-        this.odPairs &#x3D; odPairs;
+    public getGraph(): Graph {
+        return this.graph;
     }
 
     /**
@@ -4372,23 +4341,20 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
     /**
      * Merges continuous ways.
      * @param ways Array of OpenStreetMap ways
-     * @param elements Array of OpenStreetMap elements
      */
-    private mergeWays(ways: any[], elements: any[]): any[] {
+    private mergeWays(ways: any[]): any[] {
         if (ways.length &gt; 1) {
             let i &#x3D; 0;
             do {
-                const wayName: string &#x3D; ways[i][&#x27;tags&#x27;][&#x27;name&#x27;];
-                const wayOneway: string &#x3D; ways[i][&#x27;tags&#x27;][&#x27;oneway&#x27;];
+                const wayName: string | undefined &#x3D; ways[i][&#x27;tags&#x27;] ? ways[i][&#x27;tags&#x27;][&#x27;name&#x27;] : undefined;
                 const wayNodes: number[] &#x3D; ways[i][&#x27;nodes&#x27;];
                 let n &#x3D; i + 1;
                 let inverse &#x3D; false;
                 do {
-                    const nextWayName: string &#x3D; ways[n][&#x27;tags&#x27;][&#x27;name&#x27;];
-                    const nextWayOneway: string &#x3D; ways[n][&#x27;tags&#x27;][&#x27;oneway&#x27;];
+                    const nextWayName: string | undefined &#x3D; ways[n][&#x27;tags&#x27;] ? ways[n][&#x27;tags&#x27;][&#x27;name&#x27;] : undefined;
                     const nextWayNodes: number[] &#x3D; ways[n][&#x27;nodes&#x27;];
                     // Checks that they have the same name and direction.
-                    if (wayName &#x3D;&#x3D;&#x3D; nextWayName &amp;&amp; this.isSameOneway(wayOneway, nextWayOneway)) {
+                    if (wayName &#x3D;&#x3D;&#x3D; nextWayName &amp;&amp; this.compareOneway(ways[i], ways[n])) {
                         // Checks the first and last node.
                         if (wayNodes[wayNodes.length - 1] &#x3D;&#x3D; nextWayNodes[0]) {
                             this.fillWays(ways[i], ways[n]);
@@ -4417,16 +4383,29 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         return ways;
     }
 
-    private isSameOneway(wayOneway: string, nextWayOneway: string): boolean {
+    private compareOneway(way: any, nextWay: any): boolean {
+        const wayOneway: string | undefined &#x3D; way[&#x27;tags&#x27;] ? way[&#x27;tags&#x27;][&#x27;oneway&#x27;] : undefined;
+        const nextWayOneway: string | undefined &#x3D; nextWay[&#x27;tags&#x27;] ? nextWay[&#x27;tags&#x27;][&#x27;oneway&#x27;] : undefined;
         return wayOneway &#x3D;&#x3D;&#x3D; nextWayOneway ||
-            (typeof wayOneway &#x3D;&#x3D;&#x3D; &#x27;undefined&#x27; &amp;&amp; nextWayOneway &#x3D;&#x3D; &#x27;no&#x27;) ||
-            (wayOneway &#x3D;&#x3D; &#x27;no&#x27; &amp;&amp; typeof nextWayOneway &#x3D;&#x3D;&#x3D; &#x27;undefined&#x27;);
+            (this.isOneway(way) &amp;&amp; this.isOneway(nextWay)) ||
+            (!this.isOneway(way) &amp;&amp; !this.isOneway(nextWay));
     }
 
+    private isOneway(way: any): boolean {
+        const oneway: string | undefined &#x3D; way[&#x27;tags&#x27;] ? way[&#x27;tags&#x27;][&#x27;oneway&#x27;] : undefined;
+        const junction: string | undefined &#x3D; way[&#x27;tags&#x27;] ? way[&#x27;tags&#x27;][&#x27;junction&#x27;] : undefined;
+        return (typeof oneway !&#x3D;&#x3D; &#x27;undefined&#x27; &amp;&amp; oneway !&#x3D; &#x27;no&#x27;) || (junction &#x3D;&#x3D; &#x27;roundabout&#x27; || junction &#x3D;&#x3D; &#x27;circular&#x27;);
+    }
+
+    /**
+     * Fills a previous way with the next way.
+     */
     private fillWays(way: any, nextWay: any): void {
+        // Fills missing properties recursively.
         deepFillIn(way, nextWay);
         // Removes the shared node.
         nextWay[&#x27;nodes&#x27;].splice(0, 1);
+        // Appends nodes.
         append(way[&#x27;nodes&#x27;], nextWay[&#x27;nodes&#x27;]);
     }
 
@@ -4609,13 +4588,6 @@ import { uiConfig } from &#x27;../ui/ui-config&#x27;;
         const destination &#x3D; point([edge.destination.lon, edge.destination.lat]);
         const geodesicDistance &#x3D; round(distance(origin, destination) * 1000);
         return geodesicDistance;
-    }
-
-    private findOppositeEdge(origin: number, destination: number): Edge {
-        const edges &#x3D; this.graph.getEdges();
-        return edges.find((edge: Edge) &#x3D;&gt;
-            edge.origin.nodeId &#x3D;&#x3D; origin &amp;&amp; edge.destination.nodeId &#x3D;&#x3D; destination
-        );
     }
 
 }

@@ -2035,7 +2035,7 @@
                 <tr>
                     <td class="col-md-4">
                             <span class="modifier-icon fa fa-reset"></span>
-                        <code>draw(color: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, zIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                        <code>draw(color: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, zIndex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, visible: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
                     </td>
                 </tr>
 
@@ -2087,7 +2087,21 @@
                                                     </td>
                                                     
                                                         <td>
-                                                                <code>10</code>
+                                                        </td>
+
+                                                </tr>
+                                                <tr>
+                                                        <td>visible</td>
+                                                        <td>
+                                                                    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            no
+                                                    </td>
+                                                    
+                                                        <td>
+                                                                <code>true</code>
                                                         </td>
 
                                                 </tr>
@@ -2482,10 +2496,10 @@ export class Edge {
         return this.maxFlow * timeInterval;
     }
 
-    protected draw(color: string, zIndex: number &#x3D; 10): void {
+    protected draw(color: string, zIndex: number, visible: boolean &#x3D; true): void {
         this.drawingOptions.polyline.set(&#x27;strokeColor&#x27;, color);
         this.drawingOptions.polyline.set(&#x27;zIndex&#x27;, zIndex);
-        this.drawingOptions.marker.set(&#x27;visible&#x27;, true);
+        this.drawingOptions.marker.set(&#x27;visible&#x27;, visible);
     }
 
 }
@@ -2587,6 +2601,12 @@ export class Graph {
         return this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;junction&#x27; &amp;&amp; tag.value &#x3D;&#x3D; &#x27;roundabout&#x27;) ||
             this.getEdge(edgeId).tags.find(tag &#x3D;&gt; tag.key &#x3D;&#x3D; &#x27;junction&#x27; &amp;&amp; tag.value &#x3D;&#x3D; &#x27;circular&#x27;) ?
             true : false;
+    }
+
+    public findOppositeEdge(edge: Edge): Edge {
+        return this.edges.find((value: Edge) &#x3D;&gt;
+            value.origin.nodeId &#x3D;&#x3D; edge.destination.nodeId &amp;&amp; value.destination.nodeId &#x3D;&#x3D; edge.origin.nodeId
+        );
     }
 
     public getOdNode(label: string): Node {
