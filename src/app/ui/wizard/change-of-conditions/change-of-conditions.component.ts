@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, AbstractControl, Validators } from '@angular/forms';
 
 import { Store, select } from '@ngrx/store';
+import * as combine from 'mout/array/combine';
 
 import { WizardService } from '../wizard.service';
 import { NetworkService } from '../../../network/network.service';
@@ -41,8 +42,6 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
         private demand: DemandService
     ) {
         super();
-
-        this.descriptions = EnumValues.getValues(WeatherDescription);
     }
 
     ngOnInit(): void {
@@ -68,7 +67,8 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
         // Updates weather service data on value changes.
         this.subscriptions.push(this.formGroup.get('weatherConditions').valueChanges.subscribe(
             (weatherConditions: WeatherConditions) => {
-                const index = this.descriptions.findIndex(description => description == weatherConditions.description);
+                const index = EnumValues.getValues(WeatherDescription)
+                    .findIndex(description => description == weatherConditions.description);
                 if (index != -1) {
                     const icon = uiConfig.weatherIcons[index];
                     weatherConditions.icon = icon;
@@ -100,6 +100,8 @@ export class ChangeOfConditionsComponent extends BaseComponent implements OnInit
                     }
                     const weatherConditions = this.weather.getWeatherConditions();
                     weatherConditionsControl.patchValue(weatherConditions, { emitEvent: false });
+                    this.descriptions = EnumValues.getValues(WeatherDescription);
+                    combine(this.descriptions, [weatherConditions.description]);
                     break;
             }
         }));
