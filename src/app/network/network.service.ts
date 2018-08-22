@@ -57,10 +57,6 @@ import { uiConfig } from '../ui/ui-config';
         this.edgeId = 0;
     }
 
-    public getGraph(): Graph {
-        return this.graph;
-    }
-
     public setBounds(bounds: google.maps.LatLngBoundsLiteral): void {
         this.bounds = bounds;
     }
@@ -78,6 +74,14 @@ import { uiConfig } from '../ui/ui-config';
         return this.time ?
             this.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' }) :
             time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    public getOdPairs(): OdPair[] {
+        return this.odPairs;
+    }
+
+    public setOdPairs(odPairs: OdPair[]): void {
+        this.odPairs = odPairs;
     }
 
     /**
@@ -114,9 +118,10 @@ import { uiConfig } from '../ui/ui-config';
             const nodesDegrees: Map<number, number> = new Map();
             // Gets the list of ways.
             let ways = this.extractWays(elements);
+            // Reverses no forward ways.
             ways = this.reverseNoForward(ways);
             // Merges continuous ways.
-            ways = this.mergeWays(ways, elements);
+            ways = this.mergeWays(ways);
             // Gets the list of nodes.
             const nodes = this.extractNodes(elements);
 
@@ -140,12 +145,10 @@ import { uiConfig } from '../ui/ui-config';
                         i == arr.length - 1 || // last node
                         nodesDegrees.get(node) > 1; // degree greater than one
                 });
-                const junction = way['tags']['junction'];
-                const oneway = way['tags']['oneway'];
                 // First direction.
                 this.splitWay(filteredWayNodes, nodes, way);
                 // Second direction (two-way).
-                if ((!oneway || oneway == 'no') && (junction != 'roundabout' && junction != 'circular')) {
+                if (!this.isOneway(way)) {
                     // Reverses the order of filtered way nodes.
                     this.splitWay(filteredWayNodes.reverse(), nodes, way);
                 }
@@ -181,7 +184,7 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Updates graph using the data obtained from Directions API.
+     * Updates graph using the data obtained from networkData cloud function.
      * @param data Network data
      */
     public updateGraph(data: any[]): Observable<any> {
@@ -210,7 +213,7 @@ import { uiConfig } from '../ui/ui-config';
             for (const edge of edges) {
                 if (!edge.distance || !edge.drawingOptions.polyline) {
                     // Tries to find the opposite edge.
-                    const oppositeEdge = this.findOppositeEdge(edge.destination.nodeId, edge.origin.nodeId);
+                    const oppositeEdge = this.graph.findOppositeEdge(edge);
                     if (oppositeEdge && oppositeEdge.distance && oppositeEdge.drawingOptions.originalPath) {
                         edge.distance = oppositeEdge.distance;
                         edge.duration = 0;
@@ -273,19 +276,15 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Calculates link flow of paths.
+     * Calculates link flow of edges using the data obtained from trafficData cloud function.
      * @param data Traffic data
      */
     public calcLinkFlows(data: any[]): Observable<any> {
         const edges = this.graph.getPathsEdges();
-        // Assigns traffic data.
         for (const edge of edges) {
-            for (const value of data) {
-                if (value.edgeId == edge.edgeId) {
-                    edge.durationInTraffic = value.durationInTraffic || 0;
-                    break;
-                }
-            }
+            // Assigns traffic data.
+            const edgeData = data.find(value => value.edgeId == edge.edgeId);
+            edge.durationInTraffic = edgeData && edgeData.durationInTraffic ? edgeData.durationInTraffic : 0;
             // Calculates link flow.
             edge.calcLinkFlow();
         }
@@ -293,7 +292,7 @@ import { uiConfig } from '../ui/ui-config';
     }
 
     /**
-     * Returns the value of the link flow and the corresponding variance of the paths.
+     * Returns the value of the link flow and the corresponding variance of the edges.
      */
     public getLinkFlows(): LinkFlow[] {
         const edges = this.graph.getPathsEdges();
@@ -309,12 +308,8 @@ import { uiConfig } from '../ui/ui-config';
         return this.graph.getAssignmentMatrix();
     }
 
-    public getOdPairs(): OdPair[] {
-        return this.odPairs;
-    }
-
-    public setOdPairs(odPairs: OdPair[]): void {
-        this.odPairs = odPairs;
+    public getGraph(): Graph {
+        return this.graph;
     }
 
     /**
@@ -382,23 +377,20 @@ import { uiConfig } from '../ui/ui-config';
     /**
      * Merges continuous ways.
      * @param ways Array of OpenStreetMap ways
-     * @param elements Array of OpenStreetMap elements
      */
-    private mergeWays(ways: any[], elements: any[]): any[] {
+    private mergeWays(ways: any[]): any[] {
         if (ways.length > 1) {
             let i = 0;
             do {
-                const wayName: string = ways[i]['tags']['name'];
-                const wayOneway: string = ways[i]['tags']['oneway'];
+                const wayName: string | undefined = ways[i]['tags'] ? ways[i]['tags']['name'] : undefined;
                 const wayNodes: number[] = ways[i]['nodes'];
                 let n = i + 1;
                 let inverse = false;
                 do {
-                    const nextWayName: string = ways[n]['tags']['name'];
-                    const nextWayOneway: string = ways[n]['tags']['oneway'];
+                    const nextWayName: string | undefined = ways[n]['tags'] ? ways[n]['tags']['name'] : undefined;
                     const nextWayNodes: number[] = ways[n]['nodes'];
                     // Checks that they have the same name and direction.
-                    if (wayName === nextWayName && this.isSameOneway(wayOneway, nextWayOneway)) {
+                    if (wayName === nextWayName && this.compareOneway(ways[i], ways[n])) {
                         // Checks the first and last node.
                         if (wayNodes[wayNodes.length - 1] == nextWayNodes[0]) {
                             this.fillWays(ways[i], ways[n]);
@@ -427,16 +419,29 @@ import { uiConfig } from '../ui/ui-config';
         return ways;
     }
 
-    private isSameOneway(wayOneway: string, nextWayOneway: string): boolean {
+    private compareOneway(way: any, nextWay: any): boolean {
+        const wayOneway: string | undefined = way['tags'] ? way['tags']['oneway'] : undefined;
+        const nextWayOneway: string | undefined = nextWay['tags'] ? nextWay['tags']['oneway'] : undefined;
         return wayOneway === nextWayOneway ||
-            (typeof wayOneway === 'undefined' && nextWayOneway == 'no') ||
-            (wayOneway == 'no' && typeof nextWayOneway === 'undefined');
+            (this.isOneway(way) && this.isOneway(nextWay)) ||
+            (!this.isOneway(way) && !this.isOneway(nextWay));
     }
 
+    private isOneway(way: any): boolean {
+        const oneway: string | undefined = way['tags'] ? way['tags']['oneway'] : undefined;
+        const junction: string | undefined = way['tags'] ? way['tags']['junction'] : undefined;
+        return (typeof oneway !== 'undefined' && oneway != 'no') || (junction == 'roundabout' || junction == 'circular');
+    }
+
+    /**
+     * Fills a previous way with the next way.
+     */
     private fillWays(way: any, nextWay: any): void {
+        // Fills missing properties recursively.
         deepFillIn(way, nextWay);
         // Removes the shared node.
         nextWay['nodes'].splice(0, 1);
+        // Appends nodes.
         append(way['nodes'], nextWay['nodes']);
     }
 
@@ -619,13 +624,6 @@ import { uiConfig } from '../ui/ui-config';
         const destination = point([edge.destination.lon, edge.destination.lat]);
         const geodesicDistance = round(distance(origin, destination) * 1000);
         return geodesicDistance;
-    }
-
-    private findOppositeEdge(origin: number, destination: number): Edge {
-        const edges = this.graph.getEdges();
-        return edges.find((edge: Edge) =>
-            edge.origin.nodeId == origin && edge.destination.nodeId == destination
-        );
     }
 
 }

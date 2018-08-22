@@ -209,10 +209,10 @@ export class Edge {
         return this.maxFlow * timeInterval;
     }
 
-    protected draw(color: string, zIndex: number = 10): void {
+    protected draw(color: string, zIndex: number, visible: boolean = true): void {
         this.drawingOptions.polyline.set('strokeColor', color);
         this.drawingOptions.polyline.set('zIndex', zIndex);
-        this.drawingOptions.marker.set('visible', true);
+        this.drawingOptions.marker.set('visible', visible);
     }
 
 }
@@ -314,6 +314,12 @@ export class Graph {
         return this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'roundabout') ||
             this.getEdge(edgeId).tags.find(tag => tag.key == 'junction' && tag.value == 'circular') ?
             true : false;
+    }
+
+    public findOppositeEdge(edge: Edge): Edge {
+        return this.edges.find((value: Edge) =>
+            value.origin.nodeId == edge.destination.nodeId && value.destination.nodeId == edge.origin.nodeId
+        );
     }
 
     public getOdNode(label: string): Node {

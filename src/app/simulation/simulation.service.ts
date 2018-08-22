@@ -52,6 +52,9 @@ import { uiConfig } from '../ui/ui-config';
      */
     private pathsStartingTimes: number[] = [];
 
+    /**
+     * The network average speed for each step.
+     */
     private avgSpeeds: number[] = [];
 
     constructor(
@@ -142,6 +145,7 @@ import { uiConfig } from '../ui/ui-config';
         // Resets.
         this.graph.reset();
         this.timePeriods = [];
+        this.avgSpeeds = [];
         // Reinitializes.
         this.timePeriods[0] = 0;
         this.initOdNodes();
@@ -164,7 +168,6 @@ import { uiConfig } from '../ui/ui-config';
         const edges = this.graph.getEdges().filter((edge: LtmEdge) =>
             edge.distance > uiConfig.minDistance && edge.duration > uiConfig.minDuration
         );
-        const busiestEdge = Statistics.getBusiestEdge(edges);
 
         return {
             totalTime: this.timePeriods[this.timePeriods.length - 1],
@@ -173,10 +176,10 @@ import { uiConfig } from '../ui/ui-config';
             moderateTrafficLabels: Statistics.getModerateTrafficLabels(edges),
             heavyTrafficData: Statistics.getHeavyTrafficData(edges, this.timeInterval),
             moderateTrafficData: Statistics.getModerateyTrafficData(edges, this.timeInterval),
-            busiestEdgeLabel: Statistics.getBusiestEdgeLabel(busiestEdge),
-            busiestEdgeData: Statistics.getBusiestEdgeData(busiestEdge),
-            busiestEdgeCapacity: Statistics.getBusiestEdgeCapacity(busiestEdge),
-            busiestEdgeDelay: Statistics.getBusiestEdgeDelay(busiestEdge, this.timePeriods),
+            busiestEdgeLabel: Statistics.getBusiestEdgeLabel(edges),
+            busiestEdgeData: Statistics.getBusiestEdgeData(edges),
+            busiestEdgeCapacity: Statistics.getBusiestEdgeCapacity(edges),
+            busiestEdgeDelay: Statistics.getBusiestEdgeDelay(edges, this.timePeriods),
             periods: this.timePeriods
         };
     }

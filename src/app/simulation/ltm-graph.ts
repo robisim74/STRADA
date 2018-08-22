@@ -337,7 +337,7 @@ export class LtmEdge extends Edge {
         this.travelTime = 0;
         this.delay = 0;
         this.stops = 0;
-        this.draw(uiConfig.links.baseColor);
+        this.draw(uiConfig.links.baseColor, 10, false);
     }
 
     /**

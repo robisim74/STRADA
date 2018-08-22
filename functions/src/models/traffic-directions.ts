@@ -36,7 +36,7 @@ export function buildRequest(edge: any, time: Date, mode: string): any {
     return {
         origin: { lat: edge.origin.lat, lng: edge.origin.lon },
         destination: { lat: edge.destination.lat, lng: edge.destination.lon },
-        mode: 'driving',
+        mode: mode,
         departure_time: time || new Date(Date.now()),
         traffic_model: 'pessimistic',
         units: 'metric'

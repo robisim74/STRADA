@@ -37,6 +37,7 @@ import { uiConfig } from '../../ui/ui-config';
             params: new HttpParams()
                 .set('lat', this.location.getLatLng().lat.toString())
                 .set('lon', this.location.getLatLng().lng.toString())
+                .set('units', 'metric')
                 .set('appid', appConfig.apis.openWeatherMap.apiKey)
         };
 
@@ -94,16 +95,9 @@ import { uiConfig } from '../../ui/ui-config';
      */
     public getFactors(): number[] {
         const factors: number[] = [];
-        let maxFlowFactor = uiConfig.adjustmentFactorCoefficients[0] +
-            uiConfig.adjustmentFactorCoefficients[1] * (this.weatherConditions.visibility / 1000) +
-            uiConfig.adjustmentFactorCoefficients[2] * this.toInches(this.weatherConditions.rainIntensity) +
-            uiConfig.adjustmentFactorCoefficients[3] * this.toInches(this.weatherConditions.snowIntensity) +
-            uiConfig.adjustmentFactorCoefficients[4] *
-            this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.rainIntensity) +
-            uiConfig.adjustmentFactorCoefficients[5] *
-            this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.snowIntensity);
-        if (maxFlowFactor < 0.1) { maxFlowFactor = 0.1; }
-        factors.push(round(maxFlowFactor, 2));
+        // Max flow.
+        factors[0] = this.calcFactor(uiConfig.adjustmentFactorCoefficients.maxFlow);
+
         return factors;
     }
 
@@ -111,10 +105,29 @@ import { uiConfig } from '../../ui/ui-config';
         this.weatherConditions = {
             description: data.weather[0] ? data.weather[0].description : '-',
             icon: data.weather[0] ? data.weather[0].icon : null,
-            visibility: data.visibility ? data.visibility : uiConfig.visibility.default,
+            visibility: data.visibility && data.visibility <= uiConfig.visibility.max ? data.visibility : uiConfig.visibility.default,
             rainIntensity: data.rain && data.rain['3h'] ? round(data.rain['3h']) : 0,
             snowIntensity: data.snow && data.snow['3h'] ? round(data.snow['3h']) : 0
         };
+    }
+
+    private calcFactor(adjustmentFactorCoefficients: number[]): number {
+        const factor = adjustmentFactorCoefficients[0] +
+            adjustmentFactorCoefficients[1] * (this.weatherConditions.visibility / 1000) +
+            adjustmentFactorCoefficients[2] * this.toInches(this.weatherConditions.rainIntensity) +
+            adjustmentFactorCoefficients[3] * this.toInches(this.weatherConditions.snowIntensity) +
+            adjustmentFactorCoefficients[4] *
+            this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.rainIntensity) +
+            adjustmentFactorCoefficients[5] *
+            this.toInches(this.weatherConditions.visibility) * this.toInches(this.weatherConditions.snowIntensity);
+
+        if (factor <= 0.1) {
+            return 0.1;
+        } else if (factor >= 1) {
+            return 1;
+        } else {
+            return round(factor, 2);
+        }
     }
 
     private toInches(value: number): number {

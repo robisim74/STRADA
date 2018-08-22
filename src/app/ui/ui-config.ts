@@ -66,10 +66,12 @@ export const uiConfig = {
      */
     maxDemand: 10000,
     /**
-     * Weather Adjustment Factor Coefficients for max flow.
+     * Weather Adjustment Factor Coefficients.
      * "Traffic Analysis Toolbox. Volume XI: Weather and Traffic Analysis, Modeling and Simulation"
      */
-    adjustmentFactorCoefficients: [0.91, 0.009, -0.404, -1.455, 0, 0],
+    adjustmentFactorCoefficients: {
+        maxFlow: [0.91, 0.009, -0.404, -1.455, 0, 0]
+    },
     /**
      * Visibility (m).
      */

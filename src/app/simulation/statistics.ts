@@ -21,27 +21,25 @@ export class Statistics {
         return this.getModerateTrafficEdges(edges).map((edge: LtmEdge) => edge.moderateTrafficCount * timeInterval);
     }
 
-    public static getBusiestEdge(edges: LtmEdge[]): LtmEdge {
-        return edges.reduce((prev: LtmEdge, curr: LtmEdge) =>
-            prev.heavyTrafficCount + prev.moderateTrafficCount > curr.heavyTrafficCount + curr.moderateTrafficCount ? prev : curr
-        );
-    }
-
-    public static getBusiestEdgeLabel(edge: LtmEdge): string {
+    public static getBusiestEdgeLabel(edges: LtmEdge[]): string {
+        const edge = this.getBusiestEdge(edges);
         return edge.label;
     }
 
-    public static getBusiestEdgeData(edge: LtmEdge): number[] {
+    public static getBusiestEdgeData(edges: LtmEdge[]): number[] {
+        const edge = this.getBusiestEdge(edges);
         return this.getTrafficVolumes(edge);
     }
 
-    public static getBusiestEdgeCapacity(edge: LtmEdge): number {
+    public static getBusiestEdgeCapacity(edges: LtmEdge[]): number {
+        const edge = this.getBusiestEdge(edges);
         return Math.trunc(edge.maxFlow * edge.duration) > 1 ?
             Math.trunc(edge.maxFlow * edge.duration) + 1 :
             1;
     }
 
-    public static getBusiestEdgeDelay(edge: LtmEdge, timePeriods: number[]): number {
+    public static getBusiestEdgeDelay(edges: LtmEdge[], timePeriods: number[]): number {
+        const edge = this.getBusiestEdge(edges);
         const trafficVolumes = this.getTrafficVolumes(edge);
 
         let i = 0;
@@ -71,6 +69,12 @@ export class Statistics {
 
     private static getModerateTrafficEdges(edges: LtmEdge[]): LtmEdge[] {
         return edges.filter((edge: LtmEdge) => edge.moderateTrafficCount > 0);
+    }
+
+    private static getBusiestEdge(edges: LtmEdge[]): LtmEdge {
+        return edges.reduce((prev: LtmEdge, curr: LtmEdge) =>
+            prev.heavyTrafficCount + prev.moderateTrafficCount > curr.heavyTrafficCount + curr.moderateTrafficCount ? prev : curr
+        );
     }
 
     private static getTrafficVolumes(edge: LtmEdge): number[] {
