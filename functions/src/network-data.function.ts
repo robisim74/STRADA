@@ -12,10 +12,10 @@ const googleMaps = _googleMaps;
  * Network data function.
  */
 export function networkDataFunction(request, response): void {
-    const ways: any = request.body.ways;
-    const mode: string = request.body.mode;
-
     try {
+        const ways: any = request.body.ways;
+        const mode: string = request.body.mode;
+
         // Instances Google Maps.
         const googleMapsClient = googleMaps.createClient({
             key: functionsConfig.apis.googleMaps.serverKey,
@@ -43,5 +43,4 @@ export function networkDataFunction(request, response): void {
     } catch (error) {
         response.status(500).send(error);
     }
-
 }

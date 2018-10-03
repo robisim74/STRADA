@@ -6,8 +6,8 @@
     "build": "rimraf ./lib/**/* && tsc -p tsconfig-build.json && rollup -c rollup.config.js && rimraf ./tmp",
     "serve:dev": "concurrently \"npm run build:dev\" \"firebase serve --only functions -p 4201\"",
     "serve": "concurrently \"npm run build\" \"firebase serve --only functions -p 4201\"",
-    "shell": "concurrently \"npm run build:dev\" \"firebase functions:shell\"",
-    "start": "npm run shell",
+    "shell": "firebase functions:shell",
+    "start": "npm run build && npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },

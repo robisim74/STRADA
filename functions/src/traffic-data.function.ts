@@ -12,11 +12,11 @@ const googleMaps = _googleMaps;
  * Traffic data function.
  */
 export function trafficDataFunction(request, response): void {
-    const edges: any = request.body.edges;
-    const time: Date = request.body.time ? new Date(request.body.time) : null;
-    const mode: string = request.body.mode;
-
     try {
+        const edges: any = request.body.edges;
+        const time: Date = request.body.time ? new Date(request.body.time) : null;
+        const mode: string = request.body.mode;
+
         // Instances Google Maps.
         const googleMapsClient = googleMaps.createClient({
             key: functionsConfig.apis.googleMaps.serverKey,
@@ -49,5 +49,4 @@ export function trafficDataFunction(request, response): void {
     } catch (error) {
         response.status(500).send(error);
     }
-
 }
