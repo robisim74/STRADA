@@ -12,7 +12,7 @@
     "test:ci": "ng test --watch false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:docs": "compodoc -p src/tsconfig.app.json -d ./docs -n \"STRADA documentation\" --disableCoverage",
+    "build:docs": "compodoc -p src/tsconfig.app.json -d ./docs -n \"STRADA documentation\" --disableCoverage -a images",
     "serve:docs": "compodoc -d ./docs -s"
   },
   "husky": {
