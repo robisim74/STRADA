@@ -68,7 +68,7 @@
     "@types/animejs": "2.0.1",
     "@types/googlemaps": "3.30.16",
     "@types/qs": "6.5.1",
-    "@compodoc/compodoc": "1.1.6",
+    "@compodoc/compodoc": "1.1.7",
     "codelyzer": "4.5.0",
     "jasmine-core": "3.3.0",
     "jasmine-spec-reporter": "4.2.1",

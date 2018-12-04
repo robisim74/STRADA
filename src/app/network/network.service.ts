@@ -13,7 +13,6 @@ import { getCoords } from '@turf/invariant';
 import { point, lineString } from '@turf/helpers';
 import deepClone from 'mout/lang/deepClone';
 
-import { WeatherService } from './weather/weather.service';
 import { Graph, Node, Edge, Tag, OdPair, LinkFlow } from './graph';
 import { round } from '../utils';
 import { environment } from '../../environments/environment';
@@ -47,7 +46,7 @@ import { uiConfig } from '../ui/ui-config';
 
     private edgeId: number = 0;
 
-    constructor(private http: HttpClient, private weather: WeatherService) { }
+    constructor(private http: HttpClient) { }
 
     public reset(): void {
         this.graph = null;
