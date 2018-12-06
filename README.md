@@ -23,6 +23,11 @@ The STRADA simulator - _Simulation of TRAffic DAta_ - is a web application that 
 ## Architecture
 ![Architecture](images/Architecture.png)
 
+## Demo
+> The demo allows a limited number of daily simulations, because past the quota limits traffic data become paid.
+
+[STRADA](https://strada-simulator.firebaseapp.com)
+
 ## Development
 
 ### Requirements
