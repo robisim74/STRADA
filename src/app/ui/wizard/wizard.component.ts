@@ -80,7 +80,7 @@ export class WizardComponent implements OnInit {
                 }),
                 this.formBuilder.group({})
             ])
-        }, { updateOn: 'blur' });
+        }, { updateOn: 'change' });
 
         this.wizard.stepper = this.stepper;
     }
